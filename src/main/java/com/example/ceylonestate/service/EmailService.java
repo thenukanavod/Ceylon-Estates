@@ -25,7 +25,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromAddress);
         message.setTo(toAddress);
-        message.setSubject("Reset your password - Project 28");
+        message.setSubject("Reset your password - Ceylon Estates");
         message.setText(
                 "We received a request to reset your password.\n\n" +
                 "Click the link below to choose a new password:\n" +
@@ -39,7 +39,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromAddress);
         message.setTo(toAddress);
-        message.setSubject("Your login verification code - Project 28");
+        message.setSubject("Your login verification code - Ceylon Estates");
         message.setText(
                 "Your verification code is: " + code + "\n\n" +
                 "Enter this on the login verification page to finish signing in.\n" +
