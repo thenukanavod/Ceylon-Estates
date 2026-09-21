@@ -386,6 +386,10 @@ body {
     line-height: 1.3em;
 }
 
+.broker-card-inner .text-muted {
+    color: #6c757d !important;
+}
+
 /* Same "pop up" hover treatment as the listing cards */
 .broker-card-inner:hover {
     transform: translateY(-10px) scale(1.04);
@@ -426,6 +430,210 @@ body {
     background-color: #f2f2f2;
 }
 
+/* ---------- Sell With Us section (CTA + 3-step process) ---------- */
+
+.sell-section {
+    background-color: #19555a !important;
+}
+
+.sell-photo {
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px;
+    min-height: 360px;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- Project Library gallery (auto-scrolling masonry columns) ---------- */
+
+.gallery-section {
+    /* Theme-aware, not fixed: this is a plain content section (not a
+       branded color block like .sell-section), so it should flip with
+       the site's light/dark toggle like ordinary text/background pairs
+       do — light bg + dark text in light mode, dark bg + white text in
+       dark mode. var(--bs-body-bg)/var(--bs-body-color) already carry
+       that switch, so no hardcoded hex or !important is needed here. */
+    background-color: var(--bs-body-bg);
+}
+
+.gallery-heading {
+    color: var(--bs-body-color);
+}
+
+.gallery-body {
+    color: var(--bs-secondary-color);
+}
+
+.gallery-viewport {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    height: 560px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 40px, black calc(100% - 40px), transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, black 40px, black calc(100% - 40px), transparent 100%);
+}
+
+.gallery-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* No "gap" here on purpose: gap adds one fewer gap than there are
+       items, so a 50% duplicated list is never exactly half its own
+       height and the loop visibly snaps at the wrap point. Each tile
+       carries its own margin-bottom instead (including the last one),
+       so every tile "slot" is an identical height and a 10-tile column
+       (5 unique + 5 duplicate) is exactly cut in half by translateY(-50%). */
+    animation: gallery-scroll 26s linear infinite;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.gallery-column-reverse {
+    animation-direction: reverse;
+    animation-duration: 32s;
+}
+
+.gallery-column:nth-child(3) {
+    animation-duration: 22s;
+}
+
+/* Pausing the whole viewport (not just the hovered column) keeps every
+   column's position in sync when the person resumes looking. */
+.gallery-viewport:hover .gallery-column {
+    animation-play-state: paused;
+}
+
+@keyframes gallery-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, -50%, 0); }
+}
+
+.gallery-tile {
+    position: relative;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 2.4rem;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+}
+
+.gallery-tile-tag {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+/* ---------- FAQ section (flat, divider-line accordion) ---------- */
+
+.faq-section {
+    /* Theme-aware, not fixed: like .gallery-section above, this is a
+       plain content section, so it follows the site's light/dark toggle
+       via Bootstrap's own body variables rather than a hardcoded color. */
+    background-color: var(--bs-body-bg);
+    /* Now that this section and the one above it (.gallery-section) both
+       resolve to the same theme background, there's nothing to visually
+       separate them — this hairline (also theme-aware) restores that
+       seam without reintroducing a fixed, non-adaptive color. */
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.faq-heading {
+    color: var(--bs-body-color);
+}
+
+.faq-body {
+    color: var(--bs-secondary-color);
+}
+
+/* Strip Bootstrap's boxed accordion look down to plain dividers,
+   matching a flat, editorial FAQ list rather than bordered cards. */
+.faq-accordion .accordion-item {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--bs-border-color);
+    border-radius: 0;
+}
+
+.faq-accordion .accordion-item:first-of-type,
+.faq-accordion .accordion-item:last-of-type {
+    border-radius: 0;
+}
+
+.faq-accordion .accordion-button {
+    background: transparent;
+    color: var(--bs-body-color);
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 22px 0;
+    box-shadow: none;
+}
+
+.faq-accordion .accordion-button:not(.collapsed) {
+    background: transparent;
+    color: #19555a;
+    box-shadow: none;
+}
+
+.faq-accordion .accordion-button:focus {
+    box-shadow: none;
+}
+
+.faq-accordion .accordion-button::after {
+    background-size: 1.1rem;
+}
+
+.faq-accordion .accordion-body {
+    padding: 0 40px 24px 0;
+    color: var(--bs-secondary-color);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* ---------- Still Have Questions CTA banner ---------- */
+
+.faq-cta-section {
+    background-color: #19555a !important;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.faq-cta-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5f9ea0, #2e7d32);
+    color: #fff;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-cta-btn {
+    background-color: #e63946;
+    color: #fff;
+    border-radius: 4px;
+    padding: 14px 32px;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+}
+
+.faq-cta-btn:hover {
+    background-color: #d62839;
+    color: #fff;
+}
+
 /* ---------- Scroll-reveal (fade + slide up into place) ---------- */
 
 .reveal-on-scroll {
@@ -456,13 +664,171 @@ body {
 .broker-row .broker-card:nth-child(4) { transition-delay: 0.3s; }
 .broker-row .broker-card:nth-child(5) { transition-delay: 0.4s; }
 
-/* ---------- Hero search bar + animated typed word ---------- */
+/* ---------- Hero: "Ceylon" signature/handwriting draw-on animation ---------- */
 
-.hero-typed-cursor {
-    animation: heroCursorBlink 1s steps(1) infinite;
+.hero-signature-text {
+    fill: #fff;
+    fill-opacity: 0;
+    stroke: #fff;
+    stroke-width: 2.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 4063;
+    stroke-dashoffset: 4063;
+    animation: heroSignatureLoop 6s ease-in-out infinite;
 }
 
-@keyframes heroCursorBlink {
-    0%, 50% { opacity: 1; }
-    50.01%, 100% { opacity: 0; }
+@keyframes heroSignatureLoop {
+    0% {
+        stroke-dashoffset: 4063;
+        fill-opacity: 0;
+        opacity: 1;
+    }
+    50% {
+        stroke-dashoffset: 0;
+        fill-opacity: 0;
+    }
+    62% {
+        fill-opacity: 1;
+    }
+    85% {
+        stroke-dashoffset: 0;
+        fill-opacity: 1;
+        opacity: 1;
+    }
+    97% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+        stroke-dashoffset: 4063;
+        fill-opacity: 0;
+    }
+}
+
+/* ---------- Get Local Info section: fixed colors, same reasoning as the
+   listing cards and broker cards above — this block has a hardcoded white
+   background regardless of site theme, so its text needs fixed dark colors
+   too, including the input's placeholder text. ---------- */
+
+.local-info-search-input::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+/* ---------- Site-wide footer (rounded pitch-black card + bottom bar) ---------- */
+
+.site-footer-wrap {
+    margin-top: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.site-footer-card {
+    /* Deliberately near-pure black and !important-locked: this needs to
+       read as its own distinct surface even against the site's own dark
+       theme (which uses a much lighter charcoal), not blend into it. */
+    background-color: #050505 !important;
+    border-radius: 24px;
+}
+
+.site-footer-card h3,
+.site-footer-card h6 {
+    color: #fff;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.footer-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.footer-cta-btn {
+    background-color: #e63946;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 26px;
+    font-weight: 600;
+}
+
+.footer-cta-btn:hover {
+    background-color: #d62839;
+    color: #fff;
+}
+
+.footer-social {
+    flex-wrap: wrap;
+}
+
+.footer-social a {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.footer-social a:hover {
+    background-color: #e63946;
+    color: #fff;
+}
+
+.footer-bottom-link {
+    text-decoration: none;
+}
+
+.footer-bottom-link:hover {
+    text-decoration: underline;
+}
+
+/* Smooth-scrolls the whole page for in-page anchors like the footer's
+   logo (-> #page-top) and the footer nav links (-> #sell, #brokers, etc). */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ---------- Back-to-top button (fixed, bottom-right) ---------- */
+
+.back-to-top-btn {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background-color: #19555a;
+    color: #fff;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+}
+
+.back-to-top-btn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top-btn:hover {
+    background-color: #123f42;
+    color: #fff;
 }
