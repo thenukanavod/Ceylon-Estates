@@ -20,7 +20,7 @@
 <body>
 
 <div th:fragment="navbar">
-    <div style="padding: 14px 14px 0;">
+    <div id="page-top" style="padding: 14px 14px 0;">
         <nav class="navbar navbar-expand px-4 py-2"
              style="background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);">
             <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}" style="color: #19555a;">
@@ -72,14 +72,91 @@
 </div>
 
 <div th:fragment="footer">
-    <footer class="text-center text-muted small py-4 mt-5 border-top">
-        <p th:text="#{footer.text}">Ceylon Estates — coursework project</p>
+    <footer class="site-footer-wrap">
+        <div class="container-fluid px-4">
+            <div class="site-footer-card p-4">
+                <div class="row gy-4">
+
+                    <!-- Brand + pitch + CTA -->
+                    <div class="col-lg-5">
+                        <a class="d-inline-flex align-items-center gap-2 text-decoration-none mb-4" href="#page-top">
+                            <img th:src="@{/images/logo-icon-v3.png}" alt="" style="height: 40px; width: auto;">
+                            <span class="fw-bold text-white" style="font-size: 1.3rem;">Ceylon Estates</span>
+                        </a>
+
+                        <h3 class="fw-bold text-white" style="max-width: 480px; line-height: 1.3;" th:text="#{footer.tagline}">
+                            We help you find the right land, home or apartment &ndash; anywhere in Sri Lanka.
+                        </h3>
+
+                        <div class="d-flex flex-wrap align-items-center gap-4 mt-4">
+                            <a href="/#sell" class="btn footer-cta-btn fw-semibold">
+                                <span th:text="#{footer.ctaButton}">List Your Property</span>
+                            </a>
+                            <span class="d-flex align-items-center gap-2 text-white">
+                                <i class="bi bi-telephone-fill"></i>
+                                <span th:text="#{footer.phone}">011 234 5678</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Resources column -->
+                    <div class="col-lg-3 col-6">
+                        <h6 class="fw-bold text-white mb-3" th:text="#{footer.resourcesHeading}">Resources</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="/#sell" class="footer-link" th:text="#{footer.linkSell}">Sell With Us</a>
+                            <a href="/#brokers" class="footer-link" th:text="#{footer.linkBrokers}">Mortgage Brokers</a>
+                            <a href="/#gallery" class="footer-link" th:text="#{footer.linkGallery}">Project Library</a>
+                            <a href="/#faq" class="footer-link" th:text="#{footer.linkFaq}">FAQ</a>
+                        </div>
+                    </div>
+
+                    <!-- Account column -->
+                    <div class="col-lg-2 col-6">
+                        <h6 class="fw-bold text-white mb-3" th:text="#{footer.accountHeading}">Account</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <a th:href="@{/register}" class="footer-link" th:text="#{nav.register}">Sign up</a>
+                            <a th:href="@{/login}" class="footer-link" th:text="#{nav.login}">Login</a>
+                            <a th:href="@{/profile}" class="footer-link" th:text="#{nav.profile}">Profile</a>
+                            <a th:href="@{/settings}" class="footer-link" th:text="#{footer.linkSettings}">Settings</a>
+                        </div>
+                    </div>
+
+                    <!-- Social -->
+                    <div class="col-lg-2">
+                        <h6 class="fw-bold text-white mb-3" th:text="#{footer.followHeading}">Follow Us</h6>
+                        <div class="d-flex gap-2 footer-social">
+                            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="#" aria-label="X"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-4 py-3 site-footer-bottom text-muted small">
+            <span th:text="#{footer.text}">Ceylon Estates</span>
+            <div class="d-flex gap-3">
+                <a href="#" class="footer-bottom-link text-muted" th:text="#{footer.privacy}">Privacy Policy</a>
+                <a href="#" class="footer-bottom-link text-muted" th:text="#{footer.terms}">Terms of Use</a>
+            </div>
+        </div>
     </footer>
+
+    <!-- Fixed bottom-right button: instant (non-smooth) jump back to the
+         very top of the page, distinct from the smooth in-page anchors
+         used elsewhere (footer logo, footer nav links). -->
+    <button type="button" id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
 </div>
 
 <th:block th:fragment="scripts">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/back-to-top.js}"></script>
 </th:block>
 
 </body>
