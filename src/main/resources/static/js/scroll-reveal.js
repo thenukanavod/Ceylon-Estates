@@ -15,14 +15,14 @@
         }
         observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
-                // Toggle every time, in both directions, so the animation
-                // replays whenever an element leaves and re-enters view —
-                // scrolling back up hides it again, scrolling back down
-                // triggers the reveal again.
+                // Reveal once, on the way down, then leave it alone: once
+                // an element has appeared, scrolling back up (or down past
+                // it again) should never hide or re-trigger it. Stop
+                // observing as soon as it's shown so there's nothing left
+                // to toggle.
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                } else {
-                    entry.target.classList.remove('is-visible');
+                    observer.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
