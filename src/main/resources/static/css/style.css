@@ -832,3 +832,350 @@ html {
     background-color: #123f42;
     color: #fff;
 }
+
+/* ---------- Hero advanced search widget (tabs + search row + filters) ----------
+   Deliberately fixed-dark/navy and theme-independent: it sits on top of the
+   hero photo background, the same way the hero's white headline text does,
+   so it isn't meant to flip with the site's light/dark toggle. */
+
+.hero-search-card {
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.hero-search-tabs {
+    background: rgba(13, 20, 33, 0.6);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-radius: 18px 18px 0 0;
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-tab {
+    /* Shared by the "Buy" <button> and the "Sell" <a> — the class handles
+       both so they look identical regardless of element type. */
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 14px 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.hero-tab:hover {
+    color: #fff;
+}
+
+.hero-tab.active {
+    color: #5b9bff;
+    border-bottom-color: #5b9bff;
+}
+
+.hero-search-main {
+    background: rgba(8, 13, 24, 0.92);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+    /* Rounded by default (filters row hidden); .filters-open on the card
+       below flattens this edge so it meets the now-visible filters row
+       with no visible seam between the two. */
+    border-radius: 0 0 18px 18px;
+}
+
+.hero-search-card.filters-open .hero-search-main {
+    border-radius: 0;
+}
+
+.hero-search-input-wrap {
+    flex: 1 1 280px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: border-color 0.15s ease;
+}
+
+.hero-search-input-wrap:focus-within {
+    border-color: #2f6fed;
+}
+
+.hero-search-input-wrap i {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.hero-search-input-wrap-sm {
+    padding: 8px 12px;
+}
+
+.hero-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    flex: 1;
+    font-size: 0.95rem;
+    min-width: 0;
+}
+
+.hero-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.hero-adv-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hero-adv-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.hero-search-btn {
+    background: #2f6fed;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 26px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.hero-search-btn:hover {
+    background: #1f5fe0;
+    color: #fff;
+}
+
+.hero-search-filters {
+    /* Hidden by default — this whole row only appears once the sliders
+       button is toggled on, rather than always taking up hero space. */
+    display: none;
+    background: rgba(8, 13, 24, 0.92);
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 20px 18px;
+    border-radius: 0 0 18px 18px;
+}
+
+.hero-search-card.filters-open .hero-search-filters {
+    display: flex;
+}
+
+.hero-adv-btn.active {
+    background: #2f6fed;
+    border-color: #2f6fed;
+}
+
+.hero-filter-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.hero-filter-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
+.hero-filter-btn i:last-child {
+    font-size: 0.7rem;
+    opacity: 0.6;
+}
+
+/* These already carry an explicit chevron icon, so Bootstrap's own
+   default dropdown caret would just double it up. */
+.hero-filter-btn.dropdown-toggle::after {
+    display: none;
+}
+
+.hero-filter-panel {
+    background: #0d1420;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+    color: #fff;
+    margin-top: 10px !important;
+}
+
+.hero-panel-label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.hero-city-item,
+.hero-proptype-item {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 8px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.hero-city-item:hover,
+.hero-proptype-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.hero-city-item.hero-item-hidden {
+    display: none;
+}
+
+.hero-city-sub {
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.hero-city-count {
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.hero-proptype-item.active {
+    color: #5b9bff;
+}
+
+.hero-proptype-item.active .hero-city-count {
+    color: #5b9bff;
+}
+
+.hero-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.hero-chip:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.hero-chip.active {
+    background: #2f6fed;
+    border-color: #2f6fed;
+}
+
+/* Dual-handle price slider: two overlapping native range inputs with a
+   custom track/fill drawn behind them. */
+.hero-price-slider-wrap {
+    position: relative;
+    height: 28px;
+    margin-top: 4px;
+}
+
+.hero-price-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 2px;
+    transform: translateY(-50%);
+}
+
+.hero-price-track-fill {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    background: #2f6fed;
+    border-radius: 2px;
+    transform: translateY(-50%);
+}
+
+.hero-price-range {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 28px;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: none;
+}
+
+.hero-price-range::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #2f6fed;
+    cursor: pointer;
+}
+
+.hero-price-range::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #2f6fed;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.hero-price-range::-webkit-slider-runnable-track {
+    background: transparent;
+}
+
+.hero-price-range::-moz-range-track {
+    background: transparent;
+}
+
+@media (max-width: 767.98px) {
+    .hero-tab span {
+        display: none;
+    }
+}
