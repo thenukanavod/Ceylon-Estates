@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Import local info</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{infoImport.title}, #{infoImport.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 760px;">
+    <div th:replace="~{admin/fragments :: tabs('localinfo')}"></div>
+
+    <div class="alert alert-danger" th:if="${importFailed != null}" th:text="${importFailed}">Error.</div>
+    <div class="alert alert-success" th:if="${created != null}">
+        <span th:text="#{infoImport.done(${created}, ${updated})}">2 added, 1 updated.</span>
+    </div>
+    <div class="alert alert-warning" th:if="${!#lists.isEmpty(importErrors)}">
+        <strong th:text="#{infoImport.skipped}">These rows were skipped:</strong>
+        <ul class="mb-0">
+            <li th:each="e : ${importErrors}" th:text="${e}">Line 3: unknown district</li>
+        </ul>
+    </div>
+
+    <section class="form-section">
+        <p th:text="#{infoImport.help}">Upload a CSV file to add or update many district guides at once.</p>
+        <p><a th:href="@{/admin/local-info/import/template}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-download"></i> <span th:text="#{infoImport.template}">Download example file</span></a></p>
+        <form th:action="@{/admin/local-info/import}" method="post" enctype="multipart/form-data">
+            <input class="form-control mb-3" type="file" name="file" accept=".csv,text/csv" required>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-teal px-4"><i class="bi bi-upload"></i> <span th:text="#{infoImport.upload}">Import</span></button>
+                <a th:href="@{/admin/local-info}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
