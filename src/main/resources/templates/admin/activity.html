@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Admin activity</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{activity.title}, #{activity.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('activity')}"></div>
+
+    <div class="table-responsive" th:if="${!#lists.isEmpty(items)}">
+        <table class="table align-middle">
+            <thead><tr><th th:text="#{activity.colWhen}">When</th><th th:text="#{activity.colAdmin}">Admin</th><th th:text="#{activity.colAction}">Action</th></tr></thead>
+            <tbody>
+            <tr th:each="a : ${items}">
+                <td class="text-nowrap" th:text="${#temporals.format(a.createdAt, 'd MMM yyyy, HH:mm')}">1 Oct 2026</td>
+                <td class="fw-semibold" th:text="${a.adminUsername}">admin</td>
+                <td th:text="${a.action}">Approved listing #4</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(items)}">
+        <i class="bi bi-journal-text"></i>
+        <h4 th:text="#{activity.none}">Nothing yet</h4>
+        <p class="text-muted" th:text="#{activity.noneText}">Changes made by admins are recorded here.</p>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
