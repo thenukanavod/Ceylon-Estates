@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Local info</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{info.title}, #{info.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <form th:action="@{/local-info}" method="get" class="big-search mb-4">
+        <input type="text" name="q" th:value="${q}" th:placeholder="#{info.searchPlaceholder}" list="districtList" autocomplete="off">
+        <datalist id="districtList"><option th:each="d : ${districts}" th:value="${d.label}"></option></datalist>
+        <button type="submit"><i class="bi bi-search"></i></button>
+    </form>
+
+    <!-- Searched but nothing recognised -->
+    <div class="empty-state" th:if="${searched and selected == null}">
+        <i class="bi bi-geo"></i>
+        <h4 th:text="#{info.notFoundTitle}">We couldn't find that area</h4>
+        <p class="text-muted" th:text="#{info.notFoundText}">Try a district name or a well-known town.</p>
+    </div>
+
+    <!-- One district -->
+    <div th:if="${selected != null}">
+        <h2 class="fw-bold" th:text="${selected.label}">Colombo</h2>
+        <p class="text-muted"><span th:text="#{${selected.province.messageKey}}">Western</span></p>
+
+        <div th:if="${info != null}">
+            <p class="lead" th:text="${info.summary}">Summary</p>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6" th:each="t : ${ {'school','transport','amenities','safety'} }">
+                    <div class="info-tile">
+                        <h5>
+                            <i th:class="'bi ' + (${t == 'school'} ? 'bi-mortarboard-fill' : (${t == 'transport'} ? 'bi-bus-front-fill' : (${t == 'amenities'} ? 'bi-shop' : 'bi-shield-check')))"></i>
+                            <span th:text="#{${'info.' + t}}">Schools</span>
+                        </h5>
+                        <div class="rating" th:with="r=${t == 'school' ? info.schoolRating : (t == 'transport' ? info.transportRating : (t == 'amenities' ? info.amenitiesRating : info.safetyRating))}">
+                            <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? 'on'"></span>
+                        </div>
+                        <p class="small mt-2 mb-0" th:text="${t == 'school' ? info.schoolInfo : (t == 'transport' ? info.transportInfo : (t == 'amenities' ? info.amenitiesInfo : info.safetyInfo))}">Text</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pet-panel mb-4">
+                <i class="bi bi-balloon-heart-fill"></i>
+                <div>
+                    <strong th:text="${info.petFriendlyRentalsCommon} ? #{info.petCommon} : #{info.petRare}">Pet-friendly rentals</strong>
+                    <div class="small" th:if="${info.petFriendlyNotes != null}" th:text="${info.petFriendlyNotes}"></div>
+                    <div class="small" th:text="#{info.petListed(${petRentals})}">3 pet-friendly rentals listed</div>
+                </div>
+                <a th:if="${petRentals > 0}" th:href="@{/properties(district=${selected.name()},listingType='rent',pet=true)}" th:text="#{detail.viewPetRentals}">View</a>
+            </div>
+        </div>
+        <p class="text-muted" th:if="${info == null}" th:text="#{detail.noAreaInfo}">No guide yet.</p>
+
+        <h4 class="fw-bold mt-4 mb-3" th:text="#{info.listingsIn(${selected.label}, ${listingCount})}">Listings</h4>
+        <div class="listing-grid" th:if="${!#lists.isEmpty(listings)}">
+            <div th:each="p : ${listings}" class="listing-card"><div th:replace="~{fragments/cards :: card(${p})}"></div></div>
+        </div>
+        <a class="btn btn-outline-secondary mt-3" th:if="${listingCount > 0}" th:href="@{/properties(district=${selected.name()})}" th:text="#{info.seeAll}">See all</a>
+        <p class="text-muted" th:if="${listingCount == 0}" th:text="#{info.noListings}">No listings here yet.</p>
+
+        <div th:if="${!#lists.isEmpty(brokers)}" class="mt-5">
+            <h4 class="fw-bold mb-3" th:text="#{detail.brokersNear(${selected.label})}">Brokers</h4>
+            <div class="row g-3">
+                <div class="col-md-4" th:each="b : ${brokers}">
+                    <div class="mini-broker">
+                        <div class="mini-avatar" th:style="'background:' + ${b.avatarGradient}" th:text="${b.initials}">AB</div>
+                        <div><div class="fw-semibold" th:text="${b.name}">Name</div><a class="small" th:href="'tel:' + ${b.phone}" th:text="${b.phone}">011</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Landing: all districts -->
+    <div th:if="${!searched}">
+        <h4 class="fw-bold mb-3" th:text="#{info.browse}">Browse by district</h4>
+        <div class="row g-3">
+            <div class="col-lg-3 col-md-4 col-6" th:each="i : ${allInfo}">
+                <a class="district-tile" th:href="@{/local-info(district=${i.district.name()})}">
+                    <div class="fw-bold" th:text="${i.district.label}">Colombo</div>
+                    <div class="small text-muted" th:text="#{${i.district.province.messageKey}}">Western</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <p class="disclaimer mt-5" th:text="#{info.disclaimer}">Guidance only. Please verify locally.</p>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
