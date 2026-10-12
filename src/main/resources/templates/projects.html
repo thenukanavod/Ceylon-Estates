@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Completed Projects</title>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<section class="projects-hero">
+    <div class="projects-hero-inner container-xl">
+        <h1 th:text="#{projects.heroTitle}">Discover Our Portfolio of Projects</h1>
+        <p th:text="#{projects.heroText(${count})}">Properties we've sold and rented.</p>
+    </div>
+</section>
+
+<main class="container-xl page-main">
+    <div class="chip-row" id="projectChips">
+        <button type="button" class="chip active" data-filter="all" th:text="#{projects.all}">All</button>
+        <button type="button" class="chip" data-filter="house" th:text="#{type.house}">House</button>
+        <button type="button" class="chip" data-filter="apartment" th:text="#{type.apartment}">Apartment</button>
+        <button type="button" class="chip" data-filter="land" th:text="#{type.land}">Land</button>
+    </div>
+
+    <div class="listing-grid" th:if="${!#lists.isEmpty(projects)}" id="projectGrid">
+        <div th:each="p : ${projects}" class="listing-card" th:attr="data-type=${p.typeKey}">
+            <div th:replace="~{fragments/cards :: projectCard(${p})}"></div>
+        </div>
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(projects)}">
+        <i class="bi bi-trophy"></i>
+        <h4 th:text="#{projects.emptyTitle}">No completed projects yet</h4>
+        <p class="text-muted" th:text="#{projects.emptyText}">Sold and rented properties will appear here.</p>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+<script th:src="@{/js/project-filter.js}"></script>
+</body>
+</html>
