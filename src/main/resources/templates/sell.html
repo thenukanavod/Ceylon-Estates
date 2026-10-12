@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>List your property</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${existing == null} ? #{sell.title} : #{sell.editTitle}, #{sell.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 920px;">
+    <div class="alert alert-info" th:if="${existing == null}" th:text="#{sell.reviewNotice}">Listings are reviewed by our team before going live.</div>
+    <div class="alert alert-warning" th:if="${existing != null and existing.status.name() == 'REJECTED'}">
+        <strong th:text="#{detail.rejectedNotice}">Rejected.</strong>
+        <span th:text="${existing.rejectionReason}"></span>
+        <div class="small mt-1" th:text="#{sell.resubmitNotice}">Fix the issues and save to resubmit.</div>
+    </div>
+    <div class="alert alert-danger" th:if="${#fields.hasErrors('${form.*}')}" th:text="#{sell.fixErrors}">Please fix the highlighted fields.</div>
+
+    <form th:action="${existing == null} ? @{/sell} : @{/my-listings/{id}/edit(id=${existing.id})}"
+          th:object="${form}" method="post" enctype="multipart/form-data" id="sellForm" novalidate>
+
+        <!-- 1. Type -->
+        <section class="form-section">
+            <h2 th:text="#{sell.s1}">1. What are you listing?</h2>
+            <div class="row g-3">
+                <div class="col-4 type-option" th:each="t : ${ {'house','apartment','land'} }">
+                    <input type="radio" name="type" th:id="'type-' + ${t}" th:value="${t}" th:checked="${form.type == t}"
+                           th:disabled="${existing != null}">
+                    <label th:for="'type-' + ${t}">
+                        <i th:class="'bi ' + (${t == 'house'} ? 'bi-house-door-fill' : (${t == 'apartment'} ? 'bi-building-fill' : 'bi-tree-fill'))"></i>
+                        <span th:text="#{${'type.' + t}}">House</span>
+                    </label>
+                </div>
+            </div>
+            <!-- Disabled radios are not submitted, so keep the type for edits -->
+            <input type="hidden" name="type" th:if="${existing != null}" th:value="*{type}">
+            <div class="mt-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="forRent" id="sale" value="false" th:checked="*{!forRent}">
+                    <label class="form-check-label" for="sale" th:text="#{sell.forSale}">For sale</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="forRent" id="rent" value="true" th:checked="*{forRent}">
+                    <label class="form-check-label" for="rent" th:text="#{sell.forRent}">For rent</label>
+                </div>
+                <div class="form-text" id="landNote" th:text="#{sell.landSaleOnly}">Land can only be listed for sale.</div>
+            </div>
+        </section>
+
+        <!-- 2. Basics -->
+        <section class="form-section">
+            <h2 th:text="#{sell.s2}">2. Basic details</h2>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="title" th:text="#{sell.fTitle}">Title</label>
+                    <input class="form-control" id="title" th:field="*{title}" th:errorclass="is-invalid" maxlength="120">
+                    <div class="invalid-feedback" th:errors="*{title}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="description" th:text="#{sell.fDescription}">Description</label>
+                    <textarea class="form-control" id="description" rows="5" th:field="*{description}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{description}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="district" th:text="#{sell.fDistrict}">District</label>
+                    <select class="form-select" id="district" th:field="*{district}" th:errorclass="is-invalid">
+                        <option value="" th:text="#{sell.choose}">Choose...</option>
+                        <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}">Colombo</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{district}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="city" th:text="#{sell.fCity}">Town / city</label>
+                    <input class="form-control" id="city" th:field="*{city}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{city}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="address" th:text="#{sell.fAddress}">Address (optional)</label>
+                    <input class="form-control" id="address" th:field="*{address}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{address}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="price"><span id="priceLabel" th:text="#{sell.fPrice}">Price (LKR)</span></label>
+                    <input class="form-control" id="price" type="number" min="0" step="any" th:field="*{price}" th:errorclass="is-invalid"
+                           th:attr="data-label-sale=#{sell.priceSale},data-label-rent=#{sell.priceRent},data-label-land=#{sell.pricePerch}">
+                    <div class="invalid-feedback" th:errors="*{price}"></div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="petFriendly" name="petFriendly" value="true" th:checked="*{petFriendly}">
+                        <label class="form-check-label" for="petFriendly" th:text="#{sell.fPet}">Pets allowed</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Type specific -->
+        <section class="form-section type-fields" data-for="house apartment">
+            <h2 th:text="#{sell.s3Home}">3. Home details</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label" for="bedrooms" th:text="#{fact.bedrooms}">Bedrooms</label>
+                    <input class="form-control" id="bedrooms" type="number" min="0" th:field="*{bedrooms}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{bedrooms}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="bathrooms" th:text="#{fact.bathrooms}">Bathrooms</label>
+                    <input class="form-control" id="bathrooms" type="number" min="0" th:field="*{bathrooms}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{bathrooms}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="floorAreaSqft" th:text="#{fact.floorArea}">Floor area (sq ft)</label>
+                    <input class="form-control" id="floorAreaSqft" type="number" min="0" step="any" th:field="*{floorAreaSqft}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{floorAreaSqft}"></div>
+                </div>
+            </div>
+        </section>
+        <section class="form-section type-fields" data-for="house">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="landSizePerches" th:text="#{fact.landSize}">Land size (perches)</label>
+                    <input class="form-control" id="landSizePerches" type="number" min="0" step="any" th:field="*{landSizePerches}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{landSizePerches}"></div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="hasGarden" name="hasGarden" value="true" th:checked="*{hasGarden}">
+                        <label class="form-check-label" for="hasGarden" th:text="#{fact.garden}">Garden</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="form-section type-fields" data-for="apartment">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="floorNumber" th:text="#{fact.floor}">Floor</label>
+                    <input class="form-control" id="floorNumber" type="number" min="0" th:field="*{floorNumber}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{floorNumber}"></div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="hasLift" name="hasLift" value="true" th:checked="*{hasLift}">
+                        <label class="form-check-label" for="hasLift" th:text="#{fact.lift}">Lift</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="form-section type-fields" data-for="land">
+            <h2 th:text="#{sell.s3Land}">3. Land details</h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="areaPerches" th:text="#{fact.area}">Area (perches)</label>
+                    <input class="form-control" id="areaPerches" type="number" min="0" step="any" th:field="*{areaPerches}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{areaPerches}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="zoning" th:text="#{fact.zoning}">Zoning</label>
+                    <input class="form-control" id="zoning" th:field="*{zoning}" th:errorclass="is-invalid" th:placeholder="#{sell.zoningHint}">
+                    <div class="invalid-feedback" th:errors="*{zoning}"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Photos -->
+        <section class="form-section">
+            <h2 th:text="#{sell.s4}">4. Photos</h2>
+            <div class="d-flex flex-wrap gap-3" th:if="${existing != null and !#lists.isEmpty(existing.images)}">
+                <label class="photo-edit" th:each="img : ${existing.images}">
+                    <div class="photo-thumb" th:style="'background-image: url(' + @{${img.imageUrl}} + ')'"></div>
+                    <span class="form-check small mt-1">
+                        <input class="form-check-input" type="checkbox" name="removeImageIds" th:value="${img.id}">
+                        <span class="form-check-label" th:text="#{sell.removePhoto}">Remove</span>
+                    </span>
+                </label>
+            </div>
+            <input class="form-control mt-2" type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple>
+            <div class="form-text" th:text="#{sell.photoHint}">Up to 8 photos, 5 MB each (JPG, PNG or WebP).</div>
+            <div class="text-danger small" th:if="${#fields.hasErrors('images')}" th:errors="*{images}"></div>
+        </section>
+
+        <!-- 5. Contact -->
+        <section class="form-section">
+            <h2 th:text="#{sell.s5}">5. Contact details</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label" for="contactName" th:text="#{sell.cName}">Name</label>
+                    <input class="form-control" id="contactName" th:field="*{contactName}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{contactName}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="contactPhone" th:text="#{sell.cPhone}">Phone</label>
+                    <input class="form-control" id="contactPhone" th:field="*{contactPhone}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{contactPhone}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="contactEmail" th:text="#{sell.cEmail}">Email</label>
+                    <input class="form-control" id="contactEmail" type="email" th:field="*{contactEmail}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{contactEmail}"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-teal px-4" th:text="${existing == null} ? #{sell.submit} : #{sell.save}">Submit for review</button>
+            <a th:href="@{/my-listings}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+<script th:src="@{/js/sell-form.js}"></script>
+</body>
+</html>
