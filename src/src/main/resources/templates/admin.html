@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Admin dashboard</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminDash.title}, #{adminDash.subtitle(${me?.username})})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('dashboard')}"></div>
+
+    <div class="alert alert-warning d-flex justify-content-between align-items-center" th:if="${me != null and !me.twoFaEnabled}">
+        <span><i class="bi bi-shield-exclamation"></i> <span th:text="#{adminDash.twoFaWarning}">Turn on two-factor sign-in for your admin account.</span></span>
+        <a th:href="@{/settings}" class="btn btn-sm btn-outline-dark" th:text="#{adminDash.twoFaButton}">Open settings</a>
+    </div>
+
+    <!-- Key numbers -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="stat-card"><i class="bi bi-eye"></i>
+                <div class="stat-value" th:text="${stats.viewsToday}">0</div>
+                <div class="stat-label" th:text="#{adminDash.viewsToday}">Page views today</div>
+                <div class="stat-sub" th:text="#{adminDash.visitorsToday(${stats.visitorsToday})}">0 visitors</div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card"><i class="bi bi-people"></i>
+                <div class="stat-value" th:text="${stats.visitorsLast7}">0</div>
+                <div class="stat-label" th:text="#{adminDash.visitors7}">Visitors, last 7 days</div>
+                <div class="stat-sub" th:text="#{adminDash.views7(${stats.viewsLast7})}">0 views</div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a th:href="@{/admin/messages(filter='new')}" class="stat-card stat-link"><i class="bi bi-inbox"></i>
+                <div class="stat-value" th:text="${unreadMessages}">0</div>
+                <div class="stat-label" th:text="#{adminDash.unread}">Unread messages</div>
+                <div class="stat-sub" th:text="#{adminDash.openInbox}">Open the inbox</div></a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a th:href="@{/admin/listings}" class="stat-card stat-link"><i class="bi bi-hourglass-split"></i>
+                <div class="stat-value" th:text="${pendingListings}">0</div>
+                <div class="stat-label" th:text="#{adminDash.pending}">Listings to review</div>
+                <div class="stat-sub" th:text="#{adminDash.liveCount(${liveListings})}">0 live</div></a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a th:href="@{/admin/users}" class="stat-card stat-link"><i class="bi bi-person-check"></i>
+                <div class="stat-value" th:text="${totalUsers}">0</div>
+                <div class="stat-label" th:text="#{adminDash.users}">Registered users</div>
+                <div class="stat-sub" th:text="#{adminDash.adminCount(${adminCount})}">1 admin</div></a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card"><i class="bi bi-trophy"></i>
+                <div class="stat-value" th:text="${completedListings}">0</div>
+                <div class="stat-label" th:text="#{adminDash.completed}">Completed projects</div>
+                <div class="stat-sub" th:text="#{adminDash.soldRented}">Sold or rented</div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a th:href="@{/admin/brokers}" class="stat-card stat-link"><i class="bi bi-person-vcard"></i>
+                <div class="stat-value" th:text="${brokerCount}">0</div>
+                <div class="stat-label" th:text="#{adminDash.brokers}">Brokers listed</div>
+                <div class="stat-sub" th:text="#{adminDash.manage}">Manage</div></a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a th:href="@{/admin/visitors}" class="stat-card stat-link"><i class="bi bi-graph-up-arrow"></i>
+                <div class="stat-value" th:text="${stats.viewsLast30}">0</div>
+                <div class="stat-label" th:text="#{adminDash.views30}">Page views, 30 days</div>
+                <div class="stat-sub" th:text="#{adminDash.fullStats}">Full statistics</div></a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="side-card">
+                <h5 class="fw-bold mb-3" th:text="#{adminDash.chartTitle}">Visitors over the last 14 days</h5>
+                <div th:replace="~{admin/fragments :: viewsChart(${stats.daily})}"></div>
+            </div>
+
+            <div class="side-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold mb-0" th:text="#{adminDash.newMessages}">Newest messages</h5>
+                    <a th:href="@{/admin/messages}" class="small" th:text="#{adminDash.viewAll}">View all</a>
+                </div>
+                <p class="text-muted small mb-0" th:if="${#lists.isEmpty(newMessages)}" th:text="#{adminDash.noNewMessages}">No unread messages.</p>
+                <a class="msg-row" th:each="m : ${newMessages}" th:href="@{/admin/messages/{id}(id=${m.id})}">
+                    <div class="msg-from" th:text="${m.name}">Name</div>
+                    <div class="msg-subject" th:text="${m.subject}">Subject</div>
+                    <div class="msg-time" th:text="${#temporals.format(m.createdAt, 'd MMM, HH:mm')}">1 Oct</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="side-card">
+                <h5 class="fw-bold mb-3" th:text="#{adminDash.topPages}">Most visited pages</h5>
+                <div th:replace="~{admin/fragments :: hbars(${stats.topPages}, false)}"></div>
+            </div>
+
+            <div class="side-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold mb-0" th:text="#{adminDash.toReview}">Waiting for review</h5>
+                    <a th:href="@{/admin/listings}" class="small" th:text="#{adminDash.viewAll}">View all</a>
+                </div>
+                <p class="text-muted small mb-0" th:if="${#lists.isEmpty(pending)}" th:text="#{adminListings.nonePending}">Nothing waiting.</p>
+                <a class="msg-row" th:each="p : ${pending}" th:href="@{/properties/{id}(id=${p.id})}">
+                    <div class="msg-from" th:text="${p.title}">Title</div>
+                    <div class="msg-subject" th:text="${p.locationLabel}">Colombo</div>
+                </a>
+            </div>
+
+            <div class="side-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold mb-0" th:text="#{adminDash.recentActivity}">Recent admin activity</h5>
+                    <a th:href="@{/admin/activity}" class="small" th:text="#{adminDash.viewAll}">View all</a>
+                </div>
+                <p class="text-muted small mb-0" th:if="${#lists.isEmpty(activity)}" th:text="#{activity.none}">Nothing yet.</p>
+                <div class="activity-row" th:each="a : ${activity}">
+                    <span class="fw-semibold" th:text="${a.adminUsername}">admin</span>
+                    <span th:text="${a.action}">Approved listing #4</span>
+                    <span class="text-muted small d-block" th:text="${#temporals.format(a.createdAt, 'd MMM, HH:mm')}">1 Oct</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
