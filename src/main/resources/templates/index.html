@@ -23,6 +23,7 @@
                  landmark, radius). Deliberately fixed-dark regardless of
                  site theme, same reasoning as the rest of the hero: it
                  sits on a photo background, not the page background. -->
+            <form id="heroSearchForm" th:action="@{/properties}" method="get"></form>
             <div class="hero-search-card mt-4" style="width: min(94vw, 1100px);">
 
                 <div class="hero-search-tabs">
@@ -37,15 +38,15 @@
                 <div class="hero-search-main">
                     <div class="hero-search-input-wrap">
                         <i class="bi bi-search"></i>
-                        <input type="text" id="heroSearchInput" class="hero-search-input"
+                        <input type="text" id="heroSearchInput" name="q" form="heroSearchForm" class="hero-search-input"
                                th:placeholder="#{hero.search.placeholder}" placeholder="Search by area, project or property...">
                     </div>
                     <button type="button" id="heroFiltersToggleBtn" class="hero-adv-btn" aria-label="Show more filters" aria-expanded="false">
                         <i class="bi bi-sliders"></i>
                     </button>
-                    <a href="#listings" class="hero-search-btn">
+                    <button type="submit" form="heroSearchForm" class="hero-search-btn">
                         <i class="bi bi-search"></i> <span th:text="#{hero.search.button}">Search</span>
-                    </a>
+                    </button>
                 </div>
 
                 <div class="hero-search-filters">
@@ -205,7 +206,7 @@
                     Everyone dreams of owning a great piece of property.
                 </p>
 
-                <a href="#" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
+                <a th:href="@{/properties}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
                    style="background-color: #e63946; border-radius: 30px; padding: 10px 28px; width: fit-content;">
                     <span th:text="#{home.whyUs.exploreMore}">Explore more</span> <i class="bi bi-arrow-right"></i>
                 </a>
@@ -288,116 +289,8 @@
             <div class="listing-carousel-viewport px-3">
                 <div class="listing-carousel-track" id="listingTrack">
 
-                    <div class="listing-card reveal-on-scroll" data-type="apartment">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #37474f, #78909c);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagApartment}">APARTMENT</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Emerald Heights &ndash; Kandy</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Kandy</div>
-                                <div class="fw-bold">8,200,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.fixedPrice}">FIXED PRICE</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreApartment}">Explore Apartment</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="house">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagHouse}">HOUSE</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Silver Palm Residence &ndash; Galle</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Galle</div>
-                                <div class="fw-bold">15,500,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.fixedPrice}">FIXED PRICE</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreHouse}">Explore House</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="land">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagLand}">LAND</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Sunview Block &ndash; Negombo</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Negombo</div>
-                                <div class="fw-bold">650,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.perPerchUpwards}">PER PERCH UPWARDS</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreLand}">Explore Land</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="house">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagHouse}">HOUSE</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Cinnamon Grove &ndash; Matara</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Matara</div>
-                                <div class="fw-bold">12,000,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.fixedPrice}">FIXED PRICE</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreHouse}">Explore House</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="apartment">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #37474f, #78909c);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagApartment}">APARTMENT</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Skyline Towers &ndash; Colombo</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Colombo</div>
-                                <div class="fw-bold">22,750,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.fixedPrice}">FIXED PRICE</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreApartment}">Explore Apartment</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="land">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagLand}">LAND</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Hillcrest Acres &ndash; Nuwara Eliya</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Nuwara Eliya</div>
-                                <div class="fw-bold">480,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.perPerchUpwards}">PER PERCH UPWARDS</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreLand}">Explore Land</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="listing-card reveal-on-scroll" data-type="house">
-                        <div class="listing-card-inner">
-                            <div class="listing-thumb" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
-                                <span class="listing-thumb-tag" th:text="#{home.listings.tagHouse}">HOUSE</span>
-                            </div>
-                            <div class="listing-body">
-                                <h5 class="fw-bold mb-1">Coral Bay Homes &ndash; Trincomalee</h5>
-                                <div class="text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> Trincomalee</div>
-                                <div class="fw-bold">9,900,000 LKR</div>
-                                <div class="text-muted small fst-italic mb-2" th:text="#{home.listings.fixedPrice}">FIXED PRICE</div>
-                                <hr>
-                                <a href="#" class="small fw-semibold text-decoration-none"><span th:text="#{home.listings.exploreHouse}">Explore House</span> <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
+                    <div class="listing-card reveal-on-scroll" th:each="p : ${listings}" th:attr="data-type=${p.typeKey}">
+                        <div th:replace="~{fragments/cards :: card(${p})}"></div>
                     </div>
 
                 </div>
@@ -436,84 +329,12 @@
                 <div class="broker-row-viewport" id="brokerViewport">
                     <div class="broker-row" id="brokerRow">
 
-                        <div class="broker-card reveal-on-scroll" data-province="western">
+                        <div class="broker-card reveal-on-scroll" th:each="b : ${brokers}" th:attr="data-province=${b.province.key}">
                             <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #5f9ea0, #2e7d32);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Nadeesha Perera</h6>
+                                <div class="broker-avatar mx-auto mb-3" th:style="'background:' + ${b.avatarGradient}"><i class="bi bi-person-fill"></i></div>
+                                <h6 class="fw-bold mb-0"><a th:href="@{/brokers(province=${b.province.key})}" class="text-decoration-none text-reset" th:text="${b.name}">Nadeesha Perera</a></h6>
                                 <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Colombo</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="central">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #1565c0, #42a5f5);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Kasun Wickramasinghe</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Kandy</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="southern">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #e63946, #ff8fa3);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Dilani Fernando</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Galle</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="northern">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #37474f, #78909c);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Thurairajah Kumar</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Jaffna</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="eastern">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Farhana Rizvi</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Trincomalee</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="northWestern">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #6a4c93, #b892ff);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Ruwan Jayasuriya</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Kurunegala</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="northCentral">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #b08968, #ddb892);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Chamari Bandara</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Anuradhapura</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="uva">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #ff9f1c, #ffbf69);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Sampath Herath</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Badulla</div>
-                            </div>
-                        </div>
-
-                        <div class="broker-card reveal-on-scroll" data-province="sabaragamuwa">
-                            <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" style="background: linear-gradient(135deg, #197278, #57a773);"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0">Nimali Rathnayake</h6>
-                                <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
-                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> Ratnapura</div>
+                                <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> <span th:text="${b.district.label}">Colombo</span></div>
                             </div>
                         </div>
 
@@ -536,13 +357,13 @@
                     Wondering what a neighbourhood is really like? Schools, transport links, nearby amenities —
                     get the local details that matter before you decide on an area.
                 </p>
-                <div class="d-flex align-items-center gap-2 p-2" style="max-width: 480px; background: #fff; border: 1px solid #ddd; border-radius: 40px;">
-                    <input type="text" class="form-control border-0 local-info-search-input" style="box-shadow: none; color: #1a1a1a; background-color: #fff;" placeholder="Address, City, District or Neighborhood">
-                    <button type="button" class="btn rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                            style="width: 46px; height: 46px; background: #19555a; color: #fff;">
+                <form th:action="@{/local-info}" method="get" class="d-flex align-items-center gap-2 p-2" style="max-width: 480px; background: #fff; border: 1px solid #ddd; border-radius: 40px;">
+                    <input type="text" name="q" class="form-control border-0 local-info-search-input" style="box-shadow: none; color: #1a1a1a; background-color: #fff;" th:placeholder="#{home.localInfo.placeholder}" placeholder="Address, City, District or Neighborhood" autocomplete="off">
+                    <button type="submit" class="btn rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 46px; height: 46px; background: #19555a; color: #fff;" aria-label="Search">
                         <i class="bi bi-search"></i>
                     </button>
-                </div>
+                </form>
             </div>
             <div class="col-lg-6 p-0">
                 <div style="background-image: url('/images/hero-bg-original.jpg'); background-size: cover; background-position: center; min-height: 420px; height: 100%;"></div>
@@ -571,7 +392,7 @@
                     </p>
 
                     <div class="d-flex flex-wrap gap-3 mt-3 reveal-on-scroll" style="transition-delay: 0.1s;">
-                        <a href="#" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2"
+                        <a th:href="@{/sell}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2"
                            style="background-color: #e63946; border-radius: 30px; padding: 10px 28px;">
                             <span th:text="#{home.sell.ctaPrimary}">List Your Property</span> <i class="bi bi-arrow-right"></i>
                         </a>
@@ -608,7 +429,7 @@
                         A growing gallery of lands, houses and apartments we&rsquo;ve helped bring to life across the island &ndash; from freshly cleared plots to move-in day.
                     </p>
 
-                    <a href="#" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
+                    <a th:href="@{/projects}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
                        style="background-color: #19555a; border-radius: 30px; padding: 10px 28px; width: fit-content;">
                         <span th:text="#{home.gallery.cta}">View All Projects</span> <i class="bi bi-arrow-right"></i>
                     </a>
@@ -760,7 +581,7 @@
                             <div class="text-white-50" th:text="#{home.faqCta.body}">Can't find the answer you're looking for? Chat with our friendly team.</div>
                         </div>
                     </div>
-                    <a href="#" class="btn faq-cta-btn fw-semibold text-uppercase">
+                    <a th:href="@{/contact}" class="btn faq-cta-btn fw-semibold text-uppercase">
                         <span th:text="#{home.faqCta.button}">Get in Touch</span>
                     </a>
                 </div>
