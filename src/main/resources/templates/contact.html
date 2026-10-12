@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Contact us</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{contact.title}, #{contact.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Thank you!</div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <form th:action="@{/contact}" th:object="${form}" method="post" class="form-section" novalidate>
+                <h2 th:text="#{contact.formTitle}">Send us a message</h2>
+                <div class="alert alert-danger py-2 small" th:if="${#fields.hasGlobalErrors()}" th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="name" th:text="#{contact.name}">Your name</label>
+                        <input class="form-control" id="name" th:field="*{name}" th:errorclass="is-invalid" maxlength="120">
+                        <div class="invalid-feedback" th:errors="*{name}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="email" th:text="#{contact.email}">Email</label>
+                        <input class="form-control" id="email" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="160">
+                        <div class="invalid-feedback" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="phone" th:text="#{contact.phone}">Phone (optional)</label>
+                        <input class="form-control" id="phone" th:field="*{phone}" th:errorclass="is-invalid" maxlength="30">
+                        <div class="invalid-feedback" th:errors="*{phone}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="subject" th:text="#{contact.subject}">Subject</label>
+                        <input class="form-control" id="subject" th:field="*{subject}" th:errorclass="is-invalid" maxlength="150" list="subjectList">
+                        <datalist id="subjectList">
+                            <option th:value="#{contact.subj.buying}"></option>
+                            <option th:value="#{contact.subj.selling}"></option>
+                            <option th:value="#{contact.subj.broker}"></option>
+                            <option th:value="#{contact.subj.other}"></option>
+                        </datalist>
+                        <div class="invalid-feedback" th:errors="*{subject}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="message" th:text="#{contact.message}">Message</label>
+                        <textarea class="form-control" id="message" rows="6" th:field="*{message}" th:errorclass="is-invalid" maxlength="2000"></textarea>
+                        <div class="invalid-feedback" th:errors="*{message}"></div>
+                    </div>
+                    <!-- Honeypot: invisible to people, bots fill it in -->
+                    <div style="position:absolute; left:-9999px;" aria-hidden="true">
+                        <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-teal px-4 mt-3"><i class="bi bi-send"></i> <span th:text="#{contact.send}">Send message</span></button>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="side-card">
+                <h5 class="fw-bold mb-3" th:text="#{contact.infoTitle}">Reach us directly</h5>
+                <p class="mb-2"><i class="bi bi-telephone-fill text-teal"></i> <span th:text="#{footer.phone}">011 234 5678</span></p>
+                <p class="mb-2"><i class="bi bi-envelope-fill text-teal"></i> <span th:text="#{contact.emailValue}">hello@ceylonestates.example</span></p>
+                <p class="mb-2"><i class="bi bi-geo-alt-fill text-teal"></i> <span th:text="#{contact.addressValue}">Colombo, Sri Lanka</span></p>
+                <p class="mb-0"><i class="bi bi-clock-fill text-teal"></i> <span th:text="#{contact.hours}">Mon-Sat, 9am-6pm</span></p>
+            </div>
+            <div class="side-card">
+                <h6 class="fw-bold" th:text="#{contact.faqTitle}">Quick answers</h6>
+                <p class="small text-muted mb-2" th:text="#{contact.faqText}">Many common questions are answered in our FAQ.</p>
+                <a th:href="@{/#faq}" class="btn btn-outline-secondary btn-sm" th:text="#{contact.faqButton}">Read the FAQ</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
