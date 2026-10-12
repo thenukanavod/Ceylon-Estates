@@ -1,8 +1,9 @@
 package com.example.ceylonestate.controller;
 
-import com.example.ceylonestate.model.AdminUser;
+import com.example.ceylonestate.model.Property;
 import com.example.ceylonestate.model.RegularUser;
 import com.example.ceylonestate.model.User;
+import com.example.ceylonestate.repository.PropertyRepository;
 import com.example.ceylonestate.repository.UserRepository;
 import com.example.ceylonestate.service.EmailService;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,9 +38,12 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final AvatarStorageService avatarStorageService;
+    private final PropertyRepository propertyRepository;
 
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                           EmailService emailService, AvatarStorageService avatarStorageService) {
+                           EmailService emailService, AvatarStorageService avatarStorageService,
+                           PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
@@ -76,9 +81,9 @@ public class AuthController {
 
         String hashed = passwordEncoder.encode(form.getPassword());
 
-        User user = "ADMIN".equals(form.getAccountType())
-                ? new AdminUser(form.getUsername(), form.getEmail(), hashed)
-                : new RegularUser(form.getUsername(), form.getEmail(), hashed);
+        // Public sign-up always creates a normal account. Admin accounts are created
+        // by the site owner (see DataSeeder) or promoted by an existing admin (/admin/users).
+        User user = new RegularUser(form.getUsername(), form.getEmail(), hashed);
 
         user.setBackupEmail(form.getBackupEmail());
         user.setPhoneNumber(form.getPhoneNumber());
@@ -239,6 +244,11 @@ public class AuthController {
     public String deleteAccount(Authentication authentication, HttpServletRequest request) {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
 
+        // Keep their listings on the site without an owner, so the database does not refuse the delete.
+        List<Property> owned = propertyRepository.findByOwnerOrderByIdDesc(user);
+        owned.forEach(property -> property.setOwner(null));
+        propertyRepository.saveAll(owned);
+
         avatarStorageService.delete(user.getAvatarFilename());
         userRepository.delete(user);
 
@@ -246,14 +256,6 @@ public class AuthController {
         request.getSession().invalidate();
 
         return "redirect:/?accountDeleted";
-    }
-
-    @GetMapping("/admin")
-    public String adminDashboard(Authentication authentication, Model model) {
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
-        model.addAttribute("user", user);
-        model.addAttribute("totalUsers", userRepository.count());
-        return "admin";
     }
 
     // ---------- Forgot / reset password ----------
@@ -381,7 +383,6 @@ public class AuthController {
 
         private String backupEmail; // optional
         private String phoneNumber; // optional
-        private String accountType = "USER"; // "USER" or "ADMIN"
 
         public String getUsername() { return username; }
         public void setUsername(String username) { this.username = username; }
@@ -400,8 +401,5 @@ public class AuthController {
 
         public String getPhoneNumber() { return phoneNumber; }
         public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-
-        public String getAccountType() { return accountType; }
-        public void setAccountType(String accountType) { this.accountType = accountType; }
     }
 }
