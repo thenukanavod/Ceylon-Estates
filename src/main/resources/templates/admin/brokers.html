@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Manage brokers</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminBrokers.title}, #{adminBrokers.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('brokers')}"></div>
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0"><span th:text="#{adminBrokers.heading}">Brokers</span> <span class="badge text-bg-secondary" th:text="${#lists.size(brokers)}">0</span></h4>
+        <a th:href="@{/admin/brokers/new}" class="btn btn-teal"><i class="bi bi-plus-lg"></i> <span th:text="#{adminBrokers.add}">Add broker</span></a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr>
+                <th th:text="#{brokerForm.name}">Name</th><th th:text="#{brokerForm.company}">Company</th>
+                <th th:text="#{brokerForm.district}">District</th><th th:text="#{brokerForm.phone}">Phone</th><th></th>
+            </tr></thead>
+            <tbody>
+            <tr th:each="b : ${brokers}">
+                <td><div class="fw-semibold" th:text="${b.name}">Name</div><div class="small text-muted" th:text="${b.email}">mail</div></td>
+                <td th:text="${b.company}">Company</td>
+                <td th:text="${b.district.label}">Colombo</td>
+                <td th:text="${b.phone}">011</td>
+                <td class="text-end"><div class="d-inline-flex gap-1 table-actions">
+                    <a th:href="@{/admin/brokers/{id}/edit(id=${b.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
+                    <form th:action="@{/admin/brokers/{id}/delete(id=${b.id})}" method="post"
+                          th:attr="onsubmit='return confirm(\'' + #{mine.confirmDelete} + '\');'">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form></div></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
