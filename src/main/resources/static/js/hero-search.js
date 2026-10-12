@@ -1,8 +1,7 @@
 // Hero advanced search widget: tabs, single-select chip groups, the
-// dual-handle price slider, and the live city filter. Purely client-side
-// for now — there's no backend search endpoint yet, so this wires up the
-// interactions (and the Search button jumps to the Latest Listings
-// section) without pretending to run a real query.
+// dual-handle price slider, and the live city filter. On submit the chosen
+// filters are copied into hidden inputs and the (GET) form goes to /properties.
+// Not wired to the backend: the landmark and radius filters.
 (function () {
     var card = document.querySelector('.hero-search-card');
     if (!card) {
@@ -153,6 +152,41 @@
                     }
                 }
             });
+        });
+    }
+
+    // --- Submit: copy the widget state into the real GET form ----------
+    var form = document.getElementById('heroSearchForm');
+    if (form) {
+        form.addEventListener('submit', function () {
+            form.querySelectorAll('input[data-generated]').forEach(function (el) { el.remove(); });
+
+            function add(name, value) {
+                if (value === null || value === undefined || value === '') { return; }
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                input.setAttribute('data-generated', 'true');
+                form.appendChild(input);
+            }
+
+            var activeType = card.querySelector('.hero-proptype-item.active');
+            if (activeType && activeType.getAttribute('data-value') !== 'all') {
+                add('type', activeType.getAttribute('data-value'));
+            }
+
+            ['bed', 'bath'].forEach(function (group) {
+                var chip = card.querySelector('[data-hero-chip-group="' + group + '"] .hero-chip.active');
+                if (chip) { add(group === 'bed' ? 'beds' : 'baths', chip.getAttribute('data-value')); }
+            });
+
+            if (minInput && maxInput) {
+                var lo = Math.min(parseInt(minInput.value, 10), parseInt(maxInput.value, 10));
+                var hi = Math.max(parseInt(minInput.value, 10), parseInt(maxInput.value, 10));
+                if (lo > parseInt(minInput.min, 10)) { add('minPriceM', lo); }
+                if (hi < parseInt(maxInput.max, 10)) { add('maxPriceM', hi); }
+            }
         });
     }
 })();
