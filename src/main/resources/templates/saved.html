@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Saved properties</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{saved.title}, #{saved.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="alert alert-danger" th:if="${flashError != null}" th:text="#{${flashError}}">Error.</div>
+
+    <div class="listing-grid" th:if="${!#lists.isEmpty(items)}">
+        <div th:each="s : ${items}" class="listing-card">
+            <div th:replace="~{fragments/cards :: card(${s.property})}"></div>
+            <div class="saved-note">
+                <form th:action="@{/saved/{id}/note(id=${s.id})}" method="post">
+                    <label class="form-label small fw-semibold mb-1" th:for="'note' + ${s.id}" th:text="#{saved.noteLabel}">My note</label>
+                    <textarea class="form-control form-control-sm" rows="2" maxlength="300" name="note"
+                              th:id="'note' + ${s.id}" th:text="${s.note}" th:placeholder="#{saved.notePlaceholder}"></textarea>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" th:text="#{saved.saveNote}">Save note</button>
+                        <span class="small text-muted" th:text="#{saved.savedOn(${#temporals.format(s.savedAt, 'd MMM yyyy')})}">Saved on</span>
+                    </div>
+                </form>
+                <form th:action="@{/saved/{id}/remove(id=${s.id})}" method="post" class="mt-2"
+                      th:attr="onsubmit='return confirm(\'' + #{saved.confirmRemove} + '\');'">
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash"></i> <span th:text="#{saved.remove}">Remove</span></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(items)}">
+        <i class="bi bi-heart"></i>
+        <h4 th:text="#{saved.emptyTitle}">Nothing saved yet</h4>
+        <p class="text-muted" th:text="#{saved.emptyText}">Tap the heart on any listing to keep it here.</p>
+        <a th:href="@{/properties}" class="btn btn-teal" th:text="#{sidebar.browse}">Browse properties</a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
