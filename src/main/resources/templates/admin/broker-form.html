@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Broker</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${editing} ? #{brokerForm.editTitle} : #{brokerForm.newTitle}, null)}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 760px;">
+    <div th:replace="~{admin/fragments :: tabs('brokers')}"></div>
+    <form th:action="${editing} ? @{/admin/brokers/{id}(id=${broker.id})} : @{/admin/brokers}" th:object="${broker}" method="post" enctype="multipart/form-data" novalidate>
+        <section class="form-section">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="name" th:text="#{brokerForm.name}">Name</label>
+                    <input class="form-control" id="name" th:field="*{name}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="company" th:text="#{brokerForm.company}">Company</label>
+                    <input class="form-control" id="company" th:field="*{company}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{company}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="email" th:text="#{brokerForm.email}">Email</label>
+                    <input class="form-control" id="email" type="email" th:field="*{email}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="phone" th:text="#{brokerForm.phone}">Phone</label>
+                    <input class="form-control" id="phone" th:field="*{phone}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{phone}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="licenseNumber" th:text="#{brokerForm.license}">Licence number</label>
+                    <input class="form-control" id="licenseNumber" th:field="*{licenseNumber}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{licenseNumber}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="district" th:text="#{brokerForm.district}">District</label>
+                    <select class="form-select" id="district" th:field="*{district}" th:errorclass="is-invalid">
+                        <option value="" th:text="#{sell.choose}">Choose...</option>
+                        <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}">Colombo</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{district}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="photo" th:text="#{brokerForm.photo}">Photo</label>
+                    <div class="d-flex align-items-center gap-3" th:if="${editing and broker.photoUrl != null}">
+                        <img th:src="@{${broker.photoUrl}}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:50%;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="removePhoto" name="removePhoto" value="true">
+                            <label class="form-check-label" for="removePhoto" th:text="#{brokerForm.removePhoto}">Remove photo</label>
+                        </div>
+                    </div>
+                    <input class="form-control mt-2" type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
+                    <div class="form-text" th:text="#{brokerForm.photoHelp}">JPEG, PNG or WEBP, up to 2 MB.</div>
+                    <div class="text-danger small" th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="bio" th:text="#{brokerForm.bio}">Bio</label>
+                    <textarea class="form-control" id="bio" rows="4" th:field="*{bio}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{bio}"></div>
+                </div>
+            </div>
+        </section>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-teal px-4" th:text="#{common.save}">Save</button>
+            <a th:href="@{/admin/brokers}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
