@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Visitors</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{visitors.title}, #{visitors.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('visitors')}"></div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.visitorsToday}">0</div><div class="stat-label" th:text="#{visitors.visitorsToday}">Visitors today</div></div></div>
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.visitorsLast7}">0</div><div class="stat-label" th:text="#{visitors.visitors7}">Visitors, 7 days</div></div></div>
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.visitorsLast30}">0</div><div class="stat-label" th:text="#{visitors.visitors30}">Visitors, 30 days</div></div></div>
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.viewsToday}">0</div><div class="stat-label" th:text="#{visitors.viewsToday}">Views today</div></div></div>
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.viewsLast7}">0</div><div class="stat-label" th:text="#{visitors.views7}">Views, 7 days</div></div></div>
+        <div class="col-6 col-lg-2"><div class="stat-card"><div class="stat-value" th:text="${stats.viewsLast30}">0</div><div class="stat-label" th:text="#{visitors.views30}">Views, 30 days</div></div></div>
+    </div>
+
+    <div class="side-card">
+        <h5 class="fw-bold mb-3" th:text="#{visitors.chart30}">Page views per day (last 30 days)</h5>
+        <div th:replace="~{admin/fragments :: viewsChart(${stats.daily})}"></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4"><div class="side-card h-100">
+            <h6 class="fw-bold mb-3" th:text="#{visitors.topPages}">Most visited pages</h6>
+            <div th:replace="~{admin/fragments :: hbars(${stats.topPages}, false)}"></div></div></div>
+        <div class="col-lg-4"><div class="side-card h-100">
+            <h6 class="fw-bold mb-3" th:text="#{visitors.topListings}">Most viewed listings</h6>
+            <div th:replace="~{admin/fragments :: hbars(${stats.topListings}, true)}"></div></div></div>
+        <div class="col-lg-4"><div class="side-card h-100">
+            <h6 class="fw-bold mb-3" th:text="#{visitors.referrers}">Where visitors come from</h6>
+            <div th:replace="~{admin/fragments :: hbars(${stats.referrers}, false)}"></div></div></div>
+        <div class="col-lg-4"><div class="side-card h-100">
+            <h6 class="fw-bold mb-3" th:text="#{visitors.devices}">Devices</h6>
+            <div th:replace="~{admin/fragments :: hbars(${stats.devices}, false)}"></div></div></div>
+    </div>
+
+    <h5 class="fw-bold mt-4 mb-3" th:text="#{visitors.recent}">Latest visits</h5>
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead><tr>
+                <th th:text="#{visitors.colTime}">Time</th><th th:text="#{visitors.colPage}">Page</th>
+                <th th:text="#{visitors.colDevice}">Device</th><th th:text="#{visitors.colFrom}">From</th><th th:text="#{visitors.colVisitor}">Visitor</th>
+            </tr></thead>
+            <tbody>
+            <tr th:each="v : ${recent}">
+                <td th:text="${#temporals.format(v.viewedAt, 'd MMM, HH:mm')}">1 Oct</td>
+                <td th:text="${v.path}">/</td>
+                <td th:text="${v.device}">Mobile</td>
+                <td th:text="${v.referrer != null} ? ${v.referrer} : #{visitors.direct}">Direct</td>
+                <td class="text-muted small" th:text="${#strings.substring(v.visitorId, 0, 8)}">abcd1234</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="disclaimer" th:text="#{visitors.privacy}">Visitors are counted with a random cookie id. No names or IP addresses are stored.</p>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
