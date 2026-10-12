@@ -47,4 +47,15 @@ public class EmailService {
         );
         mailSender.send(message);
     }
+
+    /** An admin's answer to a message sent through the Contact us form. */
+    public void sendContactReply(String toAddress, String originalSubject, String replyText) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromAddress);
+        message.setTo(toAddress);
+        message.setReplyTo(fromAddress);
+        message.setSubject("Re: " + originalSubject + " - Ceylon Estates");
+        message.setText(replyText + "\n\n--\nCeylon Estates\nThis is a reply to the message you sent through our Contact us page.");
+        mailSender.send(message);
+    }
 }

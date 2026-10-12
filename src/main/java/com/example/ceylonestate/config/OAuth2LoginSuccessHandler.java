@@ -57,6 +57,17 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         User user = userRepository.findByEmail(email).orElseThrow();
 
+        // Admin accounts may only sign in through the admin portal (/admin/login) with a password.
+        // Without this check, a Google account with an admin's email would skip that door (and 2FA).
+        if ("ADMIN".equals(user.getRole())) {
+            SecurityContextHolder.clearContext();
+            if (request.getSession(false) != null) {
+                request.getSession(false).invalidate();
+            }
+            response.sendRedirect("/login?error");
+            return;
+        }
+
         // Establish the session here on localhost too, so things work even if
         // someone stays on localhost for some reason.
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Create admin</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminUsers.new.title}, #{adminUsers.new.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 760px;">
+    <div th:replace="~{admin/fragments :: tabs('users')}"></div>
+    <div class="alert alert-danger" th:if="${flashError != null}" th:text="#{${flashError}}">Error.</div>
+
+    <form th:action="@{/admin/users/new}" method="post">
+        <section class="form-section">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="username" th:text="#{adminUsers.new.username}">Username</label>
+                    <input class="form-control" id="username" name="username" maxlength="30" required th:value="${formUsername}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="email" th:text="#{adminUsers.new.email}">Email</label>
+                    <input class="form-control" id="email" name="email" type="email" maxlength="120" required th:value="${formEmail}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="password" th:text="#{adminUsers.new.password}">Password</label>
+                    <input class="form-control" id="password" name="password" type="password" minlength="8" required autocomplete="new-password">
+                    <div class="form-text" th:text="#{adminUsers.new.passwordHelp}">At least 8 characters with a letter and a number.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="confirmPassword" th:text="#{adminUsers.new.confirm}">Confirm password</label>
+                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" required autocomplete="new-password">
+                </div>
+            </div>
+        </section>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-teal px-4" th:text="#{adminUsers.new.submit}">Create admin</button>
+            <a th:href="@{/admin/users}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

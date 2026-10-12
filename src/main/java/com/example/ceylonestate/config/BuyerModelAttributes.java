@@ -2,6 +2,7 @@ package com.example.ceylonestate.config;
 
 import com.example.ceylonestate.service.CurrentUserService;
 import com.example.ceylonestate.service.SavedPropertyService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -27,6 +28,18 @@ public class BuyerModelAttributes {
     public BuyerModelAttributes(CurrentUserService currentUserService, SavedPropertyService savedPropertyService) {
         this.currentUserService = currentUserService;
         this.savedPropertyService = savedPropertyService;
+    }
+
+    /**
+     * Makes sure the visitor has a session BEFORE the page starts to render.
+     * The heart buttons are POST forms, and Spring Security puts a hidden CSRF token
+     * in each one. For a first-time visitor that token needs a new session, and a session
+     * cannot be created once the browser has already received the first part of a long page
+     * (the page then stops half-way and the browser reports ERR_INCOMPLETE_CHUNKED_ENCODING).
+     */
+    @ModelAttribute
+    public void ensureSession(HttpServletRequest request) {
+        request.getSession(true);
     }
 
     @ModelAttribute("savedIds")

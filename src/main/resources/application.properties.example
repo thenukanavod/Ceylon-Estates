@@ -17,9 +17,9 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
-# File uploads (profile avatars)
-spring.servlet.multipart.max-file-size=2MB
-spring.servlet.multipart.max-request-size=2MB
+# File uploads (profile avatars and property photos: up to 8 photos x 5MB per listing)
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=45MB
 
 # Email (Gmail SMTP) - for sending password reset links and 2FA codes
 # Replace with your own Gmail address and a 16-character App Password
@@ -30,3 +30,10 @@ spring.mail.username=YOUR_GMAIL_ADDRESS_HERE
 spring.mail.password=YOUR_16_CHAR_APP_PASSWORD_HERE
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
+
+# First administrator account. Created automatically on startup if no admin exists yet.
+# Admins sign in at /admin/login. Public sign-up can never create an admin.
+# Choose a strong password, then you can remove it from this file after the first run.
+app.admin.username=admin
+app.admin.email=YOUR_ADMIN_EMAIL_HERE
+app.admin.password=CHOOSE_A_STRONG_ADMIN_PASSWORD_HERE

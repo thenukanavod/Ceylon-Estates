@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Admin sign in</title>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <div class="auth-page">
+        <div class="auth-card">
+
+            <img class="auth-logo" th:src="@{/images/logo-icon-v3.png}" alt="Ceylon Estates">
+            <h1 class="auth-title" th:text="#{adminLogin.title}">Admin portal</h1>
+            <p class="auth-subtitle" th:text="#{adminLogin.subtitle}">Authorised staff only</p>
+
+            <div class="alert alert-danger py-2 small" th:if="${param.error}" th:text="#{adminLogin.error}"></div>
+            <div class="alert alert-warning py-2 small" th:if="${param.locked}" th:text="#{adminLogin.locked}"></div>
+            <div class="alert alert-success py-2 small" th:if="${param.logout}" th:text="#{adminLogin.loggedOut}"></div>
+
+            <form th:action="@{/admin/login}" method="post">
+
+                <div class="auth-field">
+                    <i class="bi bi-person-badge"></i>
+                    <div class="auth-field-content">
+                        <div class="auth-field-label" th:text="#{login.username}">Username</div>
+                        <input type="text" name="username" th:placeholder="#{login.usernamePlaceholder}" placeholder="Enter your username" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <i class="bi bi-lock"></i>
+                    <div class="auth-field-content">
+                        <div class="auth-field-label" th:text="#{login.password}">Password</div>
+                        <input type="password" id="loginPassword" name="password" th:placeholder="#{login.passwordPlaceholder}" placeholder="Enter your password" autocomplete="current-password" required>
+                    </div>
+                    <button type="button" class="toggle-password" data-target="loginPassword"><i class="bi bi-eye"></i></button>
+                </div>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <a th:href="@{/forgot-password}" class="small" style="color: rgba(255,255,255,0.6);" th:text="#{login.forgot}">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-auth-submit">
+                    <span th:text="#{adminLogin.submit}">Sign in to admin</span> <i class="bi bi-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <a th:href="@{/}" th:text="#{adminLogin.back}">Back to the website</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
