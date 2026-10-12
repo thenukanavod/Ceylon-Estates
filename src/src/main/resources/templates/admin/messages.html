@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Messages</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminMessages.title}, #{adminMessages.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('messages')}"></div>
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+
+    <div class="d-flex justify-content-end mb-2">
+        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/messages/export(filter=${filter})}"><i class="bi bi-download"></i> <span th:text="#{adminMessages.export}">Export CSV</span></a>
+    </div>
+
+    <div class="chip-row mb-3">
+        <a class="chip" th:classappend="${filter == 'all'} ? 'active'" th:href="@{/admin/messages}"><span th:text="#{adminMessages.all}">All</span> (<span th:text="${countAll}">0</span>)</a>
+        <a class="chip" th:classappend="${filter == 'new'} ? 'active'" th:href="@{/admin/messages(filter='new')}"><span th:text="#{adminMessages.new}">New</span> (<span th:text="${countNew}">0</span>)</a>
+        <a class="chip" th:classappend="${filter == 'read'} ? 'active'" th:href="@{/admin/messages(filter='read')}"><span th:text="#{adminMessages.read}">Read</span> (<span th:text="${countRead}">0</span>)</a>
+        <a class="chip" th:classappend="${filter == 'archived'} ? 'active'" th:href="@{/admin/messages(filter='archived')}"><span th:text="#{adminMessages.archived}">Archived</span> (<span th:text="${countArchived}">0</span>)</a>
+    </div>
+
+    <div class="side-card p-0" th:if="${!#lists.isEmpty(messages)}">
+        <div class="inbox-row" th:each="m : ${messages}" th:classappend="${m.status.name() == 'NEW'} ? 'unread'">
+            <a class="inbox-main" th:href="@{/admin/messages/{id}(id=${m.id})}">
+                <span class="inbox-dot" th:if="${m.status.name() == 'NEW'}"></span>
+                <span class="inbox-from" th:text="${m.name}">Name</span>
+                <span class="inbox-subject"><span th:text="${m.subject}">Subject</span>
+                    <span class="text-muted" th:text="' - ' + ${#strings.abbreviate(m.message, 90)}"> - message</span></span>
+                <span class="badge text-bg-success" th:if="${m.replied}" th:text="#{adminMessages.repliedBadge}">Replied</span>
+                <span class="inbox-time" th:text="${#temporals.format(m.createdAt, 'd MMM, HH:mm')}">1 Oct</span>
+            </a>
+            <div class="inbox-actions table-actions">
+                <form th:action="@{/admin/messages/{id}/status(id=${m.id})}" method="post" th:if="${m.status.name() != 'ARCHIVED'}">
+                    <input type="hidden" name="value" value="ARCHIVED">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" th:title="#{adminMessages.archive}"><i class="bi bi-archive"></i></button>
+                </form>
+                <form th:action="@{/admin/messages/{id}/status(id=${m.id})}" method="post" th:if="${m.status.name() == 'ARCHIVED'}">
+                    <input type="hidden" name="value" value="READ">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" th:title="#{adminMessages.restore}"><i class="bi bi-arrow-counterclockwise"></i></button>
+                </form>
+                <form th:action="@{/admin/messages/{id}/delete(id=${m.id})}" method="post"
+                      th:attr="onsubmit='return confirm(\'' + #{mine.confirmDelete} + '\');'">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" th:title="#{common.delete}"><i class="bi bi-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(messages)}">
+        <i class="bi bi-inbox"></i>
+        <h4 th:text="#{adminMessages.emptyTitle}">Nothing here</h4>
+        <p class="text-muted" th:text="#{adminMessages.emptyText}">Messages sent from the Contact us page appear here.</p>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
