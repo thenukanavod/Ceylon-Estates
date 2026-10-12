@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Brokers</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{brokers.title}, #{brokers.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <form th:action="@{/brokers}" method="get" class="big-search mb-3">
+        <input type="hidden" name="province" th:value="${selectedProvince}">
+        <input type="text" name="q" th:value="${q}" th:placeholder="#{brokers.searchPlaceholder}">
+        <button type="submit"><i class="bi bi-search"></i></button>
+    </form>
+
+    <div class="chip-row mb-4">
+        <a class="chip" th:classappend="${selectedProvince == ''} ? 'active'" th:href="@{/brokers(q=${q})}" th:text="#{brokers.allProvinces}">All</a>
+        <a class="chip" th:each="pr : ${provinces}" th:classappend="${selectedProvince == pr.key} ? 'active'"
+           th:href="@{/brokers(province=${pr.key},q=${q})}" th:text="#{${pr.messageKey}}">Western</a>
+    </div>
+
+    <div class="row g-4" th:if="${!#lists.isEmpty(brokers)}">
+        <div class="col-lg-4 col-md-6" th:each="b : ${brokers}">
+            <div class="broker-dir-card">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="broker-dir-avatar"
+                         th:style="${b.photoUrl != null} ? ('background: url(' + @{${b.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${b.avatarGradient})"
+                         th:text="${b.photoUrl != null} ? '' : ${b.initials}">AB</div>
+                    <div>
+                        <h5 class="fw-bold mb-0" th:text="${b.name}">Name</h5>
+                        <div class="small text-muted" th:text="${b.company}">Company</div>
+                    </div>
+                </div>
+                <div class="small text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> <span th:text="${b.district.label}">Colombo</span>, <span th:text="#{${b.province.messageKey}}">Western</span></div>
+                <p class="small" th:if="${b.bio != null}" th:text="${b.bio}">Bio</p>
+                <div class="small text-muted mb-2" th:text="#{brokers.license(${b.licenseNumber})}">Licence</div>
+                <a class="broker-link d-block" th:href="'tel:' + ${b.phone}"><i class="bi bi-telephone-fill"></i> <span th:text="${b.phone}">011</span></a>
+                <a class="broker-link d-block" th:href="'mailto:' + ${b.email}"><i class="bi bi-envelope-fill"></i> <span th:text="${b.email}">mail</span></a>
+            </div>
+        </div>
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(brokers)}">
+        <i class="bi bi-people"></i>
+        <h4 th:text="#{brokers.emptyTitle}">No brokers found</h4>
+        <p class="text-muted" th:text="#{brokers.emptyText}">Try another province or search.</p>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
