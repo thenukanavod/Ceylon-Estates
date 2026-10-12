@@ -72,19 +72,6 @@
                 <div id="password-match-hint" class="small mb-3"></div>
                 <div class="text-danger small mb-2" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
 
-                <div class="mb-3">
-                    <div class="small mb-2" style="color: rgba(255,255,255,0.6);" th:text="#{register.accountType}">Account type</div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="USER" id="typeUser">
-                        <label class="form-check-label small" style="color: rgba(255,255,255,0.7);" for="typeUser" th:text="#{register.regularUser}">Regular user</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="ADMIN" id="typeAdmin">
-                        <label class="form-check-label small" style="color: rgba(255,255,255,0.7);" for="typeAdmin" th:text="#{register.admin}">Admin</label>
-                    </div>
-                    <div class="small" style="color: rgba(255,255,255,0.4);" th:text="#{register.accountTypeHint}"></div>
-                </div>
-
                 <button type="submit" class="btn-auth-submit" th:text="#{register.submit}">
                     Sign Up <i class="bi bi-arrow-right"></i>
                 </button>
