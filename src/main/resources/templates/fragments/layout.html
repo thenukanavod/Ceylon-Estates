@@ -7,7 +7,9 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/pages.css}">
         <link rel="icon" type="image/png" th:href="@{/images/logo-icon-v3.png}">
         <script>
             (function () {
@@ -27,6 +29,15 @@
                 <img th:src="@{/images/logo-icon-v3.png}" alt="" style="height: 48px; width: auto;">
                 <span class="fw-bold" style="font-size: 1.5rem;">Ceylon Estates</span>
             </a>
+
+            <ul class="navbar-nav site-nav d-none d-lg-flex flex-row ms-4 gap-1">
+                <li class="nav-item"><a class="nav-link" th:href="@{/properties(listingType='sale')}" th:text="#{nav.buy}">Buy</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/properties(listingType='rent')}" th:text="#{nav.rent}">Rent</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/sell}" th:text="#{nav.sell}">Sell</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a></li>
+            </ul>
 
             <div class="ms-auto d-flex align-items-center gap-3">
                 <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" class="d-flex gap-2">
@@ -51,6 +62,17 @@
     </div>
 </div>
 
+<!-- Header band for the inner pages: the floating navbar sits on a teal gradient,
+     followed by a page title and an optional subtitle. Usage:
+     <header th:replace="~{fragments/layout :: pageHero(#{some.title}, #{some.subtitle})}"></header> -->
+<header th:fragment="pageHero(title, subtitle)" class="page-hero">
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+    <div class="container-xl page-hero-body">
+        <h1 class="page-hero-title" th:text="${title}">Title</h1>
+        <p class="page-hero-subtitle" th:if="${subtitle != null}" th:text="${subtitle}">Subtitle</p>
+    </div>
+</header>
+
 <div th:fragment="sidebar">
     <div class="offcanvas offcanvas-end" tabindex="-1" id="appSidebar" aria-labelledby="appSidebarLabel">
         <div class="offcanvas-header">
@@ -59,6 +81,25 @@
         </div>
         <div class="offcanvas-body">
             <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:href="@{/properties}" th:text="#{sidebar.browse}">Browse properties</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/sell}" th:text="#{sidebar.listProperty}">List a property</a>
+                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/my-listings}" th:text="#{sidebar.myListings}">My Listings</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved properties</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/my-bookings}" th:text="#{sidebar.myBookings}">My viewings</a>
+                </span>
+                <span sec:authorize="hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin}" th:text="#{adminNav.dashboard}">Admin: Dashboard</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/messages}" th:text="#{adminNav.messages}">Admin: Messages</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/listings}" th:text="#{sidebar.adminListings}">Admin: Listings</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/bookings}" th:text="#{adminNav.bookings}">Admin: Viewings</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/users}" th:text="#{adminNav.users}">Admin: Users</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/brokers}" th:text="#{sidebar.adminBrokers}">Admin: Brokers</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/admin/local-info}" th:text="#{sidebar.adminLocalInfo}">Admin: Local Info</a>
+                </span>
                 <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/profile}" th:text="#{sidebar.userManagement}">User Management</a>
                 </span>
@@ -107,6 +148,7 @@
                             <a href="/#brokers" class="footer-link" th:text="#{footer.linkBrokers}">Mortgage Brokers</a>
                             <a href="/#gallery" class="footer-link" th:text="#{footer.linkGallery}">Project Library</a>
                             <a href="/#faq" class="footer-link" th:text="#{footer.linkFaq}">FAQ</a>
+                            <a th:href="@{/contact}" class="footer-link" th:text="#{footer.linkContact}">Contact us</a>
                         </div>
                     </div>
 
@@ -157,6 +199,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/auth.js}"></script>
     <script th:src="@{/js/back-to-top.js}"></script>
+    <script th:src="@{/js/saved.js}"></script>
 </th:block>
 
 </body>

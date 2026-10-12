@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- The menu bar shown at the top of every admin page.
+     Usage: <div th:replace="~{admin/fragments :: tabs('messages')}"></div>
+     Needs the "unreadMessages" and "pendingListings" counters (added by AdminModelAttributes). -->
+<nav th:fragment="tabs(active)" class="admin-tabs">
+    <a class="admin-tab" th:classappend="${active == 'dashboard'} ? 'active'" th:href="@{/admin}"><i class="bi bi-speedometer2"></i> <span th:text="#{adminNav.dashboard}">Dashboard</span></a>
+    <a class="admin-tab" th:classappend="${active == 'messages'} ? 'active'" th:href="@{/admin/messages}"><i class="bi bi-inbox"></i> <span th:text="#{adminNav.messages}">Messages</span>
+        <span class="badge rounded-pill text-bg-danger" th:if="${unreadMessages != null and unreadMessages > 0}" th:text="${unreadMessages}">3</span></a>
+    <a class="admin-tab" th:classappend="${active == 'listings'} ? 'active'" th:href="@{/admin/listings}"><i class="bi bi-houses"></i> <span th:text="#{adminNav.listings}">Listings</span>
+        <span class="badge rounded-pill text-bg-warning" th:if="${pendingListings != null and pendingListings > 0}" th:text="${pendingListings}">2</span></a>
+    <a class="admin-tab" th:classappend="${active == 'bookings'} ? 'active'" th:href="@{/admin/bookings}"><i class="bi bi-calendar-check"></i> <span th:text="#{adminNav.bookings}">Viewings</span></a>
+    <a class="admin-tab" th:classappend="${active == 'users'} ? 'active'" th:href="@{/admin/users}"><i class="bi bi-people"></i> <span th:text="#{adminNav.users}">Users</span></a>
+    <a class="admin-tab" th:classappend="${active == 'brokers'} ? 'active'" th:href="@{/admin/brokers}"><i class="bi bi-person-vcard"></i> <span th:text="#{adminNav.brokers}">Brokers</span></a>
+    <a class="admin-tab" th:classappend="${active == 'localinfo'} ? 'active'" th:href="@{/admin/local-info}"><i class="bi bi-geo-alt"></i> <span th:text="#{adminNav.localInfo}">Local info</span></a>
+    <a class="admin-tab" th:classappend="${active == 'visitors'} ? 'active'" th:href="@{/admin/visitors}"><i class="bi bi-graph-up"></i> <span th:text="#{adminNav.visitors}">Visitors</span></a>
+    <a class="admin-tab" th:classappend="${active == 'activity'} ? 'active'" th:href="@{/admin/activity}"><i class="bi bi-journal-text"></i> <span th:text="#{adminNav.activity}">Activity</span></a>
+    <span class="admin-tabs-spacer"></span>
+    <a class="admin-tab" th:href="@{/}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> <span th:text="#{adminNav.viewSite}">View site</span></a>
+    <form th:action="@{/admin/logout}" method="post" class="m-0">
+        <button type="submit" class="admin-tab admin-tab-btn"><i class="bi bi-box-arrow-right"></i> <span th:text="#{adminNav.logout}">Sign out</span></button>
+    </form>
+</nav>
+
+<!-- Bar chart of page views per day.  Usage: <div th:replace="~{admin/fragments :: viewsChart(${stats.daily})}"></div> -->
+<div th:fragment="viewsChart(days)" class="bar-chart" role="img" th:attr="aria-label=#{visitors.chartAria}">
+    <div class="bar-col" th:each="d : ${days}" th:title="${d.label} + ': ' + ${d.views} + ' views, ' + ${d.visitors} + ' visitors'">
+        <div class="bar-value" th:text="${d.views}">12</div>
+        <div class="bar" th:style="'height:' + ${d.heightPercent} + '%'"></div>
+        <div class="bar-label" th:text="${d.label}">1 Oct</div>
+    </div>
+</div>
+
+<!-- Horizontal bars for a "top list".  Usage: <div th:replace="~{admin/fragments :: hbars(${stats.topPages}, false)}"></div> -->
+<div th:fragment="hbars(items, linkListings)">
+    <p class="text-muted small mb-0" th:if="${#lists.isEmpty(items)}" th:text="#{visitors.noData}">No data yet.</p>
+    <div class="hbar-row" th:each="i : ${items}">
+        <div class="hbar-top">
+            <a th:if="${linkListings and i.propertyId != null}" th:href="@{/properties/{id}(id=${i.propertyId})}" class="text-decoration-none" th:text="${i.label}">Label</a>
+            <span th:unless="${linkListings and i.propertyId != null}" th:text="${i.label}">Label</span>
+            <span class="text-muted" th:text="${i.count}">12</span>
+        </div>
+        <div class="hbar-track"><div class="hbar-fill" th:style="'width:' + ${i.percent} + '%'"></div></div>
+    </div>
+</div>
+
+</body>
+</html>

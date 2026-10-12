@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>My bookings</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{booking.title}, #{booking.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="alert alert-danger" th:if="${flashError != null}" th:text="#{${flashError}}">Error.</div>
+
+    <div class="table-responsive" th:if="${!#lists.isEmpty(bookings)}">
+        <table class="table align-middle">
+            <thead>
+            <tr>
+                <th th:text="#{booking.colProperty}">Property</th>
+                <th th:text="#{booking.colWhen}">Visit</th>
+                <th th:text="#{booking.colStatus}">Status</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+                <td>
+                    <a th:href="@{/properties/{id}(id=${b.property.id})}" class="fw-semibold text-decoration-none" th:text="${b.property.title}">Title</a>
+                    <div class="small text-muted" th:text="${b.property.locationLabel}">Colombo</div>
+                    <div class="small text-muted fst-italic" th:if="${b.note != null}" th:text="${b.note}">note</div>
+                </td>
+                <td th:text="${#temporals.format(b.visitAt, 'EEE d MMM yyyy, HH:mm')}">Mon 12 Oct 2026, 10:00</td>
+                <td><span class="badge" th:classappend="'text-bg-' + ${b.status.badgeClass}" th:text="${b.status.label}">Requested</span></td>
+                <td class="text-end">
+                    <div class="d-inline-flex gap-1 align-items-center table-actions flex-wrap justify-content-end">
+                        <form th:action="@{/my-bookings/{id}/reschedule(id=${b.id})}" method="post" class="d-inline-flex gap-1">
+                            <input type="datetime-local" name="visitAt" class="form-control form-control-sm" required th:min="${minVisit}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-calendar-event"></i> <span th:text="#{booking.reschedule}">Reschedule</span></button>
+                        </form>
+                        <form th:action="@{/my-bookings/{id}/cancel(id=${b.id})}" method="post"
+                              th:attr="onsubmit='return confirm(\'' + #{booking.confirmCancel} + '\');'">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" th:title="#{booking.cancel}"><i class="bi bi-x-lg"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(bookings)}">
+        <i class="bi bi-calendar-check"></i>
+        <h4 th:text="#{booking.emptyTitle}">No viewings booked</h4>
+        <p class="text-muted" th:text="#{booking.emptyText}">Open a listing and choose Book a viewing.</p>
+        <a th:href="@{/properties}" class="btn btn-teal" th:text="#{sidebar.browse}">Browse properties</a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

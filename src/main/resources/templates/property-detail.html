@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Property</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${property.title}, ${property.locationLabel})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <nav class="mb-3 small">
+        <a th:href="@{/properties}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> <span th:text="#{detail.back}">Back to listings</span></a>
+    </nav>
+
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="alert alert-danger" th:if="${flashError != null}" th:text="#{${flashError}}">Error.</div>
+
+    <!-- Status notices for the seller / admin -->
+    <div class="alert alert-warning" th:if="${property.status.name() == 'PENDING'}" th:text="#{detail.pendingNotice}">Awaiting approval.</div>
+    <div class="alert alert-danger" th:if="${property.status.name() == 'REJECTED'}">
+        <strong th:text="#{detail.rejectedNotice}">Rejected.</strong>
+        <span th:if="${property.rejectionReason != null}" th:text="${property.rejectionReason}"></span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Gallery -->
+            <div id="galleryMain" class="gallery-main"
+                 th:style="${property.coverImageUrl != null} ? ('background-image: url(' + @{${property.coverImageUrl}} + '), ' + ${property.thumbGradient}) : ('background: ' + ${property.thumbGradient})">
+                <i th:class="'bi ' + ${property.icon} + ' gallery-placeholder-icon'" th:if="${property.coverImageUrl == null}"></i>
+            </div>
+            <div class="gallery-thumbs" th:if="${#lists.size(property.images) > 1}">
+                <div th:each="img, st : ${property.images}" class="gallery-thumb" th:classappend="${st.first} ? 'active'"
+                     th:attr="data-bg='url(' + @{${img.imageUrl}} + ')'"
+                     th:style="'background-image: url(' + @{${img.imageUrl}} + ')'"></div>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-4 mb-2">
+                <span class="badge" th:classappend="${property.status.badgeClass}" th:text="${property.status.label}">For sale</span>
+                <span class="badge text-bg-secondary" th:text="#{${property.tagMessageKey}}">HOUSE</span>
+                <span class="badge text-bg-info" th:if="${property.petFriendly}"><i class="bi bi-balloon-heart-fill"></i> <span th:text="#{listing.petFriendly}">Pet-friendly</span></span>
+            </div>
+
+            <div class="d-flex align-items-start justify-content-between gap-3">
+                <h2 class="fw-bold" th:text="${property.title}">Title</h2>
+                <form th:action="@{/saved/{id}/toggle(id=${property.id})}" method="post" class="flex-shrink-0">
+                    <button type="submit" class="btn btn-sm" th:classappend="${savedIds.contains(property.id)} ? 'btn-danger' : 'btn-outline-danger'">
+                        <i th:class="${savedIds.contains(property.id)} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                        <span th:text="${savedIds.contains(property.id)} ? #{saved.unsave} : #{saved.save}">Save</span>
+                    </button>
+                </form>
+            </div>
+            <p class="text-muted"><i class="bi bi-geo-alt-fill"></i> <span th:text="${property.address != null and !#strings.isEmpty(property.address)} ? ${property.address} + ', ' + ${property.locationLabel} : ${property.locationLabel}">Address</span></p>
+
+            <div class="fact-grid">
+                <div class="fact-item" th:each="f : ${property.facts}">
+                    <i th:class="'bi ' + ${f.icon}"></i>
+                    <div>
+                        <div class="fact-label" th:text="#{${f.labelKey}}">Bedrooms</div>
+                        <div class="fact-value" th:text="${f.value}">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mt-4" th:text="#{detail.description}">Description</h4>
+            <p style="white-space: pre-line;" th:text="${property.description}">Description</p>
+
+            <!-- Local info for the district -->
+            <h4 class="fw-bold mt-5" th:text="#{detail.aboutArea(${property.district.label})}">About the area</h4>
+            <div th:if="${localInfo != null}">
+                <p th:text="${localInfo.summary}">Summary</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="info-tile">
+                            <h5><i class="bi bi-mortarboard-fill"></i> <span th:text="#{info.schools}">Schools</span></h5>
+                            <div class="rating"><span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= localInfo.schoolRating} ? 'on'"></span></div>
+                            <p class="small mb-0 mt-2" th:text="${localInfo.schoolInfo}"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-tile">
+                            <h5><i class="bi bi-bus-front-fill"></i> <span th:text="#{info.transport}">Transport</span></h5>
+                            <div class="rating"><span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= localInfo.transportRating} ? 'on'"></span></div>
+                            <p class="small mb-0 mt-2" th:text="${localInfo.transportInfo}"></p>
+                        </div>
+                    </div>
+                </div>
+                <a th:href="@{/local-info(district=${property.district.name()})}" class="btn btn-sm btn-outline-secondary mt-3" th:text="#{detail.fullAreaInfo}">Full area guide</a>
+            </div>
+            <p class="text-muted" th:if="${localInfo == null}" th:text="#{detail.noAreaInfo}">No area guide yet.</p>
+
+            <div class="pet-panel mt-3" th:if="${petRentals > 0}">
+                <i class="bi bi-balloon-heart-fill"></i>
+                <span th:text="#{detail.petRentals(${petRentals}, ${property.district.label})}">3 pet-friendly rentals in this district</span>
+                <a th:href="@{/properties(district=${property.district.name()},listingType='rent',pet=true)}" th:text="#{detail.viewPetRentals}">View</a>
+            </div>
+        </div>
+
+        <!-- Side column -->
+        <div class="col-lg-4">
+            <div class="sticky-side">
+                <div class="side-card">
+                    <div class="price-big" th:text="${property.priceFormatted}">8,200,000 LKR</div>
+                    <div class="text-muted small fst-italic mb-1" th:text="#{${property.priceNoteKey}}">FIXED PRICE</div>
+                    <div class="small mb-3" th:if="${property.totalPrice != property.price}">
+                        <span th:text="#{fact.totalPrice}">Total price</span>: <strong th:text="${property.totalPriceFormatted}">0</strong>
+                    </div>
+                    <hr>
+                    <h6 class="fw-bold" th:text="#{detail.contact}">Contact</h6>
+                    <p class="mb-1" th:text="${property.contactName}">Name</p>
+                    <p class="mb-1"><i class="bi bi-telephone-fill"></i> <a th:href="'tel:' + ${property.contactPhone}" th:text="${property.contactPhone}">011</a></p>
+                    <p class="mb-3"><i class="bi bi-envelope-fill"></i> <a th:href="'mailto:' + ${property.contactEmail}" th:text="${property.contactEmail}">mail</a></p>
+                    <a th:href="'mailto:' + ${property.contactEmail} + '?subject=' + ${property.title}" class="btn btn-teal w-100" th:text="#{detail.enquire}">Send enquiry</a>
+                    <p class="text-muted small mt-2 mb-0" th:text="#{detail.listed(${#temporals.format(property.listingDate, 'dd MMM yyyy')})}">Listed on</p>
+                </div>
+
+                <!-- Book a viewing (live listings, not for the seller's own property) -->
+                <div class="side-card" th:if="${property.status.live and !(currentUser != null and property.isOwnedBy(currentUser))}">
+                    <h6 class="fw-bold" th:text="#{booking.cardTitle}">Book a viewing</h6>
+                    <form th:if="${currentUser != null}" th:action="@{/my-bookings/book}" method="post">
+                        <input type="hidden" name="propertyId" th:value="${property.id}">
+                        <label class="form-label small mb-1" for="visitAt" th:text="#{booking.when}">Date and time</label>
+                        <input type="datetime-local" id="visitAt" name="visitAt" class="form-control mb-2" required th:min="${minVisit}">
+                        <label class="form-label small mb-1" for="visitPhone" th:text="#{booking.phone}">Your phone</label>
+                        <input type="tel" id="visitPhone" name="phone" class="form-control mb-2" required maxlength="30">
+                        <label class="form-label small mb-1" for="visitNote" th:text="#{booking.note}">Note (optional)</label>
+                        <textarea id="visitNote" name="note" class="form-control mb-3" rows="2" maxlength="500"></textarea>
+                        <button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-calendar-check"></i> <span th:text="#{booking.submit}">Request viewing</span></button>
+                    </form>
+                    <a th:if="${currentUser == null}" th:href="@{/login}" class="btn btn-outline-secondary w-100" th:text="#{booking.loginFirst}">Log in to book a viewing</a>
+                </div>
+
+                <div class="side-card" th:if="${canManage and property.isOwnedBy(currentUser)}">
+                    <a th:href="@{/my-listings/{id}/edit(id=${property.id})}" class="btn btn-outline-secondary w-100" th:text="#{detail.edit}">Edit listing</a>
+                </div>
+
+                <div class="side-card" th:if="${!#lists.isEmpty(brokers)}">
+                    <h6 class="fw-bold" th:text="#{detail.brokersNear(${property.district.label})}">Brokers nearby</h6>
+                    <div class="mini-broker" th:each="b : ${brokers}">
+                        <div class="mini-avatar"
+                             th:style="${b.photoUrl != null} ? ('background: url(' + @{${b.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${b.avatarGradient})"
+                             th:text="${b.photoUrl != null} ? '' : ${b.initials}">AB</div>
+                        <div>
+                            <div class="fw-semibold" th:text="${b.name}">Name</div>
+                            <a class="small" th:href="'tel:' + ${b.phone}" th:text="${b.phone}">011</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(similar)}" class="mt-5">
+        <h4 class="fw-bold mb-3" th:text="#{detail.similar}">Similar listings</h4>
+        <div class="listing-grid">
+            <div th:each="p : ${similar}" class="listing-card">
+                <div th:replace="~{fragments/cards :: card(${p})}"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+<script th:src="@{/js/gallery.js}"></script>
+</body>
+</html>

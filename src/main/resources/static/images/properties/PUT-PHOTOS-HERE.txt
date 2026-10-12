@@ -1,0 +1,5 @@
+Add 15 photos here (JPG), named exactly:
+house-1.jpg ... house-5.jpg
+apartment-1.jpg ... apartment-5.jpg
+land-1.jpg ... land-5.jpg
+The seeded listings use them. Missing files just show the coloured gradient. Delete this txt file after.
