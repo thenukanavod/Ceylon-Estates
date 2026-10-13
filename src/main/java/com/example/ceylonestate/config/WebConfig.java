@@ -26,7 +26,20 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String uploadsPath = Paths.get("uploads").toAbsolutePath().toUri().toString();
+        // Spring only treats a resource location as a folder if it ends with "/".
+        // Path.toUri() adds that slash only when the folder already exists, so
+        // on a fresh start (no uploads folder yet) every uploaded image 404'd
+        // until the app was restarted. Create the folder first and force the slash.
+        java.nio.file.Path uploadsDir = Paths.get("uploads").toAbsolutePath();
+        try {
+            java.nio.file.Files.createDirectories(uploadsDir);
+        } catch (java.io.IOException ignored) {
+            // the storage services create it again on first upload
+        }
+        String uploadsPath = uploadsDir.toUri().toString();
+        if (!uploadsPath.endsWith("/")) {
+            uploadsPath += "/";
+        }
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(uploadsPath);

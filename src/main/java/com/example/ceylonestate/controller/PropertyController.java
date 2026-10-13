@@ -105,4 +105,66 @@ public class PropertyController {
                 .limit(4)
                 .toList();
     }
+
+    /**
+     * Search-as-you-type suggestions for the main search bar: districts, known
+     * towns, cities and listing titles that match what has been typed so far.
+     * Names that start with the typed text come first; at most 8 are returned.
+     */
+    @GetMapping("/properties/suggest")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public List<java.util.Map<String, String>> suggest(
+            @org.springframework.web.bind.annotation.RequestParam(name = "q", required = false) String q) {
+        List<java.util.Map<String, String>> out = new java.util.ArrayList<>();
+        if (q == null || q.isBlank() || q.length() > 40) {
+            return out;
+        }
+        String needle = q.trim().toLowerCase();
+        java.util.Map<String, java.util.Map<String, String>> starts = new java.util.LinkedHashMap<>();
+        java.util.Map<String, java.util.Map<String, String>> contains = new java.util.LinkedHashMap<>();
+
+        for (District d : District.values()) {
+            addSuggestion(needle, d.getLabel(), "District", starts, contains);
+        }
+        com.example.ceylonestate.model.TownDirectory.all().forEach((town, d) ->
+                addSuggestion(needle, titleCase(town), d.getLabel() + " District", starts, contains));
+        for (Property p : searchService.findLive()) {
+            if (p.getCity() != null && !p.getCity().isBlank()) {
+                addSuggestion(needle, p.getCity(), "City", starts, contains);
+            }
+            if (p.getTitle() != null) {
+                addSuggestion(needle, p.getTitle(), "Listing", starts, contains);
+            }
+        }
+        out.addAll(starts.values());
+        out.addAll(contains.values());
+        return out.size() > 8 ? out.subList(0, 8) : out;
+    }
+
+    private static void addSuggestion(String needle, String name, String hint,
+                                      java.util.Map<String, java.util.Map<String, String>> starts,
+                                      java.util.Map<String, java.util.Map<String, String>> contains) {
+        String lower = name.toLowerCase();
+        if (starts.containsKey(lower) || contains.containsKey(lower)) {
+            return;
+        }
+        java.util.Map<String, String> item = new java.util.LinkedHashMap<>();
+        item.put("text", name);
+        item.put("hint", hint);
+        if (lower.startsWith(needle)) {
+            starts.put(lower, item);
+        } else if (lower.contains(needle)) {
+            contains.put(lower, item);
+        }
+    }
+
+    private static String titleCase(String text) {
+        StringBuilder sb = new StringBuilder();
+        boolean up = true;
+        for (char c : text.toCharArray()) {
+            sb.append(up ? Character.toUpperCase(c) : c);
+            up = c == ' ' || c == '-';
+        }
+        return sb.toString();
+    }
 }

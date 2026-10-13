@@ -79,6 +79,11 @@ public final class TownDirectory {
         // static lookup only
     }
 
+    /** Every known town name (lower case) with its district, for search suggestions. */
+    public static Map<String, District> all() {
+        return java.util.Collections.unmodifiableMap(TOWNS);
+    }
+
     /** The district a town or neighbourhood name belongs to, or null if it isn't in the list. */
     public static District find(String text) {
         if (text == null || text.isBlank()) {

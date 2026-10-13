@@ -422,6 +422,7 @@ button.hero-search-btn {
 }
 
 .chip {
+    text-decoration: none;
     border: 1px solid var(--bs-border-color);
     background: var(--bs-body-bg);
     color: var(--bs-body-color);
@@ -963,4 +964,313 @@ button.hero-search-btn {
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     padding: 0.75rem;
     margin-top: 0.75rem;
+}
+
+/* ---------- Search bar inside the top navbar ---------- */
+.nav-search-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 140px;
+}
+
+/* Brand and avatar keep their natural size; the middle group (links + search)
+   takes all the remaining width and the search bar stretches to fill it. */
+.navbar .nav-side {
+    flex: 0 0 auto;
+}
+.navbar .nav-center {
+    flex: 1 1 0 !important;
+    min-width: 0;
+    gap: 0.25rem;
+}
+.navbar .nav-center .site-nav {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin: 0;
+}
+/* Both link groups share one identical style (size, weight, padding, spacing). */
+.navbar .nav-center .site-nav {
+    gap: 0.25rem;
+    padding: 0;
+}
+.navbar .nav-center .site-nav .nav-item {
+    margin: 0;
+}
+.navbar .nav-center .site-nav .nav-link {
+    white-space: nowrap;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+    padding: 0.4rem 0.75rem !important;
+    color: #1a1a1a;
+}
+.navbar .nav-center .site-nav .nav-link:hover {
+    color: #19555a;
+}
+.navbar .nav-side-end {
+    margin-left: 0.5rem;
+}
+
+.hero-search-card.hero-search-nav {
+    box-shadow: none;
+    border-radius: 999px;
+}
+
+.hero-search-nav .hero-search-main {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    padding: 3px 4px 3px 12px;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.hero-search-nav.filters-open .hero-search-main {
+    border-radius: 999px;
+}
+
+.hero-search-nav .hero-search-input-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 6px;
+}
+
+.hero-search-nav .hero-search-input-wrap i {
+    color: #19555a;
+    font-size: 0.85rem;
+}
+
+.hero-search-nav .hero-search-input {
+    color: #1a1a1a;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.hero-search-nav .hero-search-input::placeholder {
+    color: #1a1a1a;
+    opacity: 1;
+    font-weight: 400;
+}
+
+.hero-search-nav .hero-adv-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #19555a;
+    font-size: 0.9rem;
+}
+
+.hero-search-nav .hero-adv-btn:hover {
+    background: rgba(25, 85, 90, 0.12);
+}
+
+.hero-search-nav .hero-adv-btn.active {
+    background: #19555a;
+    color: #fff;
+}
+
+.hero-search-nav .hero-search-btn {
+    background: #19555a;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+}
+
+.hero-search-nav .hero-search-btn:hover {
+    background: #123f43;
+}
+
+/* The button's text and its duplicate icon are dropped: icon-only to save width. */
+.hero-search-nav .hero-search-btn span {
+    display: none;
+}
+
+/* Filters open as a dark dropdown panel under the bar instead of growing it. */
+.hero-search-nav .hero-search-filters {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 760px);
+    z-index: 1050;
+    padding: 16px 18px;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Listing grids: cards sit side by side and fill the screen ---------- */
+.page-wide {
+    max-width: 1800px;
+}
+
+.listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Type label moves to the bottom-left so it never collides with the heart (top-right) */
+.listing-thumb {
+    position: relative;
+}
+.listing-thumb .listing-thumb-tag {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+}
+
+/* The carousel's .listing-card wrapper has 25% max-width rules; inside a grid
+   the grid cell already sets the size, so those must not apply. */
+.listing-grid .listing-card {
+    flex: none;
+    max-width: none;
+    width: 100%;
+    padding: 0;
+}
+
+/* A bit more compact cards in the grids */
+.listing-grid .listing-thumb {
+    height: 170px;
+}
+.listing-grid .listing-body {
+    padding: 14px 16px;
+}
+.listing-grid .listing-body h5 {
+    font-size: 1.05rem;
+}
+
+/* ---------- Get Local Info band (light tint, popped-up photo) ---------- */
+.local-section {
+    background-color: #e3f1ee;
+    color: #1a1a1a;
+    overflow: visible;
+}
+
+.local-heading-wrap {
+    border-left: 4px solid #19555a;
+    padding-left: 20px;
+    margin-bottom: 24px;
+}
+
+.local-heading {
+    font-size: 2.2rem;
+    color: #12393c;
+    margin: 0;
+}
+
+.local-body {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 520px;
+    color: #3d5a5c;
+}
+
+.local-search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 520px;
+    padding: 6px 6px 6px 14px;
+    background: #fff;
+    border: 1px solid #c9e0dc;
+    border-radius: 40px;
+    box-shadow: 0 6px 18px rgba(25, 85, 90, 0.12);
+    margin-top: 1.5rem;
+}
+
+.local-search-form .form-control {
+    box-shadow: none;
+    background: transparent;
+    color: #1a1a1a;
+}
+
+.local-search-btn {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #19555a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.local-search-btn:hover {
+    background: #123f43;
+}
+
+.local-photo {
+    background-size: cover;
+    background-position: 30% 60%;
+    border-radius: 16px;
+    min-height: 380px;
+    box-shadow: 0 24px 50px rgba(18, 57, 60, 0.35);
+    transform: translateY(-14px) rotate(1deg);
+}
+
+@media (max-width: 991.98px) {
+    .local-photo {
+        transform: none;
+        min-height: 260px;
+    }
+}
+
+/* Suggestions dropdown (Get Local Info search boxes) */
+.suggest-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 50;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #c9e0dc;
+    border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.suggest-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #1a1a1a;
+}
+
+.suggest-list li:hover,
+.suggest-list li.active {
+    background: #e3f1ee;
+}
+
+.suggest-hint {
+    color: #6c757d;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* ---------- Broker ratings and reviews ---------- */
+.broker-stars {
+    color: #f4b400;
+}
+
+.broker-review {
+    border-top: 1px solid rgba(128, 128, 128, 0.25);
+    padding: 10px 0;
 }

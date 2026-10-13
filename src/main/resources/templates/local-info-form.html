@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>District guide</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${editing} ? #{infoForm.editTitle} : #{infoForm.newTitle}, null)}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 820px;">
+    <div th:replace="~{admin/fragments :: tabs('localinfo')}"></div>
+    <form th:action="${editing} ? @{/admin/local-info/{id}(id=${info.id})} : @{/admin/local-info}" th:object="${info}" method="post" novalidate>
+        <section class="form-section">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="district" th:text="#{brokerForm.district}">District</label>
+                    <select class="form-select" id="district" th:field="*{district}" th:errorclass="is-invalid">
+                        <option value="" th:text="#{sell.choose}">Choose...</option>
+                        <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}">Colombo</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{district}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="summary" th:text="#{infoForm.summary}">Summary</label>
+                    <textarea class="form-control" id="summary" rows="3" th:field="*{summary}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{summary}"></div>
+                </div>
+
+                <div class="col-md-9">
+                    <label class="form-label" for="schoolInfo" th:text="#{info.schools}">Schools</label>
+                    <textarea class="form-control" id="schoolInfo" rows="2" th:field="*{schoolInfo}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{schoolInfo}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="schoolRating" th:text="#{infoForm.rating}">Rating (1-5)</label>
+                    <input class="form-control" id="schoolRating" type="number" min="1" max="5" th:field="*{schoolRating}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{schoolRating}"></div>
+                </div>
+
+                <div class="col-md-9">
+                    <label class="form-label" for="transportInfo" th:text="#{info.transport}">Transport</label>
+                    <textarea class="form-control" id="transportInfo" rows="2" th:field="*{transportInfo}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{transportInfo}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="transportRating" th:text="#{infoForm.rating}">Rating (1-5)</label>
+                    <input class="form-control" id="transportRating" type="number" min="1" max="5" th:field="*{transportRating}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{transportRating}"></div>
+                </div>
+
+                <div class="col-md-9">
+                    <label class="form-label" for="amenitiesInfo" th:text="#{info.amenities}">Facilities</label>
+                    <textarea class="form-control" id="amenitiesInfo" rows="2" th:field="*{amenitiesInfo}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{amenitiesInfo}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="amenitiesRating" th:text="#{infoForm.rating}">Rating (1-5)</label>
+                    <input class="form-control" id="amenitiesRating" type="number" min="1" max="5" th:field="*{amenitiesRating}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{amenitiesRating}"></div>
+                </div>
+
+                <div class="col-md-9">
+                    <label class="form-label" for="safetyInfo" th:text="#{info.safety}">Safety</label>
+                    <textarea class="form-control" id="safetyInfo" rows="2" th:field="*{safetyInfo}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{safetyInfo}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="safetyRating" th:text="#{infoForm.rating}">Rating (1-5)</label>
+                    <input class="form-control" id="safetyRating" type="number" min="1" max="5" th:field="*{safetyRating}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{safetyRating}"></div>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="petCommon" name="petFriendlyRentalsCommon" value="true" th:checked="*{petFriendlyRentalsCommon}">
+                        <label class="form-check-label" for="petCommon" th:text="#{info.petCommon}">Pet-friendly rentals are common</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label" for="petFriendlyNotes" th:text="#{infoForm.petNotes}">Pet notes</label>
+                    <textarea class="form-control" id="petFriendlyNotes" rows="2" th:field="*{petFriendlyNotes}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{petFriendlyNotes}"></div>
+                </div>
+            </div>
+        </section>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-teal px-4" th:text="#{common.save}">Save</button>
+            <a th:href="@{/admin/local-info}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

@@ -7,7 +7,7 @@
 <header th:replace="~{fragments/layout :: pageHero(#{info.title}, #{info.subtitle})}"></header>
 <div th:replace="~{fragments/layout :: sidebar}"></div>
 
-<main class="container-xl page-main">
+<main class="container-xl page-main page-wide">
     <form th:action="@{/local-info}" method="get" class="big-search mb-4">
         <input type="text" name="q" th:value="${q}" th:placeholder="#{info.searchPlaceholder}" list="districtList" autocomplete="off">
         <datalist id="districtList"><option th:each="d : ${districts}" th:value="${d.label}"></option></datalist>
@@ -33,7 +33,7 @@
                     <div class="info-tile">
                         <h5>
                             <i th:class="'bi ' + (${t == 'school'} ? 'bi-mortarboard-fill' : (${t == 'transport'} ? 'bi-bus-front-fill' : (${t == 'amenities'} ? 'bi-shop' : 'bi-shield-check')))"></i>
-                            <span th:text="#{${'info.' + t}}">Schools</span>
+                            <span th:text="#{${t == 'school' ? 'info.schools' : 'info.' + t}}">Schools</span>
                         </h5>
                         <div class="rating" th:with="r=${t == 'school' ? info.schoolRating : (t == 'transport' ? info.transportRating : (t == 'amenities' ? info.amenitiesRating : info.safetyRating))}">
                             <span th:each="i : ${#numbers.sequence(1,5)}" th:classappend="${i <= r} ? 'on'"></span>

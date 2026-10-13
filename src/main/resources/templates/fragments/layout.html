@@ -22,28 +22,188 @@
 <body>
 
 <div th:fragment="navbar">
-    <div id="page-top" style="padding: 14px 14px 0;">
+    <div id="page-top" style="padding: 14px 14px 0; position: relative; z-index: 30;">
         <nav class="navbar navbar-expand px-4 py-2"
              style="background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);">
-            <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}" style="color: #19555a;">
+            <div class="nav-side d-flex align-items-center">
+                <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}" style="color: #19555a;">
                 <img th:src="@{/images/logo-icon-v3.png}" alt="" style="height: 48px; width: auto;">
                 <span class="fw-bold" style="font-size: 1.5rem;">Ceylon Estates</span>
             </a>
+            </div>
 
-            <ul class="navbar-nav site-nav d-none d-lg-flex flex-row ms-4 gap-1">
+            <div class="nav-center d-flex align-items-center justify-content-center flex-grow-1">
+            <ul class="navbar-nav site-nav d-none d-lg-flex flex-row gap-1 me-2">
                 <li class="nav-item"><a class="nav-link" th:href="@{/properties(listingType='sale')}" th:text="#{nav.buy}">Buy</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/properties(listingType='rent')}" th:text="#{nav.rent}">Rent</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/sell}" th:text="#{nav.sell}">Sell</a></li>
+            </ul>
+            <div class="nav-search-wrap d-none d-md-block mx-2">
+                <form id="heroSearchForm" th:action="@{/properties}" method="get"></form>
+                <div class="hero-search-card hero-search-nav">
+
+
+                    <div class="hero-search-main">
+                        <div class="hero-search-input-wrap">
+                            <input type="text" id="heroSearchInput" name="q" form="heroSearchForm" class="hero-search-input"
+                                   th:placeholder="#{hero.search.placeholder}" placeholder="Search by area, project or property..."
+                                   th:attr="data-suggest-url=@{/properties/suggest}" autocomplete="off">
+                        </div>
+                        <button type="button" id="heroFiltersToggleBtn" class="hero-adv-btn" aria-label="Show more filters" aria-expanded="false">
+                            <i class="bi bi-sliders"></i>
+                        </button>
+                        <button type="submit" form="heroSearchForm" class="hero-search-btn">
+                            <i class="bi bi-search"></i> <span th:text="#{hero.search.button}">Search</span>
+                        </button>
+                    </div>
+
+                    <div class="hero-search-filters">
+
+                        <!-- Location -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-geo-alt"></i> <span th:text="#{hero.filter.location}">Location</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 300px;">
+                                <div class="hero-search-input-wrap hero-search-input-wrap-sm mb-3">
+                                    <i class="bi bi-search"></i>
+                                    <input type="text" id="heroCitySearch" class="hero-search-input" th:placeholder="#{hero.filter.citySearch}" placeholder="Search by city">
+                                </div>
+                                <div class="hero-panel-label" th:text="#{hero.filter.topCities}">Top Cities</div>
+                                <div class="d-flex flex-column" id="heroCityList">
+                                    <button type="button" class="hero-city-item" data-name="Rajagiriya">
+                                        <span class="hero-city-name">Rajagiriya</span>
+                                        <span class="hero-city-count">20</span>
+                                    </button>
+                                    <button type="button" class="hero-city-item" data-name="Colombo 03">
+                                        <span><span class="hero-city-name">Colombo 03</span><br><span class="hero-city-sub">Colpetty, Kollupitiya</span></span>
+                                        <span class="hero-city-count">19</span>
+                                    </button>
+                                    <button type="button" class="hero-city-item" data-name="Colombo 02">
+                                        <span><span class="hero-city-name">Colombo 02</span><br><span class="hero-city-sub">Union Place, Slave Island</span></span>
+                                        <span class="hero-city-count">18</span>
+                                    </button>
+                                    <button type="button" class="hero-city-item" data-name="Nugegoda">
+                                        <span class="hero-city-name">Nugegoda</span>
+                                        <span class="hero-city-count">8</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Type -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-house"></i> <span th:text="#{hero.filter.propertyType}">Property Type</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 240px;">
+                                <div class="hero-panel-label" th:text="#{hero.filter.availableListings}">Available Listings</div>
+                                <div class="d-flex flex-column" id="heroPropertyTypeList">
+                                    <button type="button" class="hero-proptype-item active" data-value="all">
+                                        <span th:text="#{hero.filter.allTypes}">All Types</span><span class="hero-city-count">142</span>
+                                    </button>
+                                    <button type="button" class="hero-proptype-item" data-value="land">
+                                        <span th:text="#{hero.filter.land}">Land</span><span class="hero-city-count">41</span>
+                                    </button>
+                                    <button type="button" class="hero-proptype-item" data-value="house">
+                                        <span th:text="#{hero.filter.house}">House</span><span class="hero-city-count">53</span>
+                                    </button>
+                                    <button type="button" class="hero-proptype-item" data-value="apartment">
+                                        <span th:text="#{hero.filter.apartment}">Apartment</span><span class="hero-city-count">48</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-cash-stack"></i> <span th:text="#{hero.filter.priceRange}">Price Range</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 300px;">
+                                <div class="hero-panel-label" th:text="#{hero.filter.priceRange}">Price Range</div>
+                                <div class="d-flex justify-content-between small fw-bold text-white mt-3 mb-1">
+                                    <span id="heroPriceMinLabel">Rs 0</span>
+                                    <span id="heroPriceMaxLabel">Rs 5.0 Bn</span>
+                                </div>
+                                <div class="hero-price-slider-wrap">
+                                    <div class="hero-price-track"></div>
+                                    <div class="hero-price-track-fill" id="heroPriceFill"></div>
+                                    <input type="range" id="heroPriceMin" class="hero-price-range" min="0" max="5000" step="50" value="0">
+                                    <input type="range" id="heroPriceMax" class="hero-price-range" min="0" max="5000" step="50" value="5000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Beds & Baths -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-door-closed"></i> <span th:text="#{hero.filter.bedsBaths}">Beds &amp; Baths</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 320px;">
+                                <div class="hero-panel-label mb-2"><i class="bi bi-door-closed me-1"></i> <span th:text="#{hero.filter.bedrooms}">Bedrooms</span></div>
+                                <div class="d-flex flex-wrap gap-2 mb-3" data-hero-chip-group="bed">
+                                    <button type="button" class="hero-chip" data-value="1">1</button>
+                                    <button type="button" class="hero-chip" data-value="2">2</button>
+                                    <button type="button" class="hero-chip" data-value="3">3</button>
+                                    <button type="button" class="hero-chip" data-value="4">4</button>
+                                    <button type="button" class="hero-chip" data-value="5">5</button>
+                                    <button type="button" class="hero-chip" data-value="5+">5+</button>
+                                </div>
+                                <div class="hero-panel-label mb-2"><i class="bi bi-droplet me-1"></i> <span th:text="#{hero.filter.bathrooms}">Bathrooms</span></div>
+                                <div class="d-flex flex-wrap gap-2" data-hero-chip-group="bath">
+                                    <button type="button" class="hero-chip" data-value="1">1</button>
+                                    <button type="button" class="hero-chip" data-value="2">2</button>
+                                    <button type="button" class="hero-chip" data-value="3">3</button>
+                                    <button type="button" class="hero-chip" data-value="4">4</button>
+                                    <button type="button" class="hero-chip" data-value="5">5</button>
+                                    <button type="button" class="hero-chip" data-value="5+">5+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Near Landmark -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-signpost-split"></i> <span th:text="#{hero.filter.nearLandmark}">Near Landmark</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 280px;">
+                                <div class="hero-search-input-wrap hero-search-input-wrap-sm">
+                                    <i class="bi bi-signpost-split"></i>
+                                    <input type="text" class="hero-search-input" th:placeholder="#{hero.filter.landmarkPlaceholder}" placeholder="School, hospital, bank...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Radius -->
+                        <div class="dropdown">
+                            <button type="button" class="hero-filter-btn dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-bullseye"></i> <span th:text="#{hero.filter.radius}">Radius</span> <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu hero-filter-panel p-3" style="width: 260px;">
+                                <div class="hero-panel-label mb-2" th:text="#{hero.filter.radius}">Radius</div>
+                                <div class="d-flex flex-wrap gap-2" data-hero-chip-group="radius">
+                                    <button type="button" class="hero-chip" data-value="1">1 km</button>
+                                    <button type="button" class="hero-chip" data-value="2">2 km</button>
+                                    <button type="button" class="hero-chip" data-value="3">3 km</button>
+                                    <button type="button" class="hero-chip" data-value="5">5 km</button>
+                                    <button type="button" class="hero-chip" data-value="10">10 km</button>
+                                    <button type="button" class="hero-chip" data-value="20">20 km</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <ul class="navbar-nav site-nav d-none d-lg-flex flex-row gap-1 ms-2">
                 <li class="nav-item"><a class="nav-link" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a></li>
             </ul>
+            </div>
 
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" class="d-flex gap-2">
-                    <a th:href="@{/login}" class="btn px-3 py-1" style="color: #1a1a1a; border: 1px solid #1a1a1a; background: transparent;" th:text="#{nav.login}">Login</a>
-                    <a th:href="@{/register}" class="btn px-3 py-1" style="color: #1a1a1a; border: 1px solid #1a1a1a; background: transparent;" th:text="#{nav.register}">Sign up</a>
-                </span>
+            <div class="nav-side nav-side-end d-flex align-items-center justify-content-end gap-3">
 
                 <button type="button"
                         class="btn btn-sm rounded-circle p-0 border-0"
@@ -81,16 +241,22 @@
         </div>
         <div class="offcanvas-body">
             <div class="list-group">
-                <a class="list-group-item list-group-item-action" th:href="@{/properties}" th:text="#{sidebar.browse}">Browse properties</a>
-                <a class="list-group-item list-group-item-action" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a>
-                <a class="list-group-item list-group-item-action" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a>
-                <a class="list-group-item list-group-item-action" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a>
-                <a class="list-group-item list-group-item-action" th:href="@{/sell}" th:text="#{sidebar.listProperty}">List a property</a>
-                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-                    <a class="list-group-item list-group-item-action" th:href="@{/my-listings}" th:text="#{sidebar.myListings}">My Listings</a>
-                    <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved properties</a>
-                    <a class="list-group-item list-group-item-action" th:href="@{/my-bookings}" th:text="#{sidebar.myBookings}">My viewings</a>
+                <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="btn btn-accent w-100 mb-3" th:href="@{/login}" th:text="#{nav.loginRegister}">Login / Register</a>
                 </span>
+                <a class="list-group-item list-group-item-action" th:href="@{/settings}" th:text="#{sidebar.appSettings}">App Settings</a>
+                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/profile}" th:text="#{sidebar.userManagement}">User Management</a>
+                </span>
+                <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/login}" th:text="#{sidebar.userManagement}">User Management</a>
+                </span>
+                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/my-listings}" th:text="#{sidebar.myListings}">My listings</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/my-bookings}" th:text="#{sidebar.myBookings}">My requests</a>
+                </span>
+                <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved items</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/contact}" th:text="#{contact.title}">Contact us</a>
                 <span sec:authorize="hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/admin}" th:text="#{adminNav.dashboard}">Admin: Dashboard</a>
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/messages}" th:text="#{adminNav.messages}">Admin: Messages</a>
@@ -100,13 +266,6 @@
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/brokers}" th:text="#{sidebar.adminBrokers}">Admin: Brokers</a>
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/local-info}" th:text="#{sidebar.adminLocalInfo}">Admin: Local Info</a>
                 </span>
-                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-                    <a class="list-group-item list-group-item-action" th:href="@{/profile}" th:text="#{sidebar.userManagement}">User Management</a>
-                </span>
-                <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-                    <a class="list-group-item list-group-item-action" th:href="@{/login}" th:text="#{sidebar.userManagement}">User Management</a>
-                </span>
-                <a class="list-group-item list-group-item-action" th:href="@{/settings}" th:text="#{sidebar.appSettings}">App Settings</a>
             </div>
         </div>
     </div>
@@ -200,6 +359,8 @@
     <script th:src="@{/js/auth.js}"></script>
     <script th:src="@{/js/back-to-top.js}"></script>
     <script th:src="@{/js/saved.js}"></script>
+    <script th:src="@{/js/hero-search.js}"></script>
+    <script th:src="@{/js/local-suggest.js}"></script>
 </th:block>
 
 </body>

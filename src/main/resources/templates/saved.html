@@ -7,7 +7,7 @@
 <header th:replace="~{fragments/layout :: pageHero(#{saved.title}, #{saved.subtitle})}"></header>
 <div th:replace="~{fragments/layout :: sidebar}"></div>
 
-<main class="container-xl page-main">
+<main class="container-xl page-main page-wide">
     <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
     <div class="alert alert-danger" th:if="${flashError != null}" th:text="#{${flashError}}">Error.</div>
 

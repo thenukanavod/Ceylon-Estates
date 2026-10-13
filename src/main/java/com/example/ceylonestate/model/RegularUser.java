@@ -27,6 +27,6 @@ public class RegularUser extends User {
 
     @Override
     public String getDashboardPath() {
-        return "/profile";
+        return "/";
     }
 }
