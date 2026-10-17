@@ -60,7 +60,7 @@ public class VisitorTrackingInterceptor implements HandlerInterceptor {
             return;
         }
         try {
-            String path = request.getRequestURI();
+            String path = request.getRequestURI().substring(request.getContextPath().length());
             pageViewRepository.save(new PageView(
                     path.length() > 255 ? path.substring(0, 255) : path,
                     visitor.toString(),
@@ -80,7 +80,7 @@ public class VisitorTrackingInterceptor implements HandlerInterceptor {
         if (userAgent == null || BOT.matcher(userAgent).find()) {
             return false;
         }
-        String path = request.getRequestURI();
+        String path = request.getRequestURI().substring(request.getContextPath().length());
         if (path.equals("/")) {
             return true;
         }

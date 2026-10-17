@@ -2,6 +2,8 @@ package com.example.ceylonestate.config;
 
 import com.example.ceylonestate.model.AdminUser;
 import com.example.ceylonestate.model.ApartmentProperty;
+import com.example.ceylonestate.model.Article;
+import com.example.ceylonestate.model.ArticleTopic;
 import com.example.ceylonestate.model.Broker;
 import com.example.ceylonestate.model.ContactMessage;
 import com.example.ceylonestate.model.District;
@@ -13,6 +15,7 @@ import com.example.ceylonestate.model.MessageStatus;
 import com.example.ceylonestate.model.PageView;
 import com.example.ceylonestate.model.Property;
 import com.example.ceylonestate.model.PropertyImage;
+import com.example.ceylonestate.repository.ArticleRepository;
 import com.example.ceylonestate.repository.BrokerRepository;
 import com.example.ceylonestate.repository.ContactMessageRepository;
 import com.example.ceylonestate.repository.LocalInfoRepository;
@@ -23,8 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +48,9 @@ import static com.example.ceylonestate.model.ListingStatus.*;
  * Each table is only seeded if it is empty, so restarting never duplicates
  * data - and anything you add or delete through the site is left alone.
  *
- * Listing photos point at /images/properties/{house|apartment|land}-1..5.jpg.
+ * Listing photos point at /images/properties/{house|apartment|land}1..5.{jpg|png}
+ * - the same files and names used by the homepage "Project Library" gallery
+ * (see PHOTO_EXTENSIONS below for which ones are .jpg vs .png).
  * Drop real photos with those names into src/main/resources/static/images/properties/
  * - until you do, the cards simply show their coloured placeholder.
  */
@@ -53,10 +61,24 @@ public class DataSeeder implements CommandLineRunner {
     private static final String SALES_PHONE = "011 234 5678";
     private static final String SALES_EMAIL = "sales@ceylonestates.example";
 
+    /**
+     * The 15 bundled property photos are a mix of .jpg and .png (whatever
+     * format each one was supplied in) - this says which extension each
+     * "{type}{number}" file uses. Anything not listed here defaults to .png.
+     * Keep this in sync with the filenames referenced in index.html's
+     * "Project Library" gallery.
+     */
+    private static final java.util.Map<String, String> PHOTO_EXTENSIONS = java.util.Map.of(
+            "apartment3", "jpg",
+            "apartment4", "jpg",
+            "land5", "jpg"
+    );
+
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
 
     private final PropertyRepository propertyRepository;
     private final BrokerRepository brokerRepository;
+    private final ArticleRepository articleRepository;
     private final LocalInfoRepository localInfoRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -75,6 +97,7 @@ public class DataSeeder implements CommandLineRunner {
 
     public DataSeeder(PropertyRepository propertyRepository,
                       BrokerRepository brokerRepository,
+                      ArticleRepository articleRepository,
                       LocalInfoRepository localInfoRepository,
                       UserRepository userRepository,
                       PasswordEncoder passwordEncoder,
@@ -82,6 +105,7 @@ public class DataSeeder implements CommandLineRunner {
                       PageViewRepository pageViewRepository) {
         this.propertyRepository = propertyRepository;
         this.brokerRepository = brokerRepository;
+        this.articleRepository = articleRepository;
         this.localInfoRepository = localInfoRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -89,17 +113,29 @@ public class DataSeeder implements CommandLineRunner {
         this.pageViewRepository = pageViewRepository;
     }
 
+    /**
+     * @Transactional lives here (not on backfillMissingPhotos() itself)
+     * because Spring's transaction proxy only intercepts calls that come
+     * from outside the bean - Spring Boot calling run() on the bean it
+     * holds goes through the proxy, but run() then calling
+     * backfillMissingPhotos() on "this" does not, so putting it there was
+     * silently ignored (self-invocation bypasses the proxy either way,
+     * regardless of the method's visibility).
+     */
     @Override
+    @Transactional
     public void run(String... args) {
         if (brokerRepository.count() == 0) {
             seedBrokers();
         }
+        seedArticles();
         if (localInfoRepository.count() == 0) {
             seedLocalInfo();
         }
         if (propertyRepository.count() == 0) {
             seedListings();
         }
+        backfillMissingPhotos();
         seedAdminAccount();
         if (contactMessageRepository.count() == 0) {
             seedContactMessages();
@@ -212,6 +248,41 @@ public class DataSeeder implements CommandLineRunner {
         if (roll < 95) return "/local-info";
         if (roll < 98) return "/contact";
         return "/sell";
+    }
+
+    // ------------------------------------------------------------------
+    // Articles - the full texts live in src/main/resources/articles/*.txt
+    // (header lines "title:", "source:", "topic:", "summary:", then "---", then the body)
+    // ------------------------------------------------------------------
+    private void seedArticles() {
+        // Rows from the old link-only version have no text: remove them so the real articles replace them.
+        articleRepository.deleteAll(articleRepository.findAll().stream()
+                .filter(a -> a.getBody() == null || a.getBody().isBlank()).toList());
+        if (articleRepository.count() > 0) {
+            return;
+        }
+        try {
+            Resource[] files = new PathMatchingResourcePatternResolver().getResources("classpath:articles/*.txt");
+            java.util.Arrays.sort(files, java.util.Comparator.comparing(Resource::getFilename));
+            for (Resource file : files) {
+                String text = new String(file.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                String[] parts = text.replace("\r\n", "\n").split("\n---\n", 2);
+                if (parts.length < 2) {
+                    continue;
+                }
+                java.util.Map<String, String> header = new java.util.HashMap<>();
+                for (String line : parts[0].split("\n")) {
+                    int colon = line.indexOf(':');
+                    if (colon > 0) {
+                        header.put(line.substring(0, colon).strip(), line.substring(colon + 1).strip());
+                    }
+                }
+                articleRepository.save(new Article(header.get("title"), header.get("source"), header.get("summary"),
+                        ArticleTopic.valueOf(header.get("topic")), parts[1].strip()));
+            }
+        } catch (java.io.IOException | RuntimeException e) {
+            log.warn("Could not load the article files: {}", e.getMessage());
+        }
     }
 
     // ------------------------------------------------------------------
@@ -388,11 +459,33 @@ public class DataSeeder implements CommandLineRunner {
         p.setContactEmail(SALES_EMAIL);
     }
 
+    /**
+     * Runs on every startup, not just when the database is empty - for a
+     * dev database seeded before photos were wired up, this is what
+     * attaches them without needing a DROP DATABASE. It only ever adds
+     * photos to a sample listing that currently has none (owner == null
+     * means it's one of this seeder's own listings, never something a real
+     * user submitted through the site), so nothing you've added, edited
+     * or uploaded yourself is ever touched. Relies on run() being
+     * @Transactional (see above) for the session this needs.
+     */
+    private void backfillMissingPhotos() {
+        for (Property p : propertyRepository.findAll()) {
+            if (p.getOwner() == null && p.getImages().isEmpty()) {
+                int seed = (int) (p.getId() == null ? 1 : p.getId());
+                addPhotos(p, p.getTypeKey(), seed);
+                propertyRepository.save(p);
+            }
+        }
+    }
+
     /** Three photos per listing, picked round-robin from five bundled images per type. */
     private void addPhotos(Property p, String type, int seed) {
         for (int i = 0; i < 3; i++) {
             int number = ((seed + i - 1) % 5) + 1;
-            p.addImage(new PropertyImage("/images/properties/" + type + "-" + number + ".jpg"));
+            String key = type + number;
+            String extension = PHOTO_EXTENSIONS.getOrDefault(key, "png");
+            p.addImage(new PropertyImage("/images/properties/" + key + "." + extension));
         }
     }
 

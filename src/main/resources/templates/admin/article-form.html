@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Article</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${editing} ? #{articleForm.editTitle} : #{articleForm.newTitle}, null)}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main" style="max-width: 760px;">
+    <div th:replace="~{admin/fragments :: tabs('articles')}"></div>
+    <form th:action="${editing} ? @{/admin/articles/{id}(id=${article.id})} : @{/admin/articles}" th:object="${article}" method="post" novalidate>
+        <section class="form-section">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="title" th:text="#{articleForm.title}">Title</label>
+                    <input class="form-control" id="title" th:field="*{title}" th:errorclass="is-invalid" maxlength="160">
+                    <div class="invalid-feedback" th:errors="*{title}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="source" th:text="#{articleForm.source}">Credit</label>
+                    <input class="form-control" id="source" th:field="*{source}" th:errorclass="is-invalid" maxlength="80">
+                    <div class="invalid-feedback" th:errors="*{source}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="topic" th:text="#{articleForm.topic}">Topic</label>
+                    <select class="form-select" id="topic" th:field="*{topic}" th:errorclass="is-invalid">
+                        <option value="" th:text="#{sell.choose}">Choose...</option>
+                        <option th:each="t : ${topics}" th:value="${t.name()}" th:text="${t.label}">Topic</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{topic}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="summary" th:text="#{articleForm.summary}">Short summary</label>
+                    <textarea class="form-control" id="summary" rows="3" th:field="*{summary}" th:errorclass="is-invalid" maxlength="500"></textarea>
+                    <div class="invalid-feedback" th:errors="*{summary}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="body" th:text="#{articleForm.body}">Article text</label>
+                    <textarea class="form-control font-monospace" id="body" rows="18" th:field="*{body}" th:errorclass="is-invalid"></textarea>
+                    <div class="invalid-feedback" th:errors="*{body}"></div>
+                    <div class="form-text" th:text="#{articleForm.bodyHelp}">Format help</div>
+                </div>
+            </div>
+        </section>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-teal px-4" th:text="#{common.save}">Save</button>
+            <a th:href="@{/admin/articles}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

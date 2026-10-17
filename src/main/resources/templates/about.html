@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>About Us</title>
+</head>
+<body>
+
+<!--
+    ABOUT US PAGE  (/about)
+
+    PICTURES: every picture below is a grey box showing the file name it expects.
+    Put the picture in   src/main/resources/static/images/about/   with exactly that name
+    and it replaces the box automatically. Until then the box stays - nothing breaks.
+
+        about-building.png   (tall building / office photo, about 700 x 900)
+        about-badge.png      (small badge / logo / trophy, about 300 x 300, transparent background is nice)
+        about-history.jpg    (old photo of the first office or the team, about 900 x 700)
+        about-team-group.jpg (group photo of the whole team, 16:9, about 1600 x 900)
+        team-1.jpg ... team-4.jpg   (portrait photos, about 600 x 750)
+        award-1.jpg ... award-5.jpg   (photo of each trophy / certificate, about 600 x 400)
+
+    All the writing on this page is sample text: change it to your own.
+-->
+
+<header th:replace="~{fragments/layout :: pageHero('About Us', 'Who we are and what we stand for')}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="about-page">
+
+    <!-- 1. Why us: teal band with the big building photo sticking out of it -->
+    <section class="about-why">
+        <span class="about-why-watermark" aria-hidden="true">Number One</span>
+        <div class="container-xl">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-7">
+                    <div class="about-heading about-heading-light">
+                        <h2>Why Ceylon Estates is Number One?</h2>
+                    </div>
+                    <p class="about-why-text">
+                        Everyone dreams of owning a great piece of property. At Ceylon Estates, we make that dream
+                        achievable, whether you are after land to build your own home, a finished house, or a modern
+                        apartment. We bring together verified listings from across Sri Lanka and support you at every
+                        step, from legal paperwork to financing guidance.
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <div class="about-photo about-photo-tall about-why-photo">
+                        <img th:src="@{/images/about/about-building.png}" alt="Ceylon Estates office" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> about-building.png</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. A single highlight with a badge picture -->
+    <section class="about-cream about-strip">
+        <div class="container-xl">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-2 col-4">
+                    <div class="about-photo about-photo-square about-badge">
+                        <img th:src="@{/images/about/about-badge.png}" alt="Badge" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> about-badge.png</span>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="about-heading about-heading-accent">
+                        <h3>VERIFIED LISTINGS ACROSS SRI LANKA</h3>
+                    </div>
+                    <p class="about-text mb-0">Every land, house and apartment is checked before it goes live, so buyers can browse with confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Mission and vision -->
+    <section class="about-cream about-block">
+        <div class="container-xl">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="about-card">
+                        <i class="bi bi-bullseye about-card-icon"></i>
+                        <div class="about-heading about-heading-accent">
+                            <h3>OUR MISSION</h3>
+                            <p class="mb-0">To bring verified land, house and apartment listings, local area information and trusted mortgage brokers together in one place.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-card">
+                        <i class="bi bi-eye about-card-icon"></i>
+                        <div class="about-heading about-heading-accent">
+                            <h3>OUR VISION</h3>
+                            <p class="mb-0">Making property in Sri Lanka simple, honest and open to everyone.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. History: photo on the left, story on the right -->
+    <section class="about-cream about-block">
+        <div class="container-xl">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5">
+                    <div class="about-photo about-photo-wide">
+                        <img th:src="@{/images/about/about-history.jpg}" alt="Our beginnings" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> about-history.jpg</span>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="about-heading about-heading-accent">
+                        <h2 class="about-light-title">HISTORY</h2>
+                    </div>
+                    <p class="about-text">
+                        Ceylon Estates started with a simple idea: finding land, a house or an apartment in Sri Lanka
+                        should be clear, honest and easy. We began by listing a handful of properties and have grown
+                        step by step, adding local area information, a network of mortgage brokers and listings from
+                        more districts as buyers and sellers asked for them.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Journey + numbers -->
+    <section class="about-plain about-block">
+        <div class="container-xl">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="about-heading about-heading-dark">
+                        <h2 class="about-light-title">Journey</h2>
+                    </div>
+                    <p class="about-text">
+                        Ceylon Estates brings lands, houses and apartments together with the finance and local
+                        knowledge that go with them. Every step we take is guided by one goal: to help people find
+                        the right place and move in with confidence.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-sm-6">
+                            <div class="about-stat"><div class="about-stat-number">5+</div><div class="about-stat-label">Years of Trust</div></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="about-stat"><div class="about-stat-number">9</div><div class="about-stat-label">Districts Covered</div></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="about-stat"><div class="about-stat-number">3</div><div class="about-stat-label">Property Types</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Quality policy + corporate responsibility (green band, rounded corner) -->
+    <section class="about-green">
+        <div class="container-xl">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="about-heading about-heading-light"><h3>QUALITY POLICY</h3></div>
+                    <p>We aim to delight our customers with accurate listings, clear prices and fast, friendly
+                        support. Every listing is reviewed before it is published, and we keep improving the site
+                        based on what buyers and sellers tell us.</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-heading about-heading-light"><h3>CORPORATE RESPONSIBILITY</h3></div>
+                    <p>We believe a good property business should be fair to everyone. We are committed to honest
+                        advertising, to protecting the personal information of our users, and to supporting the
+                        communities and neighbourhoods we list in.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Team -->
+    <section class="about-cream about-block">
+        <div class="container-xl">
+            <h2 class="about-section-title">Our Team</h2>
+
+            <div class="about-photo about-photo-banner mb-5">
+                <img th:src="@{/images/about/about-team-group.jpg}" alt="The Ceylon Estates team" onerror="this.remove()">
+                <span class="about-photo-hint"><i class="bi bi-image"></i> about-team-group.jpg</span>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="about-photo about-photo-portrait">
+                        <img th:src="@{/images/about/team-1.jpg}" alt="Team member 1" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> team-1.jpg</span>
+                    </div>
+                    <div class="about-heading about-heading-accent about-member">
+                        <h4>Walter White</h4>   <!-- change the name here -->
+                        <small>Group Chairman</small>   <!-- change the role here -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="about-photo about-photo-portrait">
+                        <img th:src="@{/images/about/team-2.jpg}" alt="Team member 2" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> team-2.jpg</span>
+                    </div>
+                    <div class="about-heading about-heading-accent about-member">
+                        <h4>Saul Goodman</h4>   <!-- change the name here -->
+                        <small>Group Co-Chairperson</small>   <!-- change the role here -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="about-photo about-photo-portrait">
+                        <img th:src="@{/images/about/team-3.jpg}" alt="Team member 3" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> team-3.jpg</span>
+                    </div>
+                    <div class="about-heading about-heading-accent about-member">
+                        <h4>Gus Fring</h4>   <!-- change the name here -->
+                        <small>CEO</small>   <!-- change the role here -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="about-photo about-photo-portrait">
+                        <img th:src="@{/images/about/team-4.jpg}" alt="Team member 4" onerror="this.remove()">
+                        <span class="about-photo-hint"><i class="bi bi-image"></i> team-4.jpg</span>
+                    </div>
+                    <div class="about-heading about-heading-accent about-member">
+                        <h4>Lalo Salamanca</h4>   <!-- change the name here -->
+                        <small>DIRECTOR</small>   <!-- change the role here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Awards & achievements (award-1.jpg ... award-5.jpg go in static/images/about/) -->
+    <section class="about-cream about-block pt-0">
+        <div class="container-xl">
+            <h2 class="about-section-title">Awards &amp; Achievements</h2>
+            <p class="about-text text-center mx-auto mb-5" style="max-width: 640px;">
+                Ceylon Estates is honoured with prestigious awards from local and international organisations,
+                recognising our contribution to the real estate industry.
+            </p>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4 col-md-6">
+                    <div class="about-feature">
+                        <div class="about-photo about-photo-feature">
+                            <img th:src="@{/images/about/award-1.jpg}" alt="Best Housing Development In Sri Lanka" onerror="this.remove()">
+                            <span class="about-photo-hint"><i class="bi bi-image"></i> award-1.jpg</span>
+                        </div>
+                        <h5>BEST HOUSING DEVELOPMENT IN SRI LANKA</h5>
+                        <p>Ceylon Estates was honoured as the Best Housing Development in Sri Lanka at the Asia Property Awards.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="about-feature">
+                        <div class="about-photo about-photo-feature">
+                            <img th:src="@{/images/about/award-2.jpg}" alt="Best Developer Of Sri Lanka 2018" onerror="this.remove()">
+                            <span class="about-photo-hint"><i class="bi bi-image"></i> award-2.jpg</span>
+                        </div>
+                        <h5>BEST DEVELOPER OF SRI LANKA 2018</h5>
+                        <p>Ceylon Estates was honoured with the Best Developer title at the Asia Property Awards gala dinner.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="about-feature">
+                        <div class="about-photo about-photo-feature">
+                            <img th:src="@{/images/about/award-3.jpg}" alt="Best Corporate Website Award 2018" onerror="this.remove()">
+                            <span class="about-photo-hint"><i class="bi bi-image"></i> award-3.jpg</span>
+                        </div>
+                        <h5>BEST CORPORATE WEBSITE AWARD 2018</h5>
+                        <p>Our official website was rewarded as the best corporate website of the year, ahead of other large companies.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="about-feature">
+                        <div class="about-photo about-photo-feature">
+                            <img th:src="@{/images/about/award-4.jpg}" alt="Great Place To Work 2018" onerror="this.remove()">
+                            <span class="about-photo-hint"><i class="bi bi-image"></i> award-4.jpg</span>
+                        </div>
+                        <h5>GREAT PLACE TO WORK 2018</h5>
+                        <p>Ceylon Estates was rated one of the 25 Great Work Places in Sri Lanka.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="about-feature">
+                        <div class="about-photo about-photo-feature">
+                            <img th:src="@{/images/about/award-5.jpg}" alt="Woman Super Achiever Of The Year Under Real Estate Sector" onerror="this.remove()">
+                            <span class="about-photo-hint"><i class="bi bi-image"></i> award-5.jpg</span>
+                        </div>
+                        <h5>WOMAN SUPER ACHIEVER OF THE YEAR UNDER REAL ESTATE SECTOR</h5>
+                        <p>Our Co-Chairperson was recognised as Woman Super Achiever of the Year under the Real Estate Sector.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

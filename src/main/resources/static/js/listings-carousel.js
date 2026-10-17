@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const visibleCount = 4;
 
+    // The "Explore more" button always points at the page for the selected tab
+    // (Lands -> /lands, Houses -> /houses, Apartments -> /apartments).
+    const exploreMore = document.getElementById('listingExploreMore');
+
+    function updateExploreLink(tab) {
+        if (exploreMore && tab && tab.dataset.href) {
+            exploreMore.setAttribute('href', tab.dataset.href);
+        }
+    }
+
     // Keep the full set of listings in memory, detached from the track, so we
     // can freely rebuild the track's contents for whichever category is active.
     const allCards = Array.from(track.children);
@@ -89,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             tab.classList.add('active');
             render(tab.dataset.filter);
+            updateExploreLink(tab);
         });
     });
 
@@ -96,5 +107,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const initialTab = document.querySelector('.listing-tab.active') || tabs[0];
     if (initialTab) {
         render(initialTab.dataset.filter);
+        updateExploreLink(initialTab);
     }
 });

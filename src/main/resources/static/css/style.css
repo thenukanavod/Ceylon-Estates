@@ -242,6 +242,13 @@ body {
 
 .listing-carousel-viewport {
     overflow: hidden;
+    /* overflow:hidden also clips the top and bottom, which cut the lifted (hovered) card's
+       top edge and rounded corners. Spare room above and below stops that; the negative
+       margin keeps the layout where it was. */
+    padding-top: 28px;
+    padding-bottom: 34px;
+    margin-top: -28px;
+    margin-bottom: -34px;
 }
 
 .listing-carousel-track {
@@ -254,6 +261,7 @@ body {
     max-width: 100%;
     padding: 0 10px;
     box-sizing: border-box;
+    display: flex;               /* lets the card inside fill the full row height */
 }
 
 @media (min-width: 576px) {
@@ -271,12 +279,15 @@ body {
 }
 
 .listing-card-inner {
-    background-color: #fff;
+    background-color: var(--bs-body-bg);
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* The "pop up" on hover */
@@ -288,6 +299,7 @@ body {
 }
 
 .listing-thumb {
+    flex-shrink: 0;
     height: 200px;
     display: flex;
     align-items: flex-start;
@@ -306,19 +318,39 @@ body {
 }
 
 .listing-body {
+    flex: 1;
     padding: 18px 20px;
-    /* The card itself always has a white background regardless of the site's
-       light/dark theme toggle, so its text needs fixed dark colors too —
-       otherwise dark mode's light default text color becomes unreadable here. */
-    color: #1a1a1a;
+    /* The card background follows the theme (white in light mode, dark in dark mode),
+       so the text simply uses the theme's own colours. */
+    color: var(--bs-body-color);
 }
 
 .listing-body .text-muted {
-    color: #6c757d !important;
+    color: var(--bs-secondary-color) !important;
+}
+
+/* Same-looking cards: the title always takes two lines of space (longer titles are cut with ...)
+   and the location stays on one line, so price, line and link sit at the same height on every card. */
+.listing-body h5 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+    min-height: 2.6em;
+}
+.listing-body > .text-muted.small:not(.fst-italic) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .listing-body a {
     color: #1565c0;
+}
+
+[data-bs-theme="dark"] .listing-body a {
+    color: #6ea8fe;
 }
 
 /* ---------- Local mortgage brokers section ---------- */
@@ -345,10 +377,11 @@ body {
     scroll-behavior: smooth;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    padding-bottom: 4px;
-    /* Fade the edges instead of hard-clipping cards mid-scroll */
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 30px, black calc(100% - 30px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, black 30px, black calc(100% - 30px), transparent 100%);
+    /* A scrolling box also clips vertically, so the hover "pop" of a card was cut off
+       at the box edge (an invisible wall). Spare room around the cards stops that;
+       the negative margin keeps the layout where it was. No edge fade any more. */
+    padding: 28px 18px 34px;
+    margin: -28px -18px -34px;
 }
 
 .broker-row-viewport::-webkit-scrollbar {
@@ -406,7 +439,10 @@ body {
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 1.8rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.03em;
+    background-size: cover;
+    background-position: center;
 }
 
 .broker-scroll-btn {
@@ -434,6 +470,10 @@ body {
 
 .sell-section {
     background-color: #19555a !important;
+    /* raised rounded card floating on the page background, like the "Why us" cards */
+    margin: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
 }
 
 .sell-photo {
@@ -1178,4 +1218,122 @@ html {
     .hero-tab span {
         display: none;
     }
+}
+
+/* FAQ "Learn more" link under each answer */
+.faq-learn-more { color: #e63946; font-weight: 600; text-decoration: none; }
+.faq-learn-more:hover { text-decoration: underline; }
+
+/* ---------- Homepage panels that must follow light / dark mode ---------- */
+.why-panel { background-color: #f2efe9; }
+/* shared colour for the listings band and the section behind its curved corner */
+:root { --band-bg: #f5f5f0; }
+[data-bs-theme="dark"] { --band-bg: #16181b; }
+.listing-band { background-color: var(--band-bg); }
+[data-bs-theme="dark"] .why-panel { background-color: #1a1d21; }
+[data-bs-theme="dark"] .listing-card-inner { background-color: #24282d; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45); }
+
+/* Opened FAQ question: readable teal in both themes */
+[data-bs-theme="dark"] .faq-accordion .accordion-button:not(.collapsed) { color: #7fc4c8; }
+
+/* ---------- "Explore more" button under the latest-listings carousel ---------- */
+.explore-more-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px 12px 38px;
+    color: var(--bs-body-color);
+    font-weight: 500;
+    text-decoration: none;
+    z-index: 1;
+    align-self: flex-start;
+    width: fit-content;
+}
+
+/* the red circle sitting behind the start of the text; it grows to fill the button on hover */
+.explore-more-btn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 46px;
+    height: 46px;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background-color: #e63946;
+    z-index: -1;
+    transition: width 0.3s ease;
+}
+
+.explore-more-btn:hover {
+    color: #fff;
+}
+
+/* for buttons that sit on a coloured background (teal panel, dark teal band) */
+.explore-more-white {
+    color: #fff;
+}
+
+.explore-more-btn:hover::before {
+    width: 100%;
+}
+
+.explore-more-btn i {
+    transition: transform 0.25s ease;
+}
+
+.explore-more-btn:hover i {
+    transform: translateX(4px);
+}
+
+/* The three big photos on the homepage are links to their own pages.
+   Same raised look and hover lift as the "Why us" card beside them. */
+.category-card {
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    /* keeps the fade-in from .reveal-on-scroll while adding the hover lift */
+    transition: opacity 0.7s ease, transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* once a card has faded in, drop the staggered delay so the hover reacts straight away */
+.category-card.is-visible {
+    transition-delay: 0s !important;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
+}
+
+/* ---------- Curved corner on the "Explore Our Latest Listings" band ----------
+   The corner cut-out shows the section behind it, so that section gets the same colour as the
+   carousel area underneath (otherwise a different shade shows in the curve). */
+#listings { background-color: var(--band-bg); }
+.listings-head { border-bottom-right-radius: 180px; }
+@media (max-width: 991px) {
+    .listings-head { border-bottom-right-radius: 80px; }
+}
+
+/* ---------- "Why us" panel: rounded raised card, same corners as the three photos beside it ---------- */
+.why-card {
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    /* keeps the fade-in from .reveal-on-scroll while adding the hover lift */
+    transition: opacity 0.7s ease, transform 0.35s ease, box-shadow 0.35s ease;
+}
+.why-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
+}
+
+/* ---------- Line between the listings and brokers sections ----------
+   A thin line that fades out at both ends, sitting where the two shades meet. */
+.section-divider {
+    height: 1px;
+    margin: 0 4rem;
+    background: linear-gradient(90deg, transparent, rgba(127, 127, 127, 0.55) 18%, rgba(127, 127, 127, 0.55) 82%, transparent);
+}
+@media (max-width: 575px) {
+    .section-divider { margin: 0 1.5rem; }
 }

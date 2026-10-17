@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 /**
  * One photo in a property's gallery. The url is either a bundled image
- * (/images/properties/house-1.jpg) or an uploaded file served from the
+ * (/images/properties/house1.png) or an uploaded file served from the
  * external uploads folder (/uploads/properties/<uuid>.jpg).
  */
 @Entity

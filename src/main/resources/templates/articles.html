@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Articles</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{articles.title}, #{articles.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a th:href="@{/articles}" class="btn btn-sm article-chip" th:classappend="${selectedTopic == null} ? 'active'" th:text="#{articles.all}">All</a>
+        <a th:each="t : ${topics}" th:href="@{/articles(topic=${t.name()})}" class="btn btn-sm article-chip"
+           th:classappend="${selectedTopic == t} ? 'active'">
+            <i class="bi" th:classappend="${t.icon}"></i> <span th:text="${t.label}">Topic</span>
+        </a>
+    </div>
+
+    <div class="article-grid" th:if="${!#lists.isEmpty(articles)}">
+        <article class="article-card" th:each="a : ${articles}">
+            <div class="article-card-top" th:style="'background:' + ${a.topic.gradient}">
+                <i class="bi" th:classappend="${a.topic.icon}"></i>
+                <span class="article-topic" th:text="${a.topic.label}">Topic</span>
+            </div>
+            <div class="article-card-body">
+                <h5 class="fw-bold"><a th:href="@{/articles/{id}(id=${a.id})}" class="text-reset text-decoration-none" th:text="${a.title}">Title</a></h5>
+                <p class="text-muted small mb-3" th:text="${a.summary}">Summary</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="small text-muted" th:text="${a.source}">Source</span>
+                    <a th:href="@{/articles/{id}(id=${a.id})}" class="btn btn-sm text-white fw-semibold article-read">
+                        <span th:text="#{articles.read}">Read article</span> <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(articles)}">
+        <i class="bi bi-journal-text"></i>
+        <h4 th:text="#{articles.emptyTitle}">No articles yet</h4>
+    </div>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

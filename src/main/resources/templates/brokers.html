@@ -11,35 +11,85 @@
     <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
     <div class="alert alert-danger" th:if="${flashError != null}" th:text="${flashError}">Error.</div>
 
-    <form th:action="@{/brokers}" method="get" class="big-search mb-3">
-        <input type="hidden" name="province" th:value="${selectedProvince}">
-        <input type="hidden" name="minRating" th:value="${minRating}">
-        <input type="hidden" name="sort" th:value="${sort}">
-        <input type="text" name="q" th:value="${q}" th:placeholder="#{brokers.searchPlaceholder}">
-        <button type="submit"><i class="bi bi-search"></i></button>
+    <!-- Search + Filters button + Sort dropdown (one GET form, so everything chosen stays together) -->
+    <form th:action="@{/brokers}" method="get" id="brokerForm">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <div class="big-search flex-grow-1" style="max-width: 560px;">
+                <input type="text" name="q" th:value="${q}" th:placeholder="#{brokers.searchPlaceholder}">
+                <button type="submit"><i class="bi bi-search"></i></button>
+            </div>
+
+            <button type="button" class="btn broker-tool-btn" data-bs-toggle="collapse" data-bs-target="#brokerFilters"
+                    aria-expanded="false" aria-controls="brokerFilters">
+                <i class="bi bi-sliders"></i> <span th:text="#{brokers.filters}">Filters</span>
+                <span class="badge rounded-pill bg-danger ms-1" th:if="${activeFilters > 0}" th:text="${activeFilters}">2</span>
+            </button>
+
+            <div class="d-flex align-items-center gap-2 ms-lg-auto">
+                <label for="brokerSort" class="small text-muted mb-0" th:text="#{brokers.sortBy}">Sort:</label>
+                <select id="brokerSort" name="sort" class="form-select broker-sort-select">
+                    <option value="name" th:selected="${sort == 'name'}" th:text="#{brokers.sortName}">Name (A-Z)</option>
+                    <option value="rating" th:selected="${sort == 'rating'}" th:text="#{brokers.sortRating}">Top rated</option>
+                    <option value="province" th:selected="${sort == 'province'}" th:text="#{brokers.sortProvince}">Province</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Hidden until the Filters button is clicked -->
+        <div class="collapse" id="brokerFilters">
+            <div class="broker-filter-panel mb-3">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold small" for="fDistrict" th:text="#{home.brokers.aroundYou}">Brokers around you</label>
+                        <select id="fDistrict" name="district" class="form-select">
+                            <option value="" th:text="#{brokers.allDistricts}">All districts</option>
+                            <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}"
+                                    th:selected="${selectedDistrict != null and selectedDistrict == d}">Colombo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold small" for="fProvince" th:text="#{brokers.province}">Province</label>
+                        <select id="fProvince" name="province" class="form-select">
+                            <option value="" th:text="#{brokers.allProvinces}">All provinces</option>
+                            <option th:each="pr : ${provinces}" th:value="${pr.key}" th:text="#{${pr.messageKey}}"
+                                    th:selected="${selectedProvince != null and selectedProvince == pr}">Western</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold small" for="fRating" th:text="#{brokers.minRating}">Minimum rating</label>
+                        <select id="fRating" name="minRating" class="form-select">
+                            <option value="0" th:selected="${minRating == 0}" th:text="#{brokers.anyRating}">Any</option>
+                            <option th:each="n : ${ {4,3,2,1} }" th:value="${n}" th:selected="${minRating == n}"
+                                    th:text="${n} + ' ' + #{brokers.starsAndUp}">4 stars and up</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-teal" th:text="#{brokers.applyFilters}">Apply filters</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/brokers(q=${q},sort=${sort})}" th:text="#{brokers.clearFilters}">Clear</a>
+                </div>
+            </div>
+        </div>
     </form>
 
-    <div class="chip-row mb-3">
-        <a class="chip" th:classappend="${selectedProvince == ''} ? 'active'" th:href="@{/brokers(q=${q},minRating=${minRating},sort=${sort})}" th:text="#{brokers.allProvinces}">All</a>
-        <a class="chip" th:each="pr : ${provinces}" th:classappend="${selectedProvince == pr.key} ? 'active'"
-           th:href="@{/brokers(province=${pr.key},q=${q},minRating=${minRating},sort=${sort})}" th:text="#{${pr.messageKey}}">Western</a>
+    <!-- Active filters as small removable tags -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3" th:if="${activeFilters > 0}">
+        <span class="broker-tag" th:if="${selectedDistrict != null}">
+            <span th:text="${selectedDistrict.label}">Colombo</span>
+            <a th:href="@{/brokers(q=${q},province=${selectedProvince != null ? selectedProvince.key : ''},minRating=${minRating},sort=${sort})}" aria-label="Remove">&times;</a>
+        </span>
+        <span class="broker-tag" th:if="${selectedProvince != null}">
+            <span th:text="#{${selectedProvince.messageKey}}">Western</span>
+            <a th:href="@{/brokers(q=${q},district=${selectedDistrict != null ? selectedDistrict.name() : ''},minRating=${minRating},sort=${sort})}" aria-label="Remove">&times;</a>
+        </span>
+        <span class="broker-tag" th:if="${minRating > 0}">
+            <i class="bi bi-star-fill"></i> <span th:text="${minRating} + '+'">4+</span>
+            <a th:href="@{/brokers(q=${q},district=${selectedDistrict != null ? selectedDistrict.name() : ''},province=${selectedProvince != null ? selectedProvince.key : ''},sort=${sort})}" aria-label="Remove">&times;</a>
+        </span>
+        <a class="small" th:href="@{/brokers(q=${q},sort=${sort})}" th:text="#{brokers.clearAll}">Clear all</a>
     </div>
 
-    <!-- Filter by rating + sort -->
-    <div class="chip-row mb-4 align-items-center">
-        <span class="small text-muted me-1" th:text="#{brokers.filterRating}">Rating:</span>
-        <a class="chip" th:classappend="${minRating == 0} ? 'active'"
-           th:href="@{/brokers(province=${selectedProvince},q=${q},sort=${sort})}" th:text="#{brokers.anyRating}">Any</a>
-        <a class="chip" th:each="n : ${ {4,3,2,1} }" th:classappend="${minRating == n} ? 'active'"
-           th:href="@{/brokers(province=${selectedProvince},q=${q},minRating=${n},sort=${sort})}">
-            <i class="bi bi-star-fill"></i> <span th:text="${n}">4</span>+
-        </a>
-        <span class="ms-3 small text-muted" th:text="#{brokers.sortBy}">Sort:</span>
-        <a class="chip" th:classappend="${sort == 'name'} ? 'active'"
-           th:href="@{/brokers(province=${selectedProvince},q=${q},minRating=${minRating},sort='name')}" th:text="#{brokers.sortName}">Name</a>
-        <a class="chip" th:classappend="${sort == 'rating'} ? 'active'"
-           th:href="@{/brokers(province=${selectedProvince},q=${q},minRating=${minRating},sort='rating')}" th:text="#{brokers.sortRating}">Top rated</a>
-    </div>
+    <p class="text-muted small mb-3" th:text="#{brokers.resultCount(${#lists.size(cards)})}">12 brokers found</p>
 
     <div class="row g-4" th:if="${!#lists.isEmpty(cards)}">
         <div class="col-xl-4 col-md-6" th:each="c : ${cards}" th:id="'broker-' + ${c.broker.id}">
@@ -115,9 +165,26 @@
         <h4 th:text="#{brokers.emptyTitle}">No brokers found</h4>
         <p class="text-muted" th:text="#{brokers.emptyText}">Try another province, rating or search.</p>
     </div>
+
+    <!-- Become a broker -->
+    <section class="broker-apply-band mt-5">
+        <div>
+            <h3 class="fw-bold mb-1" th:text="#{brokers.apply.heading}">Are you a mortgage broker?</h3>
+            <p class="mb-0" th:text="#{brokers.apply.text}">Apply to be listed. Our team reviews every application.</p>
+        </div>
+        <a th:href="@{/brokers/apply}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2"
+           style="background-color: #e63946; border-radius: 30px; padding: 10px 28px;">
+            <span th:text="#{brokers.apply.button}">Apply to be a broker</span> <i class="bi bi-arrow-right"></i>
+        </a>
+    </section>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
 <div th:replace="~{fragments/layout :: scripts}"></div>
+<script>
+    // Changing the sort re-orders the list straight away
+    var sortSelect = document.getElementById('brokerSort');
+    if (sortSelect) { sortSelect.addEventListener('change', function () { sortSelect.form.submit(); }); }
+</script>
 </body>
 </html>

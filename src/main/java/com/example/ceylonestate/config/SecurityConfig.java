@@ -97,7 +97,8 @@ public class SecurityConfig {
                         "/css/**", "/js/**", "/images/**", "/api/health", "/h2-console/**",
                         // Public property pages - anyone can browse without an account
                         "/properties", "/properties/**", "/projects",
-                        "/brokers", "/local-info", "/local-info/suggest", "/contact",
+                        "/lands", "/houses", "/apartments", "/about",
+                        "/brokers", "/articles", "/articles/**", "/local-info", "/local-info/suggest", "/contact",
                         // Uploaded listing photos must be visible to visitors, and the error page must render
                         "/uploads/**", "/error"
                 ).permitAll()

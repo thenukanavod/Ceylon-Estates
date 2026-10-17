@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Article</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${article.title}, ${article.source})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <a th:href="@{/articles}" class="btn btn-sm article-chip mb-4"><i class="bi bi-arrow-left"></i> <span th:text="#{articles.back}">All articles</span></a>
+
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <article class="article-body">
+                <span class="badge article-badge mb-3" th:style="'background:' + ${article.topic.gradient}">
+                    <i class="bi" th:classappend="${article.topic.icon}"></i> <span th:text="${article.topic.label}">Topic</span>
+                </span>
+                <p class="lead text-muted" th:text="${article.summary}">Summary</p>
+
+                <th:block th:each="b : ${blocks}">
+                    <h2 th:if="${b.heading}" th:text="${b.text}">Heading</h2>
+                    <h4 th:if="${b.subheading}" th:text="${b.text}">Subheading</h4>
+                    <p th:if="${b.paragraph}" th:text="${b.text}">Paragraph</p>
+                    <p th:if="${b.labelled}"><strong th:text="${b.label}">Label:</strong> <span th:text="${b.text}">text</span></p>
+                    <ul th:if="${b.list}"><li th:each="item : ${b.items}" th:text="${item}">item</li></ul>
+                    <div class="table-responsive" th:if="${b.table}">
+                        <table class="table table-bordered align-middle">
+                            <thead><tr><th th:each="c : ${b.rows[0]}" th:text="${c}">h</th></tr></thead>
+                            <tbody>
+                            <tr th:each="row, st : ${b.rows}" th:unless="${st.first}"><td th:each="c : ${row}" th:text="${c}">c</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <figure th:if="${b.image}" class="article-figure">
+                        <img th:src="@{'/images/articles/' + ${b.label}}" th:alt="${b.text}" class="img-fluid">
+                    </figure>
+                </th:block>
+            </article>
+        </div>
+
+        <aside class="col-lg-4" th:if="${!#lists.isEmpty(related)}">
+            <div class="side-card">
+                <h5 class="fw-bold mb-3" th:text="#{articles.related}">More to read</h5>
+                <a th:each="r : ${related}" th:href="@{/articles/{id}(id=${r.id})}" class="d-block py-2 border-top text-decoration-none" th:text="${r.title}">Other article</a>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

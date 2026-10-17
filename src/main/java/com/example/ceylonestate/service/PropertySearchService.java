@@ -1,7 +1,11 @@
 package com.example.ceylonestate.service;
 
 import com.example.ceylonestate.dto.PropertyFilter;
+import com.example.ceylonestate.model.ApartmentProperty;
 import com.example.ceylonestate.model.District;
+import com.example.ceylonestate.model.DwellingProperty;
+import com.example.ceylonestate.model.HouseProperty;
+import com.example.ceylonestate.model.LandProperty;
 import com.example.ceylonestate.model.ListingStatus;
 import com.example.ceylonestate.model.Property;
 import com.example.ceylonestate.repository.PropertyRepository;
@@ -144,6 +148,32 @@ public class PropertySearchService {
 
         if (f.isPet()) {
             all = all.and(Property::isPetFriendly);
+        }
+
+        // --- Options used by the Lands / Houses / Apartments pages ---
+        if (f.getMinPerches() != null && f.getMinPerches() > 0) {
+            double min = f.getMinPerches();
+            all = all.and(x -> x instanceof LandProperty land && land.getAreaPerches() >= min);
+        }
+        if (f.getMaxPerches() != null && f.getMaxPerches() > 0) {
+            double max = f.getMaxPerches();
+            all = all.and(x -> x instanceof LandProperty land && land.getAreaPerches() <= max);
+        }
+        if (notBlank(f.getZoning())) {
+            String zone = f.getZoning().trim().toLowerCase(Locale.ROOT);
+            all = all.and(x -> x instanceof LandProperty land
+                    && land.getZoning() != null
+                    && land.getZoning().toLowerCase(Locale.ROOT).contains(zone));
+        }
+        if (f.isGarden()) {
+            all = all.and(x -> x instanceof HouseProperty house && house.isHasGarden());
+        }
+        if (f.isLift()) {
+            all = all.and(x -> x instanceof ApartmentProperty flat && flat.isHasLift());
+        }
+        if (f.getMinSqft() != null && f.getMinSqft() > 0) {
+            double min = f.getMinSqft();
+            all = all.and(x -> x instanceof DwellingProperty home && home.getFloorAreaSqft() >= min);
         }
 
         return all.test(p);

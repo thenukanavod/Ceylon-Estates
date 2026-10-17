@@ -12,12 +12,14 @@
         <p class="text-muted" th:text="#{verify.description}"></p>
 
         <div class="alert alert-success" th:if="${resent}" th:text="#{verify.resent}"></div>
+        <div class="alert alert-warning" th:if="${emailFailed}" th:text="#{verify.emailFailed}">We could not send the email.</div>
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
         <form th:action="@{/verify-2fa}" method="post">
             <div class="mb-3">
                 <label class="form-label" th:text="#{verify.code}">Verification code</label>
-                <input type="text" name="code" class="form-control" maxlength="6" inputmode="numeric" autocomplete="one-time-code" autofocus>
+                <input type="text" name="code" class="form-control form-control-lg text-center font-monospace" maxlength="12" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" autofocus>
+                <div class="form-text" th:text="#{verify.backupHint}">Lost access to your email? Enter one of your backup codes here instead.</div>
             </div>
             <button type="submit" class="btn btn-dark w-100" th:text="#{verify.submit}">Verify</button>
         </form>

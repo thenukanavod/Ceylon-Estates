@@ -44,16 +44,23 @@ public class BrokerController {
 
     @GetMapping("/brokers")
     public String directory(@RequestParam(required = false) String province,
+                            @RequestParam(required = false) String district,
                             @RequestParam(required = false) String q,
                             @RequestParam(required = false, defaultValue = "0") int minRating,
                             @RequestParam(required = false, defaultValue = "name") String sort,
                             Model model) {
 
-        Province selected = Province.fromKey(province);
-        List<Broker> brokers = selected == null
-                ? brokerRepository.findAllByOrderByNameAsc()
-                : brokerRepository.findByDistrictInOrderByNameAsc(District.inProvince(selected));
+        Province selectedProvince = Province.fromKey(province);
+        District selectedDistrict = parseDistrict(district);
 
+        // FILTERS narrow the list down...
+        List<Broker> brokers = brokerRepository.findAllByOrderByNameAsc();
+        if (selectedProvince != null) {
+            brokers = brokers.stream().filter(b -> b.getProvince() == selectedProvince).toList();
+        }
+        if (selectedDistrict != null) {
+            brokers = brokers.stream().filter(b -> b.getDistrict() == selectedDistrict).toList();
+        }
         if (q != null && !q.isBlank()) {
             String needle = q.trim().toLowerCase(Locale.ROOT);
             brokers = brokers.stream()
@@ -69,20 +76,50 @@ public class BrokerController {
         if (min > 0) {
             cards = cards.stream().filter(c -> c.getCount() > 0 && c.getAverage() >= min).toList();
         }
-        if ("rating".equals(sort)) {
-            cards = cards.stream()
+
+        // ...SORT only changes the order of what is left.
+        String sortKey = switch (sort) {
+            case "rating", "province" -> sort;
+            default -> "name";
+        };
+        Comparator<BrokerCard> byName = Comparator.comparing(c -> c.getBroker().getName(), String.CASE_INSENSITIVE_ORDER);
+        cards = switch (sortKey) {
+            case "rating" -> cards.stream()
                     .sorted(Comparator.comparingDouble(BrokerCard::getAverage).reversed()
-                            .thenComparing(Comparator.comparingLong(BrokerCard::getCount).reversed()))
+                            .thenComparing(Comparator.comparingLong(BrokerCard::getCount).reversed())
+                            .thenComparing(byName))
                     .toList();
-        }
+            case "province" -> cards.stream()
+                    .sorted(Comparator.<BrokerCard, Integer>comparing(c -> c.getBroker().getProvince().ordinal())
+                            .thenComparing(c -> c.getBroker().getDistrict().getLabel())
+                            .thenComparing(byName))
+                    .toList();
+            default -> cards.stream().sorted(byName).toList();
+        };
+
+        int activeFilters = (selectedProvince != null ? 1 : 0) + (selectedDistrict != null ? 1 : 0) + (min > 0 ? 1 : 0);
 
         model.addAttribute("cards", cards);
         model.addAttribute("provinces", Province.values());
-        model.addAttribute("selectedProvince", selected == null ? "" : selected.getKey());
+        model.addAttribute("districts", District.values());
+        model.addAttribute("selectedProvince", selectedProvince);
+        model.addAttribute("selectedDistrict", selectedDistrict);
         model.addAttribute("q", q == null ? "" : q);
         model.addAttribute("minRating", min);
-        model.addAttribute("sort", "rating".equals(sort) ? "rating" : "name");
+        model.addAttribute("sort", sortKey);
+        model.addAttribute("activeFilters", activeFilters);
         return "brokers";
+    }
+
+    private static District parseDistrict(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        try {
+            return District.valueOf(name.trim());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     @PostMapping("/brokers/{id}/review")

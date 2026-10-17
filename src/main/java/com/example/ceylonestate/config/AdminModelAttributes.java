@@ -1,7 +1,9 @@
 package com.example.ceylonestate.config;
 
+import com.example.ceylonestate.model.ApplicationStatus;
 import com.example.ceylonestate.model.ListingStatus;
 import com.example.ceylonestate.model.MessageStatus;
+import com.example.ceylonestate.repository.BrokerApplicationRepository;
 import com.example.ceylonestate.repository.ContactMessageRepository;
 import com.example.ceylonestate.repository.PropertyRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,16 +22,19 @@ public class AdminModelAttributes {
 
     private final ContactMessageRepository contactMessageRepository;
     private final PropertyRepository propertyRepository;
+    private final BrokerApplicationRepository brokerApplicationRepository;
 
     public AdminModelAttributes(ContactMessageRepository contactMessageRepository,
-                                PropertyRepository propertyRepository) {
+                                PropertyRepository propertyRepository,
+                                BrokerApplicationRepository brokerApplicationRepository) {
         this.contactMessageRepository = contactMessageRepository;
         this.propertyRepository = propertyRepository;
+        this.brokerApplicationRepository = brokerApplicationRepository;
     }
 
     @ModelAttribute
     public void addAdminCounters(HttpServletRequest request, Model model) {
-        if (!request.getRequestURI().startsWith("/admin")) {
+        if (!request.getRequestURI().substring(request.getContextPath().length()).startsWith("/admin")) {
             return;
         }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -40,5 +45,6 @@ public class AdminModelAttributes {
         }
         model.addAttribute("unreadMessages", contactMessageRepository.countByStatus(MessageStatus.NEW));
         model.addAttribute("pendingListings", propertyRepository.countByStatus(ListingStatus.PENDING));
+        model.addAttribute("pendingApplications", brokerApplicationRepository.countByStatus(ApplicationStatus.PENDING));
     }
 }

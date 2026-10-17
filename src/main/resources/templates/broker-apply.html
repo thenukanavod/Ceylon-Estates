@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Apply to be a broker</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{brokerApply.title}, #{brokerApply.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Sent.</div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <form th:action="@{/brokers/apply}" th:object="${form}" method="post" class="form-section" novalidate>
+                <h2 th:text="#{brokerApply.formTitle}">Your broker details</h2>
+                <div class="alert alert-danger py-2 small" th:if="${#fields.hasGlobalErrors()}" th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="name" th:text="#{brokerApply.name}">Full name</label>
+                        <input class="form-control" id="name" th:field="*{name}" th:errorclass="is-invalid" maxlength="80">
+                        <div class="invalid-feedback" th:errors="*{name}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="email" th:text="#{brokerApply.email}">Email</label>
+                        <input class="form-control" id="email" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="120">
+                        <div class="invalid-feedback" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="phone" th:text="#{brokerApply.phone}">Phone</label>
+                        <input class="form-control" id="phone" th:field="*{phone}" th:errorclass="is-invalid" maxlength="30">
+                        <div class="invalid-feedback" th:errors="*{phone}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="district" th:text="#{brokerApply.district}">District</label>
+                        <select class="form-select" id="district" th:field="*{district}" th:errorclass="is-invalid">
+                            <option value="" th:text="#{brokerApply.chooseDistrict}">Choose a district</option>
+                            <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}">Colombo</option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{district}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="company" th:text="#{brokerApply.company}">Company</label>
+                        <input class="form-control" id="company" th:field="*{company}" th:errorclass="is-invalid" maxlength="100">
+                        <div class="invalid-feedback" th:errors="*{company}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="licenseNumber" th:text="#{brokerApply.license}">License number</label>
+                        <input class="form-control" id="licenseNumber" th:field="*{licenseNumber}" th:errorclass="is-invalid" maxlength="40">
+                        <div class="invalid-feedback" th:errors="*{licenseNumber}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="bio" th:text="#{brokerApply.bio}">About you</label>
+                        <textarea class="form-control" id="bio" rows="4" th:field="*{bio}" th:errorclass="is-invalid" maxlength="500"></textarea>
+                        <div class="invalid-feedback" th:errors="*{bio}"></div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-teal px-4 mt-3"><i class="bi bi-send"></i> <span th:text="#{brokerApply.submit}">Send application</span></button>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="side-card" th:if="${!#lists.isEmpty(myApplications)}">
+                <h5 class="fw-bold mb-3" th:text="#{brokerApply.mine}">Your applications</h5>
+                <div class="d-flex justify-content-between align-items-center py-2 border-top" th:each="a : ${myApplications}">
+                    <div>
+                        <div class="fw-semibold" th:text="${a.name}">Name</div>
+                        <div class="small text-muted" th:text="${a.district.label} + ' · ' + ${#temporals.format(a.createdAt, 'd MMM yyyy')}">Colombo</div>
+                    </div>
+                    <span class="badge" th:classappend="'text-bg-' + ${a.status.badgeClass}" th:text="${a.status.label}">Pending</span>
+                </div>
+                <p class="small text-muted mt-3 mb-0" th:text="#{brokerApply.approvedNote}">Approved applications appear on the Brokers page.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

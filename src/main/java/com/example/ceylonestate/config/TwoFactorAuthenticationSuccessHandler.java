@@ -48,7 +48,7 @@ public class TwoFactorAuthenticationSuccessHandler implements AuthenticationSucc
 
         if (!user.isTwoFaEnabled()) {
             // 2FA is off - the login Spring Security already granted stands as-is.
-            response.sendRedirect(user.getDashboardPath());
+            response.sendRedirect(request.getContextPath() + user.getDashboardPath());
             return;
         }
 
@@ -71,18 +71,18 @@ public class TwoFactorAuthenticationSuccessHandler implements AuthenticationSucc
         rememberMeCookie.setMaxAge(0);
         response.addCookie(rememberMeCookie);
 
-        if ("BACKUP_CODES".equals(user.getTwoFaMethod())) {
-            response.sendRedirect("/verify-backup-code");
-            return;
-        }
-
-        // Default: email a code
+        // Always email a code. If the email cannot be sent, the person is still taken to the
+        // verification page, where one of their backup codes works instead.
         String code = String.valueOf(100000 + random.nextInt(900000)); // 6 digits
         user.setTwoFaCode(code);
         user.setTwoFaCodeExpiry(LocalDateTime.now().plusMinutes(10));
         userRepository.save(user);
-        emailService.sendTwoFactorCode(user.getEffectiveTwoFaEmail(), code);
+        try {
+            emailService.sendTwoFactorCode(user.getEffectiveTwoFaEmail(), code);
+        } catch (RuntimeException e) {
+            newSession.setAttribute("EMAIL_FAILED", true);
+        }
 
-        response.sendRedirect("/verify-2fa");
+        response.sendRedirect(request.getContextPath() + "/verify-2fa");
     }
 }

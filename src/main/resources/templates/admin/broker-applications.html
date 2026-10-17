@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Broker applications</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminApps.title}, #{adminApps.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('applications')}"></div>
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+
+    <div class="table-responsive" th:if="${!#lists.isEmpty(applications)}">
+        <table class="table align-middle">
+            <thead>
+            <tr>
+                <th th:text="#{adminApps.colApplicant}">Applicant</th>
+                <th th:text="#{adminApps.colDistrict}">District</th>
+                <th th:text="#{adminApps.colSent}">Sent</th>
+                <th th:text="#{booking.colStatus}">Status</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${applications}">
+                <td>
+                    <div class="fw-semibold" th:text="${a.name}">Name</div>
+                    <div class="small text-muted" th:if="${a.company != null}" th:text="${a.company}">Company</div>
+                    <div class="small"><i class="bi bi-envelope"></i> <span th:text="${a.email}">a@b.c</span></div>
+                    <div class="small"><i class="bi bi-telephone-fill"></i> <span th:text="${a.phone}">077</span></div>
+                    <div class="small text-muted" th:if="${a.licenseNumber != null}" th:text="'License: ' + ${a.licenseNumber}">License</div>
+                    <div class="small text-muted fst-italic" th:if="${a.bio != null}" th:text="${a.bio}">bio</div>
+                    <div class="small text-muted">@<span th:text="${a.applicant.username}">user</span></div>
+                </td>
+                <td th:text="${a.district.label}">Colombo</td>
+                <td th:text="${#temporals.format(a.createdAt, 'd MMM yyyy, HH:mm')}">1 Oct 2026</td>
+                <td><span class="badge" th:classappend="'text-bg-' + ${a.status.badgeClass}" th:text="${a.status.label}">Pending</span></td>
+                <td class="text-end">
+                    <div class="d-inline-flex gap-1 table-actions">
+                        <form th:action="@{/admin/broker-applications/{id}/approve(id=${a.id})}" method="post" th:if="${a.status.name() != 'APPROVED'}">
+                            <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check-lg"></i> <span th:text="#{adminApps.approve}">Approve</span></button>
+                        </form>
+                        <form th:action="@{/admin/broker-applications/{id}/reject(id=${a.id})}" method="post" th:if="${a.status.name() == 'PENDING'}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i> <span th:text="#{adminApps.reject}">Reject</span></button>
+                        </form>
+                        <form th:action="@{/admin/broker-applications/{id}/delete(id=${a.id})}" method="post"
+                              th:attr="onsubmit='return confirm(\'' + #{mine.confirmDelete} + '\');'">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" th:title="#{common.delete}"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(applications)}">
+        <i class="bi bi-person-plus"></i>
+        <h4 th:text="#{adminApps.emptyTitle}">No applications yet</h4>
+        <p class="text-muted" th:text="#{adminApps.emptyText}">Broker applications from users appear here.</p>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

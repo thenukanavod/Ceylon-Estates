@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Result count + card grid + empty state, shared by the three category pages.
+     Usage: <div th:replace="~{fragments/category :: results(${results}, @{/lands})}"></div> -->
+<div th:fragment="results(results, resetUrl)">
+    <p class="text-muted" th:text="#{category.resultCount(${#lists.size(results)})}">12 listings found</p>
+
+    <div class="listing-grid" th:if="${!#lists.isEmpty(results)}">
+        <div th:each="p : ${results}" class="listing-card" th:attr="data-type=${p.typeKey}">
+            <div th:replace="~{fragments/cards :: card(${p})}"></div>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(results)}">
+        <i class="bi bi-house-slash"></i>
+        <h4 th:text="#{search.emptyTitle}">No properties match your search</h4>
+        <p class="text-muted" th:text="#{search.emptyText}">Try widening your filters.</p>
+        <a th:href="${resetUrl}" class="btn btn-teal" th:text="#{search.reset}">Clear filters</a>
+    </div>
+</div>
+
+</body>
+</html>

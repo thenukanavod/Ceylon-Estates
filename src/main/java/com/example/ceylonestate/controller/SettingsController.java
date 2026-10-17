@@ -2,7 +2,7 @@ package com.example.ceylonestate.controller;
 
 import com.example.ceylonestate.model.User;
 import com.example.ceylonestate.repository.UserRepository;
-import org.springframework.security.core.Authentication;
+import com.example.ceylonestate.service.CurrentUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +18,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * App settings. Two-factor authentication is ONE feature with one on/off switch:
+ * when it is on, a login needs the emailed code, and the backup codes work as a
+ * fallback on that same verification page if the email does not arrive.
+ *   POST /settings/2fa               - switch 2FA on or off
+ *   POST /settings/2fa/email         - choose where the code is emailed
+ *   POST /settings/2fa/backup-codes  - make a fresh set of backup codes
+ */
 @Controller
 public class SettingsController {
 
@@ -27,43 +35,82 @@ public class SettingsController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
     private final SecureRandom random = new SecureRandom();
 
-    public SettingsController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public SettingsController(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                              CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
     @GetMapping("/settings")
-    public String showSettings() {
+    public String showSettings(Model model) {
+        // The page is public (theme and language), so there may be nobody signed in.
+        currentUserService.get().ifPresent(u ->
+                model.addAttribute("backupCodesLeft", u.getBackupCodeHashes().size()));
+        model.addAttribute("backupCodesTotal", BACKUP_CODE_COUNT);
         return "settings";
     }
 
-    /** Turns 2FA on/off and sets the chosen method. */
+    /** The big on/off switch. Turning it on also makes the first set of backup codes. */
     @PostMapping("/settings/2fa")
-    public String updateTwoFa(Authentication authentication,
-                               @RequestParam(required = false) String twoFaEnabled,
-                               @RequestParam(defaultValue = "EMAIL") String twoFaMethod,
-                               @RequestParam(required = false) String twoFaEmail,
+    public String updateTwoFa(@RequestParam(required = false) String twoFaEnabled,
                                RedirectAttributes redirectAttributes) {
 
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
-
+        User user = currentUserService.get().orElseThrow();
         boolean enabled = "on".equals(twoFaEnabled);
+
         user.setTwoFaEnabled(enabled);
-        user.setTwoFaMethod(twoFaMethod);
-        user.setTwoFaEmail(twoFaEmail);
+        user.setTwoFaMethod("EMAIL"); // backup codes are a fallback, not a separate method
+        user.setTwoFaCode(null);
+        user.setTwoFaCodeExpiry(null);
+
+        if (enabled) {
+            if (user.getBackupCodeHashes().isEmpty()) {
+                redirectAttributes.addFlashAttribute("newBackupCodes", replaceBackupCodes(user));
+            }
+        } else {
+            user.getBackupCodeHashes().clear(); // off means nothing is left over
+        }
         userRepository.save(user);
 
-        redirectAttributes.addFlashAttribute("twoFaUpdated", true);
+        redirectAttributes.addFlashAttribute("twoFaMessage", enabled ? "settings.twoFaOn" : "settings.twoFaOff");
+        return "redirect:/settings";
+    }
+
+    /** Where the emailed code is sent (blank = the main account email). */
+    @PostMapping("/settings/2fa/email")
+    public String updateTwoFaEmail(@RequestParam(required = false) String twoFaEmail,
+                                    RedirectAttributes redirectAttributes) {
+        User user = currentUserService.get().orElseThrow();
+        String email = twoFaEmail == null ? "" : twoFaEmail.trim();
+        if (!email.isEmpty() && (email.length() > 120 || !email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"))) {
+            redirectAttributes.addFlashAttribute("twoFaError", "settings.twoFaEmailInvalid");
+            return "redirect:/settings";
+        }
+        user.setTwoFaEmail(email.isEmpty() ? null : email);
+        userRepository.save(user);
+        redirectAttributes.addFlashAttribute("twoFaMessage", "settings.twoFaUpdated");
         return "redirect:/settings";
     }
 
     /** Generates a fresh set of backup codes, replacing any existing ones, and shows them ONCE. */
     @PostMapping("/settings/2fa/backup-codes")
-    public String generateBackupCodes(Authentication authentication, RedirectAttributes redirectAttributes) {
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
+    public String generateBackupCodes(RedirectAttributes redirectAttributes) {
+        User user = currentUserService.get().orElseThrow();
+        if (!user.isTwoFaEnabled()) {
+            return "redirect:/settings";
+        }
+        // Shown once via flash attribute - we don't store the plain codes anywhere
+        redirectAttributes.addFlashAttribute("newBackupCodes", replaceBackupCodes(user));
+        userRepository.save(user);
+        return "redirect:/settings";
+    }
 
+    /** Replaces the user's stored (hashed) codes and returns the plain ones to show once. */
+    private List<String> replaceBackupCodes(User user) {
         List<String> plainCodes = IntStream.range(0, BACKUP_CODE_COUNT)
                 .mapToObj(i -> generateOneCode())
                 .collect(Collectors.toList());
@@ -73,11 +120,7 @@ public class SettingsController {
                 .collect(Collectors.toCollection(HashSet::new));
 
         user.setBackupCodeHashes(hashes);
-        userRepository.save(user);
-
-        // Shown once via flash attribute - we don't store the plain codes anywhere
-        redirectAttributes.addFlashAttribute("newBackupCodes", plainCodes);
-        return "redirect:/settings";
+        return plainCodes;
     }
 
     private String generateOneCode() {

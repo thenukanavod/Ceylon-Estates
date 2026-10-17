@@ -40,6 +40,12 @@ public class AdminAuditInterceptor implements HandlerInterceptor {
         add("^/admin/bookings/(\\d+)/confirm$", "Confirmed viewing booking #%s");
         add("^/admin/bookings/(\\d+)/decline$", "Declined viewing booking #%s");
         add("^/admin/bookings/(\\d+)/delete$", "Deleted viewing booking #%s");
+        add("^/admin/broker-applications/(\\d+)/approve$", "Approved broker application #%s");
+        add("^/admin/broker-applications/(\\d+)/reject$", "Rejected broker application #%s");
+        add("^/admin/broker-applications/(\\d+)/delete$", "Deleted broker application #%s");
+        add("^/admin/articles$", "Added an article");
+        add("^/admin/articles/(\\d+)$", "Edited article #%s");
+        add("^/admin/articles/(\\d+)/delete$", "Deleted article #%s");
         add("^/admin/users/new$", "Created a new admin account");
         add("^/admin/users/(\\d+)/promote$", "Made user #%s an admin");
         add("^/admin/users/(\\d+)/demote$", "Removed admin rights from user #%s");
@@ -69,7 +75,8 @@ public class AdminAuditInterceptor implements HandlerInterceptor {
         if (auth == null || !auth.isAuthenticated()) {
             return;
         }
-        String path = request.getRequestURI();
+        // strip the app's context path (/ceylonestates) so the patterns below match
+        String path = request.getRequestURI().substring(request.getContextPath().length());
         for (Map.Entry<Pattern, String> entry : ACTIONS.entrySet()) {
             Matcher m = entry.getKey().matcher(path);
             if (m.matches()) {

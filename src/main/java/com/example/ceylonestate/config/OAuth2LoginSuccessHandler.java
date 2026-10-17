@@ -17,8 +17,6 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Runs after Google confirms who someone is (via CustomOAuth2UserService).
@@ -29,10 +27,6 @@ import java.nio.charset.StandardCharsets;
  * 2FA is intentionally skipped here - Google already handles strong
  * authentication (including their own 2-Step Verification) on their end.
  *
- * Since this whole flow necessarily happens on localhost (Google won't
- * accept our custom local domain as a redirect URI), we finish by handing
- * the login off to the branded domain via a short-lived token, rather than
- * leaving the user stranded on localhost for the rest of their session.
  */
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -64,7 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             if (request.getSession(false) != null) {
                 request.getSession(false).invalidate();
             }
-            response.sendRedirect("/login?error");
+            response.sendRedirect(request.getContextPath() + "/login?error");
             return;
         }
 
@@ -81,9 +75,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         request.getSession().setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
-        // Hand off to the branded domain with a short-lived, single-use token
-        String token = ssoHandoffService.createToken(user.getUsername());
-        String redirectPath = URLEncoder.encode(user.getDashboardPath(), StandardCharsets.UTF_8);
-        response.sendRedirect("http://ceylonestates.local/sso-handoff?token=" + token + "&redirect=" + redirectPath);
+        // The site is served at http://localhost:8080/ceylonestates, the same address Google
+        // sent the user back to, so the session created above is already the right one.
+        response.sendRedirect(request.getContextPath() + user.getDashboardPath());
     }
 }

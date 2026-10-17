@@ -256,6 +256,7 @@
                     <a class="list-group-item list-group-item-action" th:href="@{/my-bookings}" th:text="#{sidebar.myBookings}">My requests</a>
                 </span>
                 <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved items</a>
+                <a class="list-group-item list-group-item-action" th:href="@{/articles}" th:text="#{sidebar.articles}">Articles</a>
                 <a class="list-group-item list-group-item-action" th:href="@{/contact}" th:text="#{contact.title}">Contact us</a>
                 <span sec:authorize="hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/admin}" th:text="#{adminNav.dashboard}">Admin: Dashboard</a>
@@ -289,7 +290,7 @@
                         </h3>
 
                         <div class="d-flex flex-wrap align-items-center gap-4 mt-4">
-                            <a href="/#sell" class="btn footer-cta-btn fw-semibold">
+                            <a th:href="@{/#sell}" class="btn footer-cta-btn fw-semibold">
                                 <span th:text="#{footer.ctaButton}">List Your Property</span>
                             </a>
                             <span class="d-flex align-items-center gap-2 text-white">

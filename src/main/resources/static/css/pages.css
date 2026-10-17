@@ -419,6 +419,7 @@ button.hero-search-btn {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-bottom: 28px;
 }
 
 .chip {
@@ -445,7 +446,7 @@ button.hero-search-btn {
 .project-ribbon {
     position: absolute;
     left: 0;
-    bottom: 14px;
+    top: 14px;
     background: #e63946;
     color: #fff;
     font-weight: 700;
@@ -1148,22 +1149,27 @@ button.hero-search-btn {
     font-size: 1.05rem;
 }
 
-/* ---------- Get Local Info band (light tint, popped-up photo) ---------- */
+/* ---------- Get Local Info band (raised rounded card, popped-up photo) ----------
+   Background #63241B is the exact complement of the Sell section's dark teal
+   (same saturation and lightness, hue turned 180 degrees: teal 187 -> red-orange 7). */
 .local-section {
-    background-color: #e3f1ee;
-    color: #1a1a1a;
+    background-color: #63241B;
+    color: #fff;
     overflow: visible;
+    margin: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
 }
 
 .local-heading-wrap {
-    border-left: 4px solid #19555a;
+    border-left: 4px solid #fff;
     padding-left: 20px;
     margin-bottom: 24px;
 }
 
 .local-heading {
     font-size: 2.2rem;
-    color: #12393c;
+    color: #fff;
     margin: 0;
 }
 
@@ -1171,7 +1177,7 @@ button.hero-search-btn {
     font-size: 1.05rem;
     line-height: 1.7;
     max-width: 520px;
-    color: #3d5a5c;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .local-search-form {
@@ -1181,9 +1187,9 @@ button.hero-search-btn {
     max-width: 520px;
     padding: 6px 6px 6px 14px;
     background: #fff;
-    border: 1px solid #c9e0dc;
+    border: 1px solid #e9c9c2;
     border-radius: 40px;
-    box-shadow: 0 6px 18px rgba(25, 85, 90, 0.12);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     margin-top: 1.5rem;
 }
 
@@ -1199,7 +1205,7 @@ button.hero-search-btn {
     flex-shrink: 0;
     border: 0;
     border-radius: 50%;
-    background: #19555a;
+    background: #63241B;
     color: #fff;
     display: flex;
     align-items: center;
@@ -1207,7 +1213,7 @@ button.hero-search-btn {
 }
 
 .local-search-btn:hover {
-    background: #123f43;
+    background: #451810;
 }
 
 .local-photo {
@@ -1215,7 +1221,7 @@ button.hero-search-btn {
     background-position: 30% 60%;
     border-radius: 16px;
     min-height: 380px;
-    box-shadow: 0 24px 50px rgba(18, 57, 60, 0.35);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4);
     transform: translateY(-14px) rotate(1deg);
 }
 
@@ -1273,4 +1279,399 @@ button.hero-search-btn {
 .broker-review {
     border-top: 1px solid rgba(128, 128, 128, 0.25);
     padding: 10px 0;
+}
+
+/* ---------- Big on/off switch (two-factor authentication) ---------- */
+.big-switch {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin: 0;
+}
+
+.big-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.big-switch-track {
+    position: relative;
+    display: block;
+    width: 104px;
+    height: 48px;
+    border-radius: 999px;
+    background: #6c757d;
+    transition: background-color 0.25s ease;
+}
+
+.big-switch-knob {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.25s ease;
+}
+
+.big-switch-text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: #fff;
+}
+
+.big-switch-on { left: 16px; opacity: 0; }
+.big-switch-off { right: 16px; }
+
+.big-switch input:checked + .big-switch-track {
+    background: #19a05a;
+}
+
+.big-switch input:checked + .big-switch-track .big-switch-knob {
+    transform: translateX(56px);
+}
+
+.big-switch input:checked + .big-switch-track .big-switch-on { opacity: 1; }
+.big-switch input:checked + .big-switch-track .big-switch-off { opacity: 0; }
+
+.big-switch input:focus-visible + .big-switch-track {
+    outline: 3px solid rgba(47, 111, 237, 0.5);
+    outline-offset: 2px;
+}
+
+/* ---------- Brokers page: Filters button, Sort, active tags, apply band ---------- */
+.broker-tool-btn {
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.broker-tool-btn:hover {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+.broker-sort-select {
+    border-radius: 999px;
+    min-width: 150px;
+    font-weight: 600;
+}
+
+.broker-filter-panel {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 16px;
+    padding: 18px;
+    background: var(--bs-tertiary-bg);
+}
+
+.broker-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px 4px 14px;
+    border-radius: 999px;
+    background: #19555a;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.broker-tag a {
+    color: #fff;
+    text-decoration: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.broker-tag a:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.broker-apply-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 28px 32px;
+    border-radius: 18px;
+    background: #19555a;
+    color: #fff;
+}
+
+/* ---------- Articles page ---------- */
+.article-chip { border: 1px solid var(--bs-border-color); border-radius: 30px; padding: 6px 16px; color: var(--bs-body-color); background: transparent; }
+.article-chip:hover { border-color: #e63946; color: #e63946; }
+.article-chip.active { background: #e63946; border-color: #e63946; color: #fff; }
+.article-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px; }
+.article-card { display: flex; flex-direction: column; border: 1px solid var(--bs-border-color); border-radius: 14px; overflow: hidden; background: var(--bs-body-bg); transition: transform .2s, box-shadow .2s; }
+.article-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,.15); }
+.article-card-top { display: flex; align-items: center; justify-content: space-between; color: #fff; padding: 22px 20px; font-size: 1.8rem; }
+.article-topic { font-size: .8rem; font-weight: 600; background: rgba(255,255,255,.22); padding: 3px 12px; border-radius: 30px; }
+.article-card-body { display: flex; flex-direction: column; flex: 1; padding: 20px; }
+.article-read { background-color: #e63946; border-radius: 30px; padding: 5px 16px; }
+.article-read:hover { background-color: #c92f3b; color: #fff; }
+
+/* ---------- Single article ---------- */
+.article-body { max-width: 760px; font-size: 1.05rem; line-height: 1.8; }
+.article-body h2 { font-size: 1.55rem; font-weight: 700; margin: 2.2rem 0 .8rem; }
+.article-body h4 { font-size: 1.15rem; font-weight: 700; margin: 1.6rem 0 .6rem; }
+.article-body li { margin-bottom: .4rem; }
+.article-badge { color: #fff; font-weight: 600; padding: 6px 14px; border-radius: 30px; }
+.article-figure { margin: 1.5rem 0; }
+.article-figure img { border-radius: 10px; border: 1px solid var(--bs-border-color); }
+
+/* ---------- Lands / Houses / Apartments pages ---------- */
+/* The Filter button floats on the edge of the header band, where the filter panel used to sit */
+.filter-bar {
+    position: relative;
+    z-index: 2;
+    margin-top: -24px;
+    margin-bottom: 16px;
+}
+
+.filter-bar + .filter-panel {
+    margin-top: 0;
+}
+
+/* ---------- About Us page ---------- */
+.about-page {
+    overflow-x: hidden;
+    /* shows inside the green band's curved corner, so it matches the section underneath */
+    background-color: #f4f1ec;
+}
+[data-bs-theme="dark"] .about-page { background-color: #16181b; }
+
+.about-cream { background-color: #f4f1ec; color: #1a1a1a; }
+.about-plain { background-color: #fafafa; color: #1a1a1a; }
+[data-bs-theme="dark"] .about-cream,
+[data-bs-theme="dark"] .about-plain { background-color: #16181b; color: #fff; }
+
+.about-block { padding: 64px 0; }
+
+.about-text {
+    font-size: 0.98rem;
+    line-height: 1.8;
+    opacity: 0.88;
+}
+
+/* Heading with a thin coloured line on the left, like the reference */
+.about-heading {
+    border-left: 2px solid #e63946;
+    padding-left: 16px;
+    margin-bottom: 18px;
+}
+.about-heading h2, .about-heading h3, .about-heading h4 { margin: 0 0 6px; font-weight: 600; }
+.about-heading-dark { border-left-color: currentColor; }
+.about-heading-light { border-left-color: #fff; }
+.about-light-title { font-weight: 300 !important; font-size: 2.2rem; letter-spacing: 0.02em; }
+.about-section-title { text-align: center; font-weight: 300; font-size: 2rem; margin-bottom: 28px; }
+
+/* ----- Teal "Why us" band ----- */
+.about-why {
+    position: relative;
+    background-color: #5f9ea0;
+    color: #fff;
+    padding: 64px 0 0;
+    margin-bottom: 150px;           /* room for the photo that hangs below the band */
+}
+.about-why .about-heading h2 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-weight: 400; }
+.about-why-text { font-size: 1rem; line-height: 1.8; max-width: 640px; padding-bottom: 72px; }
+.about-why-watermark {
+    position: absolute;
+    top: 6px;
+    left: 24%;
+    font-size: clamp(4rem, 11vw, 9rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.25);
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+}
+.about-why-photo {
+    margin-bottom: -170px;           /* sticks out of the bottom of the band */
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.25);
+}
+
+.about-strip { padding: 32px 0 56px; margin-top: -150px; padding-top: 180px; }
+.about-strip .about-badge { max-width: 150px; }
+
+/* ----- Mission / vision cards ----- */
+.about-card {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    background-color: #e8e8e8;
+    color: #1a1a1a;
+    border-radius: 14px;
+    padding: 28px 34px;
+    height: 100%;
+}
+[data-bs-theme="dark"] .about-card { background-color: #23262b; color: #fff; }
+.about-card-icon { font-size: 3rem; line-height: 1; }
+.about-card .about-heading { margin: 0; }
+.about-card h3 { font-weight: 700; font-size: 1.7rem; }
+
+/* ----- Numbers ----- */
+.about-stat { border-left: 2px solid #e63946; padding-left: 16px; }
+.about-stat-number { font-size: 2rem; font-weight: 300; line-height: 1.1; }
+.about-stat-label { font-size: 1.4rem; font-weight: 300; }
+
+/* ----- Green band ----- */
+.about-green {
+    background-color: #7a9b76;
+    color: #fff;
+    padding: 56px 0;
+    border-bottom-right-radius: 180px;
+}
+.about-green h3 { font-weight: 300; font-size: 1.6rem; }
+.about-green p { font-size: 0.92rem; line-height: 1.75; margin: 0; }
+
+/* ----- Team ----- */
+.about-member h4 { font-weight: 700; font-size: 1.35rem; }
+.about-member small { text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.75; }
+
+/* ----- Feature cards ----- */
+.about-feature {
+    background-color: #fff;
+    color: #1a1a1a;
+    border-radius: 14px;
+    padding: 18px 18px 22px;
+    height: 100%;
+}
+[data-bs-theme="dark"] .about-feature { background-color: #23262b; color: #fff; }
+.about-feature h5 { font-size: 0.9rem; font-weight: 700; margin: 18px 0 10px; }
+.about-feature p { font-size: 0.85rem; line-height: 1.7; opacity: 0.85; }
+.about-readmore {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+}
+.about-readmore:hover { text-decoration: underline; color: inherit; }
+
+/* ----- Picture slots: grey box with the expected file name until the real picture is added ----- */
+.about-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    background: repeating-linear-gradient(45deg, #d9d9d9, #d9d9d9 12px, #e4e4e4 12px, #e4e4e4 24px);
+    width: 100%;
+}
+[data-bs-theme="dark"] .about-photo {
+    background: repeating-linear-gradient(45deg, #2a2d33, #2a2d33 12px, #30343a 12px, #30343a 24px);
+}
+.about-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+.about-photo-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    padding: 8px;
+}
+[data-bs-theme="dark"] .about-photo-hint { color: #aaa; }
+.about-photo-hint .bi { font-size: 1.6rem; }
+
+.about-photo-tall     { aspect-ratio: 7 / 9; }
+.about-photo-wide     { aspect-ratio: 9 / 7; }
+.about-photo-square   { aspect-ratio: 1 / 1; }
+.about-photo-banner   { aspect-ratio: 16 / 9; }
+.about-photo-portrait { aspect-ratio: 4 / 5; margin-bottom: 14px; }
+.about-photo-feature  { aspect-ratio: 3 / 2; }
+
+@media (max-width: 991px) {
+    .about-why { margin-bottom: 40px; }
+    .about-why-text { padding-bottom: 8px; }
+    .about-why-photo { margin-bottom: 0; }
+    .about-why-watermark { left: 8%; }
+    .about-strip { margin-top: 0; padding-top: 32px; }
+    .about-green { border-bottom-right-radius: 80px; }
+}
+
+/* ---------- About page: building photo as a cut-out that overlaps the teal band ----------
+   Needs a PNG with a transparent background: static/images/about/about-building.png
+   The teal band covers only the left part of the page; the building sits across its edge and hangs below it. */
+.about-why { background-color: transparent; }
+.about-why::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 78%;
+    background-color: #5f9ea0;
+    z-index: 0;
+}
+.about-why-watermark { z-index: 0; }
+.about-why > .container-xl { position: relative; z-index: 1; }
+
+.about-why-photo,
+[data-bs-theme="dark"] .about-why-photo {
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    aspect-ratio: auto;
+    overflow: visible;
+    margin-top: -10px;
+    margin-bottom: -170px;          /* how far the building hangs below the band: make it bigger/smaller to taste */
+}
+.about-why-photo img {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.28));
+}
+/* once the PNG is there, hide the file-name hint that sits behind it */
+.about-why-photo:has(img) .about-photo-hint { display: none; }
+
+/* until the PNG is added: a dashed box with the file name */
+.about-why-photo:not(:has(img)) {
+    min-height: 420px;
+    border: 2px dashed rgba(255, 255, 255, 0.6);
+    border-radius: 14px;
+}
+.about-why-photo:not(:has(img)) .about-photo-hint { color: #fff; }
+
+@media (min-width: 992px) {
+    .about-why-photo { width: 112%; margin-left: -6%; }
+}
+@media (max-width: 991px) {
+    .about-why::before { width: 100%; }
 }

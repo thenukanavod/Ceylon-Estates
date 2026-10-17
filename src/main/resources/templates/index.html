@@ -6,7 +6,7 @@
 <body>
 
     <!-- Hero section: navbar floats on top of this background image -->
-    <div class="position-relative" style="background-image: url('/images/hero-bg-original.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh; display: flex; flex-direction: column;">
+    <div class="position-relative" th:style="'background-image: url(' + @{/images/hero-bg-original.jpg} + '); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh; display: flex; flex-direction: column;'">
 
         <div th:replace="~{fragments/layout :: navbar}"></div>
         <div th:replace="~{fragments/layout :: sidebar}"></div>
@@ -27,8 +27,9 @@
         <div class="row g-0 min-vh-100">
 
             <!-- Left: pitch + trust stats -->
-            <div class="col-lg-5 d-flex flex-column justify-content-center text-white p-5"
-                 style="background-color: #5f9ea0;">
+            <div class="col-lg-5 p-4 pe-lg-0 d-flex why-panel">
+              <div class="why-card flex-grow-1 d-flex flex-column justify-content-center text-white p-5 reveal-on-scroll"
+                   style="background-color: #5f9ea0; border-radius: 16px;">
                 <div style="border-left: 4px solid #fff; padding-left: 20px; margin-bottom: 28px;" class="reveal-on-scroll">
                     <h2 class="fw-bold" style="font-size: 2.4rem;" th:text="#{home.whyUs.heading}">Why Ceylon Estates is Number One?</h2>
                 </div>
@@ -37,8 +38,7 @@
                     Everyone dreams of owning a great piece of property.
                 </p>
 
-                <a th:href="@{/properties}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
-                   style="background-color: #e63946; border-radius: 30px; padding: 10px 28px; width: fit-content;">
+                <a th:href="@{/about}" class="explore-more-btn explore-more-white mt-2 reveal-on-scroll">
                     <span th:text="#{home.whyUs.exploreMore}">Explore more</span> <i class="bi bi-arrow-right"></i>
                 </a>
 
@@ -52,38 +52,42 @@
                         <div th:text="#{home.whyUs.districtsCovered}">Districts Covered</div>
                     </div>
                 </div>
+              </div>
             </div>
 
             <!-- Right: category cards -->
-            <div class="col-lg-7 d-flex flex-column gap-3 p-4" style="background-color: #f2efe9;">
-                <div class="flex-grow-1 d-flex align-items-end p-4 text-white reveal-on-scroll"
-                     style="border-radius: 16px; min-height: 220px; background: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), linear-gradient(135deg, #2e7d32, #66bb6a);">
+            <div class="col-lg-7 d-flex flex-column gap-3 p-4 why-panel">
+                <div class="flex-grow-1 d-flex align-items-end p-4 text-white reveal-on-scroll position-relative category-card"
+                     th:style="'border-radius: 16px; min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), url(' + @{/images/category-apartments.jpg} + ');'">
+                    <a th:href="@{/apartments}" class="stretched-link" aria-label="Apartments"></a>
                     <div>
-                        <div class="fw-bold fs-4"><i class="bi bi-tree-fill"></i> <span th:text="#{home.whyUs.landsTag}">LANDS</span></div>
-                        <div class="fw-bold fs-3" style="color: #ff6b6b;">500+</div>
-                        <div class="fw-semibold" th:text="#{home.whyUs.landListings}">LAND LISTINGS</div>
+                        <div class="fw-bold fs-4"><i class="bi bi-building-fill"></i> <span th:text="#{home.whyUs.apartmentsTag}">APARTMENTS</span></div>
+                        <div class="fw-bold fs-3" style="color: #fff;">30+</div>
+                        <div class="fw-semibold" th:text="#{home.whyUs.landListings}">APARTMENTS LISTINGS</div>
                     </div>
                 </div>
 
                 <div class="flex-grow-1 d-flex gap-3">
-                    <div class="flex-fill d-flex align-items-end p-4 text-white reveal-on-scroll"
-                         style="border-radius: 16px; min-height: 220px; transition-delay: 0.1s; background: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), linear-gradient(135deg, #1565c0, #42a5f5);">
+                    <div class="flex-fill d-flex align-items-end p-4 text-white reveal-on-scroll position-relative category-card"
+                         th:style="'border-radius: 16px; min-height: 220px; transition-delay: 0.1s; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), url(' + @{/images/category-houses.jpg} + ');'">
+                    <a th:href="@{/houses}" class="stretched-link" aria-label="Houses"></a>
                         <div>
                             <div class="fw-bold fs-4"><i class="bi bi-house-door-fill"></i> <span th:text="#{home.whyUs.housesTag}">HOUSES</span></div>
-                            <div class="fw-bold fs-5" style="color: #ff6b6b;">6</div>
+                            <div class="fw-bold fs-5" style="color: #fff;">6</div>
                             <div th:text="#{home.whyUs.onGoingProjects}">ON GOING PROJECTS</div>
-                            <div class="fw-bold fs-5 mt-2" style="color: #ff6b6b;">28</div>
+                            <div class="fw-bold fs-5 mt-2" style="color: #fff;">28</div>
                             <div th:text="#{home.whyUs.completedProjects}">COMPLETED PROJECTS</div>
                         </div>
                     </div>
 
-                    <div class="flex-fill d-flex align-items-end p-4 text-white reveal-on-scroll"
-                         style="border-radius: 16px; min-height: 220px; transition-delay: 0.2s; background: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), linear-gradient(135deg, #37474f, #78909c);">
+                    <div class="flex-fill d-flex align-items-end p-4 text-white reveal-on-scroll position-relative category-card"
+                         th:style="'border-radius: 16px; min-height: 220px; transition-delay: 0.2s; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), url(' + @{/images/category-lands.png} + ');'">
+                    <a th:href="@{/lands}" class="stretched-link" aria-label="Lands"></a>
                         <div>
-                            <div class="fw-bold fs-4"><i class="bi bi-building-fill"></i> <span th:text="#{home.whyUs.apartmentsTag}">APARTMENTS</span></div>
-                            <div class="fw-bold fs-5" style="color: #ff6b6b;">8</div>
+                            <div class="fw-bold fs-4"><i class="bi bi-tree-fill"></i> <span th:text="#{home.whyUs.landsTag}">LANDS</span></div>
+                            <div class="fw-bold fs-5" style="color: #fff;">8</div>
                             <div th:text="#{home.whyUs.onGoingProjects}">ON GOING PROJECTS</div>
-                            <div class="fw-bold fs-5 mt-2" style="color: #ff6b6b;">42</div>
+                            <div class="fw-bold fs-5 mt-2" style="color: #fff;">42</div>
                             <div th:text="#{home.whyUs.completedProjects}">COMPLETED PROJECTS</div>
                         </div>
                     </div>
@@ -95,7 +99,7 @@
 
     <!-- Latest listings: header banner + auto-rotating carousel (7 listings, 4 visible at a time) -->
     <section id="listings">
-        <div class="p-5 text-white" style="background-color: #7a9b76;">
+        <div class="p-5 text-white listings-head" style="background-color: #7a9b76;">
             <div style="border-left: 4px solid #e63946; padding-left: 16px;" class="reveal-on-scroll">
                 <h2 class="fw-bold" style="font-size: 2.2rem;" th:text="#{home.listings.heading}">Explore Our Latest Listings</h2>
             </div>
@@ -104,19 +108,19 @@
             </p>
 
             <div class="d-flex gap-3 flex-wrap reveal-on-scroll" id="listingTabs" style="transition-delay: 0.15s;">
-                <button type="button" class="listing-tab active" data-filter="land">
+                <button type="button" class="listing-tab active" data-filter="land" th:attr="data-href=@{/lands}">
                     <i class="bi bi-signpost-split-fill"></i> <span th:text="#{home.listings.tabLands}">Lands</span>
                 </button>
-                <button type="button" class="listing-tab" data-filter="house">
+                <button type="button" class="listing-tab" data-filter="house" th:attr="data-href=@{/houses}">
                     <i class="bi bi-house-door-fill"></i> <span th:text="#{home.listings.tabHouses}">Houses</span>
                 </button>
-                <button type="button" class="listing-tab" data-filter="apartment">
+                <button type="button" class="listing-tab" data-filter="apartment" th:attr="data-href=@{/apartments}">
                     <i class="bi bi-building-fill"></i> <span th:text="#{home.listings.tabApartments}">Apartments</span>
                 </button>
             </div>
         </div>
 
-        <div class="py-4" style="background-color: #f5f5f0;">
+        <div class="py-4 listing-band">
             <div class="listing-carousel-viewport px-3">
                 <div class="listing-carousel-track" id="listingTrack">
 
@@ -126,39 +130,24 @@
 
                 </div>
             </div>
+
+            <!-- Goes to the Lands / Houses / Apartments page, whichever tab is selected (see listings-carousel.js) -->
+            <div class="px-4 mt-5 pt-2 d-flex justify-content-end">
+                <a th:href="@{/lands}" id="listingExploreMore" class="explore-more-btn">
+                    <span th:text="#{home.whyUs.exploreMore}">Explore more</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
         </div>
     </section>
+
+    <!-- Thin line between the listings and brokers sections -->
+    <div class="section-divider" aria-hidden="true"></div>
 
     <!-- Local mortgage brokers: province filter + horizontally scrollable row (arrow-navigated, same hover "pop" as listing cards) -->
     <section id="brokers" class="py-5">
         <div class="container-fluid px-4">
-            <h2 class="fw-bold mb-3 reveal-on-scroll" th:text="#{home.brokers.heading}">Local mortgage brokers</h2>
-
-            <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-            <div class="dropdown">
-                <button class="btn broker-filter-btn dropdown-toggle" type="button" id="brokerDistrictDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-geo-alt"></i>
-                    <span id="brokerDistrictLabel" th:text="#{home.brokers.aroundYou}">Brokers around you</span>
-                </button>
-                <ul class="dropdown-menu" id="brokerDistrictMenu" aria-labelledby="brokerDistrictDropdown">
-                    <li><a class="dropdown-item broker-district-option active" href="#" data-province="all"
-                           th:text="#{home.brokers.aroundYou}">Brokers around you</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="western" th:text="#{province.western}">Western Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="central" th:text="#{province.central}">Central Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="southern" th:text="#{province.southern}">Southern Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="northern" th:text="#{province.northern}">Northern Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="eastern" th:text="#{province.eastern}">Eastern Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="northWestern" th:text="#{province.northWestern}">North Western Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="northCentral" th:text="#{province.northCentral}">North Central Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="uva" th:text="#{province.uva}">Uva Province</a></li>
-                    <li><a class="dropdown-item broker-district-option" href="#" data-province="sabaragamuwa" th:text="#{province.sabaragamuwa}">Sabaragamuwa Province</a></li>
-                </ul>
-            </div>
-                <a th:href="@{/brokers}" class="btn btn-teal d-inline-flex align-items-center gap-2" style="border-radius: 30px; padding: 10px 26px;">
-                    <span th:text="#{home.brokers.choose}">Choose broker</span> <i class="bi bi-arrow-right"></i>
-                </a>
+            <div style="border-left: 4px solid var(--bs-body-color); padding-left: 20px; margin-bottom: 24px;" class="reveal-on-scroll">
+                <h2 class="fw-bold mb-0" style="font-size: 2.2rem;" th:text="#{home.brokers.heading}">Local mortgage brokers</h2>
             </div>
 
             <div class="position-relative">
@@ -167,8 +156,14 @@
 
                         <div class="broker-card reveal-on-scroll" th:each="b : ${brokers}" th:attr="data-province=${b.province.key}">
                             <div class="broker-card-inner text-center p-3">
-                                <div class="broker-avatar mx-auto mb-3" th:style="'background:' + ${b.avatarGradient}"><i class="bi bi-person-fill"></i></div>
-                                <h6 class="fw-bold mb-0"><a th:href="@{/brokers(province=${b.province.key})}" class="text-decoration-none text-reset" th:text="${b.name}">Nadeesha Perera</a></h6>
+                                <div class="broker-avatar mx-auto mb-3"
+                                     th:if="${b.photoUrl != null}"
+                                     th:style="'background-image: url(' + @{${b.photoUrl}} + ');'"></div>
+                                <div class="broker-avatar mx-auto mb-3 fw-bold"
+                                     th:unless="${b.photoUrl != null}"
+                                     th:style="'background:' + ${b.avatarGradient}"
+                                     th:text="${b.initials}">NP</div>
+                                <h6 class="fw-bold mb-0"><a th:href="@{/brokers}" class="text-decoration-none text-reset" th:text="${b.name}">Nadeesha Perera</a></h6>
                                 <div class="small text-primary mb-2" th:text="#{home.brokers.role}">Mortgage Broker</div>
                                 <div class="small text-muted"><span th:text="#{home.brokers.basedIn}">Based in</span> <span th:text="${b.district.label}">Colombo</span></div>
                             </div>
@@ -181,10 +176,16 @@
                     <i class="bi bi-chevron-right"></i>
                 </button>
             </div>
+
+            <div class="mt-4 reveal-on-scroll d-flex justify-content-end">
+                <a th:href="@{/brokers}" class="explore-more-btn">
+                    <span th:text="#{home.brokers.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
         </div>
     </section>
 
-    <!-- Get Local Info: same layout idea as "Sell With Us" (coloured band + popped-up photo), in a light tint -->
+    <!-- Get Local Info: same layout idea as "Sell With Us" (raised rounded card + popped-up photo), in the complement colour of the Sell section -->
     <section class="py-5 local-section reveal-on-scroll">
         <div class="container-fluid px-4">
             <div class="row g-5 align-items-center">
@@ -210,7 +211,7 @@
 
                 <!-- Right: photo that pops out of the band -->
                 <div class="col-lg-6 order-lg-2">
-                    <div class="local-photo" style="background-image: url('/images/hero-bg-original.jpg');"></div>
+                    <div class="local-photo" th:style="'background-image: url(' + @{/images/localinfo.jpg} + ');'"></div>
                 </div>
 
             </div>
@@ -224,7 +225,7 @@
 
                 <!-- Left: property photo -->
                 <div class="col-lg-6 order-lg-1">
-                    <div class="sell-photo reveal-on-scroll" style="background-image: url('/images/hero-bg-original.jpg');"></div>
+                    <div class="sell-photo reveal-on-scroll" th:style="'background-image: url(' + @{/images/selling.jpg} + ');'"></div>
                 </div>
 
                 <!-- Right: pitch + CTA + trust stats -->
@@ -238,8 +239,7 @@
                     </p>
 
                     <div class="d-flex flex-wrap gap-3 mt-3 reveal-on-scroll" style="transition-delay: 0.1s;">
-                        <a th:href="@{/sell}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2"
-                           style="background-color: #e63946; border-radius: 30px; padding: 10px 28px;">
+                        <a th:href="@{/sell}" class="explore-more-btn explore-more-white">
                             <span th:text="#{home.sell.ctaPrimary}">List Your Property</span> <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
@@ -275,8 +275,7 @@
                         A growing gallery of lands, houses and apartments we&rsquo;ve helped bring to life across the island &ndash; from freshly cleared plots to move-in day.
                     </p>
 
-                    <a th:href="@{/projects}" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2 mt-2 reveal-on-scroll"
-                       style="background-color: #19555a; border-radius: 30px; padding: 10px 28px; width: fit-content;">
+                    <a th:href="@{/projects}" class="explore-more-btn mt-2 reveal-on-scroll">
                         <span th:text="#{home.gallery.cta}">View All Projects</span> <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -286,45 +285,45 @@
                     <div class="gallery-viewport reveal-on-scroll">
 
                         <div class="gallery-column">
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #2e7d32, #66bb6a);"><i class="bi bi-tree-fill"></i><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
-                            <div class="gallery-tile" style="min-height: 210px; background: linear-gradient(135deg, #1565c0, #42a5f5);"><i class="bi bi-house-door-fill"></i><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
-                            <div class="gallery-tile" style="min-height: 170px; background: linear-gradient(135deg, #37474f, #78909c);"><i class="bi bi-building-fill"></i><span class="gallery-tile-tag">Skyline Towers</span></div>
-                            <div class="gallery-tile" style="min-height: 230px; background: linear-gradient(135deg, #ff9f1c, #ffbf69);"><i class="bi bi-key-fill"></i><span class="gallery-tile-tag">Handover Day</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #6a4c93, #b892ff);"><i class="bi bi-buildings"></i><span class="gallery-tile-tag">Emerald Heights</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land1.png} + ');'"><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house1.png} + ');'"><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment1.png} + ');'"><span class="gallery-tile-tag">Skyline Towers</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house2.png} + ');'"><span class="gallery-tile-tag">Handover Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment2.png} + ');'"><span class="gallery-tile-tag">Emerald Heights</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #2e7d32, #66bb6a);"><i class="bi bi-tree-fill"></i><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
-                            <div class="gallery-tile" style="min-height: 210px; background: linear-gradient(135deg, #1565c0, #42a5f5);"><i class="bi bi-house-door-fill"></i><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
-                            <div class="gallery-tile" style="min-height: 170px; background: linear-gradient(135deg, #37474f, #78909c);"><i class="bi bi-building-fill"></i><span class="gallery-tile-tag">Skyline Towers</span></div>
-                            <div class="gallery-tile" style="min-height: 230px; background: linear-gradient(135deg, #ff9f1c, #ffbf69);"><i class="bi bi-key-fill"></i><span class="gallery-tile-tag">Handover Day</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #6a4c93, #b892ff);"><i class="bi bi-buildings"></i><span class="gallery-tile-tag">Emerald Heights</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land1.png} + ');'"><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house1.png} + ');'"><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment1.png} + ');'"><span class="gallery-tile-tag">Skyline Towers</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house2.png} + ');'"><span class="gallery-tile-tag">Handover Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment2.png} + ');'"><span class="gallery-tile-tag">Emerald Heights</span></div>
                         </div>
 
                         <div class="gallery-column gallery-column-reverse">
-                            <div class="gallery-tile" style="min-height: 190px; background: linear-gradient(135deg, #e63946, #ff8fa3);"><i class="bi bi-house-heart-fill"></i><span class="gallery-tile-tag">Coral Bay Homes</span></div>
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #5f9ea0, #2e7d32);"><i class="bi bi-signpost-split-fill"></i><span class="gallery-tile-tag">Hillcrest Acres</span></div>
-                            <div class="gallery-tile" style="min-height: 220px; background: linear-gradient(135deg, #b08968, #ddb892);"><i class="bi bi-water"></i><span class="gallery-tile-tag">Lakeside Villas</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #197278, #57a773);"><i class="bi bi-geo-alt-fill"></i><span class="gallery-tile-tag">Cinnamon Grove</span></div>
-                            <div class="gallery-tile" style="min-height: 200px; background: linear-gradient(135deg, #1565c0, #42a5f5);"><i class="bi bi-building-fill"></i><span class="gallery-tile-tag">Ocean View Apts</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house3.png} + ');'"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land2.png} + ');'"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house4.png} + ');'"><span class="gallery-tile-tag">Lakeside Villas</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land3.png} + ');'"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment3.jpg} + ');'"><span class="gallery-tile-tag">Ocean View Apts</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" style="min-height: 190px; background: linear-gradient(135deg, #e63946, #ff8fa3);"><i class="bi bi-house-heart-fill"></i><span class="gallery-tile-tag">Coral Bay Homes</span></div>
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #5f9ea0, #2e7d32);"><i class="bi bi-signpost-split-fill"></i><span class="gallery-tile-tag">Hillcrest Acres</span></div>
-                            <div class="gallery-tile" style="min-height: 220px; background: linear-gradient(135deg, #b08968, #ddb892);"><i class="bi bi-water"></i><span class="gallery-tile-tag">Lakeside Villas</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #197278, #57a773);"><i class="bi bi-geo-alt-fill"></i><span class="gallery-tile-tag">Cinnamon Grove</span></div>
-                            <div class="gallery-tile" style="min-height: 200px; background: linear-gradient(135deg, #1565c0, #42a5f5);"><i class="bi bi-building-fill"></i><span class="gallery-tile-tag">Ocean View Apts</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house3.png} + ');'"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land2.png} + ');'"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house4.png} + ');'"><span class="gallery-tile-tag">Lakeside Villas</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land3.png} + ');'"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment3.jpg} + ');'"><span class="gallery-tile-tag">Ocean View Apts</span></div>
                         </div>
 
                         <div class="gallery-column d-none d-lg-flex">
-                            <div class="gallery-tile" style="min-height: 170px; background: linear-gradient(135deg, #37474f, #78909c);"><i class="bi bi-key-fill"></i><span class="gallery-tile-tag">Move-in Day</span></div>
-                            <div class="gallery-tile" style="min-height: 210px; background: linear-gradient(135deg, #2e7d32, #66bb6a);"><i class="bi bi-tree-fill"></i><span class="gallery-tile-tag">Sunview Block</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #6a4c93, #b892ff);"><i class="bi bi-house-door-fill"></i><span class="gallery-tile-tag">Rosewood Residence</span></div>
-                            <div class="gallery-tile" style="min-height: 220px; background: linear-gradient(135deg, #ff9f1c, #ffbf69);"><i class="bi bi-buildings"></i><span class="gallery-tile-tag">Pearl Residencies</span></div>
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #e63946, #ff8fa3);"><i class="bi bi-signpost-split-fill"></i><span class="gallery-tile-tag">Golden Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment4.jpg} + ');'"><span class="gallery-tile-tag">Move-in Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land4.png} + ');'"><span class="gallery-tile-tag">Sunview Block</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house5.png} + ');'"><span class="gallery-tile-tag">Rosewood Residence</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment5.png} + ');'"><span class="gallery-tile-tag">Pearl Residencies</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land5.jpg} + ');'"><span class="gallery-tile-tag">Golden Acres</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" style="min-height: 170px; background: linear-gradient(135deg, #37474f, #78909c);"><i class="bi bi-key-fill"></i><span class="gallery-tile-tag">Move-in Day</span></div>
-                            <div class="gallery-tile" style="min-height: 210px; background: linear-gradient(135deg, #2e7d32, #66bb6a);"><i class="bi bi-tree-fill"></i><span class="gallery-tile-tag">Sunview Block</span></div>
-                            <div class="gallery-tile" style="min-height: 160px; background: linear-gradient(135deg, #6a4c93, #b892ff);"><i class="bi bi-house-door-fill"></i><span class="gallery-tile-tag">Rosewood Residence</span></div>
-                            <div class="gallery-tile" style="min-height: 220px; background: linear-gradient(135deg, #ff9f1c, #ffbf69);"><i class="bi bi-buildings"></i><span class="gallery-tile-tag">Pearl Residencies</span></div>
-                            <div class="gallery-tile" style="min-height: 150px; background: linear-gradient(135deg, #e63946, #ff8fa3);"><i class="bi bi-signpost-split-fill"></i><span class="gallery-tile-tag">Golden Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment4.jpg} + ');'"><span class="gallery-tile-tag">Move-in Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land4.png} + ');'"><span class="gallery-tile-tag">Sunview Block</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/house5.png} + ');'"><span class="gallery-tile-tag">Rosewood Residence</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/apartment5.png} + ');'"><span class="gallery-tile-tag">Pearl Residencies</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/properties/land5.jpg} + ');'"><span class="gallery-tile-tag">Golden Acres</span></div>
                         </div>
 
                     </div>
@@ -353,12 +352,14 @@
 
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
                                     <span th:text="#{home.faq.q1}">Which areas of Sri Lanka do you cover?</span>
                                 </button>
                             </h2>
-                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body" th:text="#{home.faq.a1}">We list lands, houses and apartments across all nine provinces, from Colombo to Jaffna.</div>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body"><span th:text="#{home.faq.a1}">We list lands, houses and apartments across all nine provinces, from Colombo to Jaffna.</span>
+                                    <div class="mt-2"><a th:href="@{/articles(topic='MARKET')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
+                                </div>
                             </div>
                         </div>
 
@@ -369,7 +370,9 @@
                                 </button>
                             </h2>
                             <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body" th:text="#{home.faq.a2}">Yes &ndash; listing is completely free, and we don't charge a commission until your property actually sells.</div>
+                                <div class="accordion-body"><span th:text="#{home.faq.a2}">Yes &ndash; listing is completely free, and we don't charge a commission until your property actually sells.</span>
+                                    <div class="mt-2"><a th:href="@{/articles(topic='BUYING')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
+                                </div>
                             </div>
                         </div>
 
@@ -380,7 +383,9 @@
                                 </button>
                             </h2>
                             <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body" th:text="#{home.faq.a3}">Yes &ndash; browse our local mortgage brokers by province and reach out to one near you directly from the homepage.</div>
+                                <div class="accordion-body"><span th:text="#{home.faq.a3}">Yes &ndash; browse our local mortgage brokers by province and reach out to one near you directly from the homepage.</span>
+                                    <div class="mt-2"><a th:href="@{/articles(topic='FINANCE')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
+                                </div>
                             </div>
                         </div>
 
@@ -391,7 +396,9 @@
                                 </button>
                             </h2>
                             <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body" th:text="#{home.faq.a4}">Yes &ndash; whether you're after a bare plot to build on, a ready house, or a modern apartment, we have verified listings for all three.</div>
+                                <div class="accordion-body"><span th:text="#{home.faq.a4}">Yes &ndash; whether you're after a bare plot to build on, a ready house, or a modern apartment, we have verified listings for all three.</span>
+                                    <div class="mt-2"><a th:href="@{/articles(topic='BUYING')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
+                                </div>
                             </div>
                         </div>
 
@@ -402,7 +409,9 @@
                                 </button>
                             </h2>
                             <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body" th:text="#{home.faq.a5}">Every listing is checked by our team before it goes live, so the details, photos and pricing you see are accurate and up to date.</div>
+                                <div class="accordion-body"><span th:text="#{home.faq.a5}">Every listing is checked by our team before it goes live, so the details, photos and pricing you see are accurate and up to date.</span>
+                                    <div class="mt-2"><a th:href="@{/articles(topic='BUYING')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
+                                </div>
                             </div>
                         </div>
 

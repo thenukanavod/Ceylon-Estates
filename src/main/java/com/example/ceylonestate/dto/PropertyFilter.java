@@ -22,6 +22,14 @@ public class PropertyFilter {
     private boolean pet;         // pet-friendly only
     private String sort = "newest"; // newest | priceAsc | priceDesc
 
+    // Options used only by the Lands / Houses / Apartments pages
+    private Double minPerches;   // lands: plot size range
+    private Double maxPerches;
+    private String zoning;       // lands: Residential, Commercial, Agricultural, Mixed...
+    private boolean garden;      // houses: has a garden
+    private boolean lift;        // apartments: building has a lift
+    private Double minSqft;      // houses + apartments: floor area at least
+
     public String getQ() { return q; }
     public void setQ(String q) { this.q = q; }
 
@@ -48,6 +56,24 @@ public class PropertyFilter {
 
     public boolean isPet() { return pet; }
     public void setPet(boolean pet) { this.pet = pet; }
+
+    public Double getMinPerches() { return minPerches; }
+    public void setMinPerches(Double minPerches) { this.minPerches = minPerches; }
+
+    public Double getMaxPerches() { return maxPerches; }
+    public void setMaxPerches(Double maxPerches) { this.maxPerches = maxPerches; }
+
+    public String getZoning() { return zoning; }
+    public void setZoning(String zoning) { this.zoning = zoning; }
+
+    public boolean isGarden() { return garden; }
+    public void setGarden(boolean garden) { this.garden = garden; }
+
+    public boolean isLift() { return lift; }
+    public void setLift(boolean lift) { this.lift = lift; }
+
+    public Double getMinSqft() { return minSqft; }
+    public void setMinSqft(Double minSqft) { this.minSqft = minSqft; }
 
     public String getSort() { return sort; }
     public void setSort(String sort) { this.sort = sort; }

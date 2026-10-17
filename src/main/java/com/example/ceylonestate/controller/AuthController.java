@@ -283,7 +283,7 @@ public class AuthController {
 
         // Base URL is hardcoded for local development - update this if the site
         // ever moves to a custom domain or different port.
-        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+        String resetLink = "http://localhost:8080/ceylonestates/reset-password?token=" + token;
         emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
 
         model.addAttribute("message", "If that email is registered, a reset link has been sent to it. Check your inbox (and spam folder).");

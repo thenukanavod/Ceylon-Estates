@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Lands</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{category.lands.title}, #{category.lands.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main page-wide">
+    <!-- Filters stay hidden until the visitor clicks the Filter button (they open by themselves after a search so the chosen options stay visible) -->
+    <div class="filter-bar">
+        <button type="button" class="btn btn-teal" data-bs-toggle="collapse" data-bs-target="#filterPanel"
+                aria-controls="filterPanel" th:attr="aria-expanded=${filtersApplied ? 'true' : 'false'}">
+            <i class="bi bi-sliders"></i> <span th:text="#{category.filter}">Filter</span>
+        </button>
+    </div>
+    <form id="filterPanel" th:action="@{/lands}" method="get" class="filter-panel collapse mb-4" th:classappend="${filtersApplied} ? 'show'">
+        <div class="row g-3">
+            <div class="col-lg-4 col-md-6">
+                <label class="form-label" for="f-q" th:text="#{search.q}">Keyword</label>
+                <input id="f-q" name="q" type="text" class="form-control" th:value="${filter.q}" th:placeholder="#{search.qPlaceholder}">
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label" for="f-district" th:text="#{search.district}">District</label>
+                <select id="f-district" name="district" class="form-select">
+                    <option value="" th:text="#{search.allDistricts}">All districts</option>
+                    <option th:each="d : ${districts}" th:value="${d.name()}" th:text="${d.label}"
+                            th:selected="${filter.district != null and (filter.district == d.name() or filter.district == d.label)}">Colombo</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label" for="f-lt" th:text="#{search.listingType}">For</label>
+                <select id="f-lt" name="listingType" class="form-select">
+                    <option value="" th:text="#{search.any}">Any</option>
+                    <option value="sale" th:selected="${filter.listingType == 'sale'}" th:text="#{search.forSale}">For sale</option>
+                    <option value="rent" th:selected="${filter.listingType == 'rent'}" th:text="#{search.forRent}">For rent</option>
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label" for="f-zoning" th:text="#{fact.zoning}">Zoning</label>
+                <select id="f-zoning" name="zoning" class="form-select">
+                    <option value="" th:text="#{search.any}">Any</option>
+                    <option value="Residential" th:selected="${filter.zoning == 'Residential'}" th:text="#{category.zoning.residential}">Residential</option>
+                    <option value="Commercial" th:selected="${filter.zoning == 'Commercial'}" th:text="#{category.zoning.commercial}">Commercial</option>
+                    <option value="Agricultural" th:selected="${filter.zoning == 'Agricultural'}" th:text="#{category.zoning.agricultural}">Agricultural</option>
+                    <option value="Mixed" th:selected="${filter.zoning == 'Mixed'}" th:text="#{category.zoning.mixed}">Mixed</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-6">
+                <label class="form-label" for="f-minp" th:text="#{category.minPerches}">Min size (perches)</label>
+                <input id="f-minp" name="minPerches" type="number" min="0" step="1" class="form-control" th:value="${filter.minPerches}">
+            </div>
+            <div class="col-lg-2 col-6">
+                <label class="form-label" for="f-maxp" th:text="#{category.maxPerches}">Max size (perches)</label>
+                <input id="f-maxp" name="maxPerches" type="number" min="0" step="1" class="form-control" th:value="${filter.maxPerches}">
+            </div>
+            <div class="col-lg-2 col-6">
+                <label class="form-label" for="f-min" th:text="#{search.minPrice}">Min price (M LKR)</label>
+                <input id="f-min" name="minPriceM" type="number" min="0" step="0.1" class="form-control" th:value="${filter.minPriceM}">
+            </div>
+            <div class="col-lg-2 col-6">
+                <label class="form-label" for="f-max" th:text="#{search.maxPrice}">Max price (M LKR)</label>
+                <input id="f-max" name="maxPriceM" type="number" min="0" step="0.1" class="form-control" th:value="${filter.maxPriceM}">
+            </div>
+            <div class="col-lg-2 col-6">
+                <label class="form-label" for="f-sort" th:text="#{search.sort}">Sort by</label>
+                <select id="f-sort" name="sort" class="form-select">
+                    <option value="newest" th:selected="${filter.sort == 'newest'}" th:text="#{search.sortNewest}">Newest</option>
+                    <option value="priceAsc" th:selected="${filter.sort == 'priceAsc'}" th:text="#{search.sortPriceAsc}">Price: low to high</option>
+                    <option value="priceDesc" th:selected="${filter.sort == 'priceDesc'}" th:text="#{search.sortPriceDesc}">Price: high to low</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-6 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-teal flex-grow-1"><i class="bi bi-search"></i> <span th:text="#{search.button}">Search</span></button>
+                <a th:href="@{/lands}" class="btn btn-outline-secondary" th:title="#{search.reset}"><i class="bi bi-x-lg"></i></a>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/category :: results(${results}, @{/lands})}"></div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

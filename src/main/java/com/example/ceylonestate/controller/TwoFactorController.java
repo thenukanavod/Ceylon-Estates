@@ -45,16 +45,18 @@ public class TwoFactorController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ---------- Email code method ----------
+    // ---------- Verification (emailed code or backup code) ----------
 
     @GetMapping("/verify-2fa")
-    public String showVerifyForm(HttpSession session) {
+    public String showVerifyForm(HttpSession session, Model model) {
         if (session.getAttribute("PENDING_2FA_USER") == null) {
             return "redirect:/login";
         }
+        model.addAttribute("emailFailed", session.getAttribute("EMAIL_FAILED") != null);
         return "verify-2fa";
     }
 
+    /** One form for both: the emailed 6-digit code, or one of the 8-character backup codes. */
     @PostMapping("/verify-2fa")
     public String verifyCode(@RequestParam String code,
                               HttpServletRequest request,
@@ -68,22 +70,43 @@ public class TwoFactorController {
         }
 
         User user = userRepository.findByUsername(pendingUsername).orElseThrow();
+        String entered = code == null ? "" : code.trim();
 
-        boolean codeValid = user.getTwoFaCode() != null
-                && user.getTwoFaCode().equals(code)
+        boolean emailCodeValid = user.getTwoFaCode() != null
+                && user.getTwoFaCode().equals(entered)
                 && user.getTwoFaCodeExpiry() != null
                 && user.getTwoFaCodeExpiry().isAfter(LocalDateTime.now());
 
-        if (!codeValid) {
-            model.addAttribute("error", "That code is incorrect or has expired.");
-            return "verify-2fa";
+        if (emailCodeValid) {
+            user.setTwoFaCode(null);
+            user.setTwoFaCodeExpiry(null);
+            userRepository.save(user);
+            return completeLogin(user, request, response, session);
         }
 
-        user.setTwoFaCode(null);
-        user.setTwoFaCodeExpiry(null);
-        userRepository.save(user);
+        // Not the emailed code - maybe a backup code (single-use, removed once used)
+        if (consumeBackupCode(user, entered)) {
+            userRepository.save(user);
+            return completeLogin(user, request, response, session);
+        }
 
-        return completeLogin(user, request, response, session);
+        model.addAttribute("error", "That code is incorrect, has expired or was already used.");
+        return "verify-2fa";
+    }
+
+    private boolean consumeBackupCode(User user, String entered) {
+        String normalized = entered.replace("-", "").replace(" ", "").toUpperCase();
+        if (normalized.length() < 6) {
+            return false;
+        }
+        Iterator<String> it = user.getBackupCodeHashes().iterator();
+        while (it.hasNext()) {
+            if (passwordEncoder.matches(normalized, it.next())) {
+                it.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     @PostMapping("/resend-2fa-code")
@@ -106,50 +129,10 @@ public class TwoFactorController {
         return "redirect:/verify-2fa";
     }
 
-    // ---------- Backup code method ----------
-
+    /** The old separate backup-code page: everything now happens on /verify-2fa. */
     @GetMapping("/verify-backup-code")
-    public String showVerifyBackupCodeForm(HttpSession session) {
-        if (session.getAttribute("PENDING_2FA_USER") == null) {
-            return "redirect:/login";
-        }
-        return "verify-backup-code";
-    }
-
-    @PostMapping("/verify-backup-code")
-    public String verifyBackupCode(@RequestParam String code,
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    HttpSession session,
-                                    Model model) {
-
-        String pendingUsername = (String) session.getAttribute("PENDING_2FA_USER");
-        if (pendingUsername == null) {
-            return "redirect:/login";
-        }
-
-        User user = userRepository.findByUsername(pendingUsername).orElseThrow();
-        String normalizedCode = code.trim().toUpperCase();
-
-        // Find and consume the matching backup code (single-use - remove once used)
-        Iterator<String> it = user.getBackupCodeHashes().iterator();
-        boolean matched = false;
-        while (it.hasNext()) {
-            if (passwordEncoder.matches(normalizedCode, it.next())) {
-                it.remove();
-                matched = true;
-                break;
-            }
-        }
-
-        if (!matched) {
-            model.addAttribute("error", "That backup code is incorrect or has already been used.");
-            return "verify-backup-code";
-        }
-
-        userRepository.save(user);
-
-        return completeLogin(user, request, response, session);
+    public String oldBackupCodePage() {
+        return "redirect:/verify-2fa";
     }
 
     // ---------- Shared completion logic ----------
@@ -173,6 +156,7 @@ public class TwoFactorController {
         }
 
         session.removeAttribute("PENDING_2FA_USER");
+        session.removeAttribute("EMAIL_FAILED");
         session.removeAttribute("REMEMBER_ME_REQUESTED");
 
         return "redirect:" + user.getDashboardPath();

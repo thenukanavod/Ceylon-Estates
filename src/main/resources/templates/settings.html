@@ -29,65 +29,66 @@
             </div>
         </div>
 
-        <!-- Single unified Two-Factor Authentication card -->
+        <!-- Two-factor authentication: on/off button. Everything below only exists while it is ON. -->
         <div sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-             class="setting-row d-block">
+             class="setting-row d-block twofa-card">
 
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div class="setting-label" th:text="#{settings.twoFa}">Two-factor authentication</div>
-                <div class="form-check form-switch mb-0">
-                    <input class="form-check-input" type="checkbox" role="switch" id="twoFaSwitch" form="twoFaForm" name="twoFaEnabled" th:checked="${currentUser != null and currentUser.twoFaEnabled}">
-                </div>
-            </div>
-            <div class="setting-hint mb-3" th:text="#{settings.twoFaHint}">Extra verification step at login</div>
+            <div class="alert alert-success" th:if="${twoFaMessage}" th:text="#{${twoFaMessage}}">Updated.</div>
+            <div class="alert alert-danger" th:if="${twoFaError}" th:text="#{${twoFaError}}">Error.</div>
 
-            <div class="alert alert-success" th:if="${twoFaUpdated}" th:text="#{settings.twoFaUpdated}">Updated.</div>
-
-            <form id="twoFaForm" th:action="@{/settings/2fa}" method="post">
-
-                <div class="mb-3">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="twoFaMethod" value="EMAIL" id="methodEmail"
-                               th:checked="${currentUser == null or currentUser.twoFaMethod == null or currentUser.twoFaMethod == 'EMAIL'}">
-                        <label class="form-check-label" for="methodEmail" th:text="#{settings.methodEmail}">Email code</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="twoFaMethod" value="BACKUP_CODES" id="methodBackup"
-                               th:checked="${currentUser != null and currentUser.twoFaMethod == 'BACKUP_CODES'}">
-                        <label class="form-check-label" for="methodBackup" th:text="#{settings.methodBackup}">Backup codes</label>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label small" th:text="#{settings.twoFaEmail}">2FA code email</label>
-                    <input type="email" name="twoFaEmail" class="form-control"
-                           th:value="${currentUser != null ? currentUser.twoFaEmail : ''}"
-                           th:placeholder="${currentUser != null ? currentUser.email : ''}">
-                    <div class="form-text" th:text="#{settings.twoFaEmailHint}">Leave blank to use your main account email.</div>
-                </div>
-
-                <button type="submit" class="btn btn-accent" th:text="#{settings.save}">Save</button>
-            </form>
-
-            <hr class="my-3">
-
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center gap-3">
                 <div>
-                    <div class="setting-label" th:text="#{settings.backupCodes}">Backup codes</div>
-                    <div class="setting-hint" th:text="#{settings.backupCodesHint}">Generate one-time login codes</div>
+                    <div class="setting-label fs-5" th:text="#{settings.twoFa}">Two-factor authentication</div>
+                    <div class="setting-hint" th:text="#{settings.twoFaHint}">Extra verification step at login</div>
                 </div>
-                <form th:action="@{/settings/2fa/backup-codes}" method="post" onsubmit="return confirm('This replaces any existing backup codes. Continue?');">
-                    <button type="submit" class="btn btn-accent" th:text="#{settings.generate}">Generate</button>
+                <form id="twoFaToggleForm" th:action="@{/settings/2fa}" method="post" class="mb-0 d-flex align-items-center gap-2">
+                    <input type="hidden" name="twoFaEnabled" value="on"
+                           th:unless="${currentUser != null and currentUser.twoFaEnabled}">
+                    <button type="submit" class="btn btn-accent btn-sm"
+                            th:text="${currentUser != null and currentUser.twoFaEnabled} ? #{settings.turnOff} : #{settings.turnOn}">Turn on</button>
                 </form>
             </div>
 
-            <div th:if="${newBackupCodes}" class="alert alert-warning mt-3 mb-0">
-                <p class="fw-bold" th:text="#{settings.backupCodesGenerated}">Save these codes now - you won't see them again:</p>
-                <div class="row row-cols-2 g-1 font-monospace">
-                    <div th:each="c : ${newBackupCodes}" th:text="${c}"></div>
+            <!-- ON: email address + backup codes -->
+            <div th:if="${currentUser != null and currentUser.twoFaEnabled}" class="twofa-details mt-4">
+
+                <form th:action="@{/settings/2fa/email}" method="post" class="mb-4">
+                    <label class="form-label small" for="twoFaEmail" th:text="#{settings.twoFaEmail}">2FA code email</label>
+                    <div class="input-group">
+                        <input type="email" id="twoFaEmail" name="twoFaEmail" class="form-control"
+                               th:value="${currentUser.twoFaEmail}" th:placeholder="${currentUser.email}">
+                        <button type="submit" class="btn btn-accent" th:text="#{settings.save}">Save</button>
+                    </div>
+                    <div class="form-text" th:text="#{settings.twoFaEmailHint}">Leave blank to use your main account email.</div>
+                </form>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                    <div>
+                        <div class="setting-label" th:text="#{settings.backupCodes}">Backup codes</div>
+                        <div class="setting-hint" th:text="#{settings.backupCodesHint}">Use one if the email code does not arrive</div>
+                        <div class="small mt-1" th:if="${backupCodesLeft != null}"
+                             th:text="#{settings.backupLeft(${backupCodesLeft}, ${backupCodesTotal})}">8 of 8 left</div>
+                    </div>
+                    <form th:action="@{/settings/2fa/backup-codes}" method="post"
+                          onsubmit="return confirm('This replaces your existing backup codes. Continue?');">
+                        <button type="submit" class="btn btn-accent" th:text="#{settings.generateNew}">Generate new codes</button>
+                    </form>
+                </div>
+
+                <!-- Shown once, right after they were made -->
+                <div th:if="${newBackupCodes}" class="alert alert-warning mt-3 mb-0" id="backupCodesBox"
+                     th:attr="data-user=${currentUser.username}">
+                    <p class="fw-bold" th:text="#{settings.backupCodesGenerated}">Save these codes now - you won't see them again:</p>
+                    <div class="row row-cols-2 g-1 font-monospace mb-3">
+                        <div th:each="c : ${newBackupCodes}" class="backup-code" th:text="${c}"></div>
+                    </div>
+                    <button type="button" class="btn btn-accent btn-sm" id="downloadCodesBtn">
+                        <i class="bi bi-download"></i> <span th:text="#{settings.downloadCodes}">Download as .txt</span>
+                    </button>
                 </div>
             </div>
-
         </div>
 
         <p class="mt-4"><a th:href="@{/}" th:text="#{settings.backHome}">Back to home</a></p>
@@ -95,5 +96,6 @@
 
     <div th:replace="~{fragments/layout :: footer}"></div>
     <div th:replace="~{fragments/layout :: scripts}"></div>
+    <script th:src="@{/js/two-factor.js}"></script>
 </body>
 </html>

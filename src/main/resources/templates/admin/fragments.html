@@ -14,6 +14,9 @@
     <a class="admin-tab" th:classappend="${active == 'bookings'} ? 'active'" th:href="@{/admin/bookings}"><i class="bi bi-calendar-check"></i> <span th:text="#{adminNav.bookings}">Viewings</span></a>
     <a class="admin-tab" th:classappend="${active == 'users'} ? 'active'" th:href="@{/admin/users}"><i class="bi bi-people"></i> <span th:text="#{adminNav.users}">Users</span></a>
     <a class="admin-tab" th:classappend="${active == 'brokers'} ? 'active'" th:href="@{/admin/brokers}"><i class="bi bi-person-vcard"></i> <span th:text="#{adminNav.brokers}">Brokers</span></a>
+    <a class="admin-tab" th:classappend="${active == 'applications'} ? 'active'" th:href="@{/admin/broker-applications}"><i class="bi bi-person-plus"></i> <span th:text="#{adminNav.applications}">Applications</span>
+        <span class="badge rounded-pill text-bg-warning" th:if="${pendingApplications != null and pendingApplications > 0}" th:text="${pendingApplications}">1</span></a>
+    <a class="admin-tab" th:classappend="${active == 'articles'} ? 'active'" th:href="@{/admin/articles}"><i class="bi bi-journal-text"></i> <span th:text="#{adminNav.articles}">Articles</span></a>
     <a class="admin-tab" th:classappend="${active == 'localinfo'} ? 'active'" th:href="@{/admin/local-info}"><i class="bi bi-geo-alt"></i> <span th:text="#{adminNav.localInfo}">Local info</span></a>
     <a class="admin-tab" th:classappend="${active == 'visitors'} ? 'active'" th:href="@{/admin/visitors}"><i class="bi bi-graph-up"></i> <span th:text="#{adminNav.visitors}">Visitors</span></a>
     <a class="admin-tab" th:classappend="${active == 'activity'} ? 'active'" th:href="@{/admin/activity}"><i class="bi bi-journal-text"></i> <span th:text="#{adminNav.activity}">Activity</span></a>

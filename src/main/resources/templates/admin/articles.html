@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Manage articles</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(#{adminArticles.title}, #{adminArticles.subtitle})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div th:replace="~{admin/fragments :: tabs('articles')}"></div>
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0"><span th:text="#{adminArticles.heading}">Articles</span> <span class="badge text-bg-secondary" th:text="${#lists.size(articles)}">0</span></h4>
+        <a th:href="@{/admin/articles/new}" class="btn btn-teal"><i class="bi bi-plus-lg"></i> <span th:text="#{adminArticles.add}">Add article</span></a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr>
+                <th th:text="#{articleForm.title}">Title</th><th th:text="#{articleForm.source}">Source</th>
+                <th th:text="#{articleForm.topic}">Topic</th><th></th>
+            </tr></thead>
+            <tbody>
+            <tr th:each="a : ${articles}">
+                <td><a th:href="@{/articles/{id}(id=${a.id})}" class="fw-semibold text-decoration-none" th:text="${a.title}">Title</a></td>
+                <td th:text="${a.source}">Source</td>
+                <td th:text="${a.topic.label}">Topic</td>
+                <td class="text-end"><div class="d-inline-flex gap-1 table-actions">
+                    <a th:href="@{/admin/articles/{id}/edit(id=${a.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
+                    <form th:action="@{/admin/articles/{id}/delete(id=${a.id})}" method="post"
+                          th:attr="onsubmit='return confirm(\'' + #{mine.confirmDelete} + '\');'">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form></div></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
