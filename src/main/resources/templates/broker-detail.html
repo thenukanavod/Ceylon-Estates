@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <title>Broker</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: pageHero(${broker.name}, ${broker.company})}"></header>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<main class="container-xl page-main">
+    <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
+    <div class="alert alert-danger" th:if="${flashError != null}" th:text="${flashError}">Error.</div>
+
+    <nav class="mb-3 small">
+        <a th:href="@{/brokers}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> <span th:text="#{brokerPage.back}">Back to brokers</span></a>
+    </nav>
+
+    <div class="row g-4">
+
+        <!-- Left: who they are, contact details, reviews -->
+        <div class="col-lg-7">
+
+            <div class="broker-profile-card mb-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="broker-profile-avatar"
+                         th:style="${broker.photoUrl != null} ? ('background: url(' + @{${broker.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${broker.avatarGradient})"
+                         th:text="${broker.photoUrl != null} ? '' : ${broker.initials}">AB</div>
+                    <div>
+                        <h4 class="fw-bold mb-0" th:text="${broker.name}">Name</h4>
+                        <div class="text-muted" th:if="${broker.company != null}" th:text="${broker.company}">Company</div>
+                        <div class="broker-stars mt-1" th:if="${card.count > 0}">
+                            <span th:each="i : ${#numbers.sequence(1,5)}"><i th:class="${i <= card.rounded} ? 'bi bi-star-fill' : 'bi bi-star'"></i></span>
+                            <span class="fw-semibold ms-1" th:text="${#numbers.formatDecimal(card.average, 1, 1)}">4.5</span>
+                            <span class="small text-muted" th:text="#{brokers.reviewCount(${card.count})}">(3 reviews)</span>
+                        </div>
+                        <div class="small text-muted mt-1" th:if="${card.count == 0}" th:text="#{brokers.noReviews}">No reviews yet</div>
+                    </div>
+                </div>
+
+                <div class="small text-muted mb-1"><i class="bi bi-geo-alt-fill"></i> <span th:text="${broker.district.label}">Colombo</span>, <span th:text="#{${broker.province.messageKey}}">Western</span></div>
+                <div class="small text-muted mb-3" th:if="${broker.licenseNumber != null}" th:text="#{brokers.license(${broker.licenseNumber})}">Licence</div>
+
+                <h6 class="fw-bold" th:text="#{brokerPage.about}">About</h6>
+                <p th:if="${broker.bio != null}" th:text="${broker.bio}">Bio</p>
+                <p class="text-muted" th:if="${broker.bio == null}" th:text="#{brokerPage.noBio}">No description yet.</p>
+
+                <h6 class="fw-bold mt-3" th:text="#{brokerPage.contact}">Contact</h6>
+                <a class="broker-link d-block" th:href="'tel:' + ${broker.phone}"><i class="bi bi-telephone-fill"></i> <span th:text="${broker.phone}">011</span></a>
+                <a class="broker-link d-block" th:href="'mailto:' + ${broker.email}"><i class="bi bi-envelope-fill"></i> <span th:text="${broker.email}">mail</span></a>
+            </div>
+
+            <!-- Reviews -->
+            <h5 class="fw-bold mb-3" th:text="#{brokerPage.reviews}">Reviews</h5>
+            <div class="broker-review" th:each="r : ${card.reviews}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold small" th:text="${r.author.username}">user</span>
+                    <span class="broker-stars small">
+                        <span th:each="i : ${#numbers.sequence(1,5)}"><i th:class="${i <= r.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i></span>
+                    </span>
+                </div>
+                <p class="small mb-1" th:if="${r.comment != null}" th:text="${r.comment}">Comment</p>
+                <div class="small text-muted" th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy')}">01 Jan 2026</div>
+                <form th:if="${card.mine != null and card.mine.id == r.id}" th:action="@{/brokers/reviews/{id}/delete(id=${r.id})}" method="post"
+                      onsubmit="return confirm('Delete your review?');">
+                    <input type="hidden" name="brokerId" th:value="${broker.id}">
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-0" th:text="#{brokers.review.delete}">Delete</button>
+                </form>
+            </div>
+            <p class="small text-muted" th:if="${card.count == 0}" th:text="#{brokers.noReviews}">No reviews yet</p>
+
+            <!-- Write / edit your review -->
+            <div th:if="${currentUser != null}" class="mt-3">
+                <form th:action="@{/brokers/{id}/review(id=${broker.id})}" method="post">
+                    <div class="fw-semibold small mb-1" th:text="${card.mine != null} ? #{brokers.review.edit} : #{brokers.review.write}">Your rating</div>
+                    <select name="rating" class="form-select form-select-sm mb-2" required>
+                        <option th:each="n : ${ {5,4,3,2,1} }" th:value="${n}" th:selected="${card.mine != null and card.mine.rating == n}"
+                                th:text="${n} + ' ' + #{brokers.stars}">5 stars</option>
+                    </select>
+                    <textarea name="comment" rows="2" maxlength="500" class="form-control form-control-sm mb-2"
+                              th:placeholder="#{brokers.review.placeholder}" th:text="${card.mine != null} ? ${card.mine.comment}"></textarea>
+                    <button type="submit" class="btn btn-sm btn-teal" th:text="#{brokers.review.submit}">Post review</button>
+                </form>
+            </div>
+            <div th:if="${currentUser == null}" class="small mt-3">
+                <a th:href="@{/login}" th:text="#{brokers.review.loginToReview}">Log in to rate this broker</a>
+            </div>
+        </div>
+
+        <!-- Right: message this broker -->
+        <div class="col-lg-5">
+            <div class="side-card">
+                <h6 class="fw-bold" th:text="#{brokerPage.messageTitle}">Send a message</h6>
+
+                <!-- The broker looking at their own page -->
+                <div th:if="${myBroker != null and myBroker.id == broker.id}">
+                    <p class="small text-muted" th:text="#{brokerPage.yourProfile}">This is your public broker page.</p>
+                    <a th:href="@{/broker/inbox}" class="btn btn-teal w-100"><i class="bi bi-inbox"></i> <span th:text="#{brokerPage.openInbox}">Open your inbox</span></a>
+                </div>
+
+                <form th:if="${currentUser != null and !(myBroker != null and myBroker.id == broker.id)}" th:action="@{/messages/send}" method="post">
+                    <input type="hidden" name="brokerId" th:value="${broker.id}">
+                    <input type="hidden" name="from" value="broker">
+                    <textarea name="body" rows="5" maxlength="1000" class="form-control mb-3" required
+                              th:placeholder="#{brokerPage.messagePlaceholder(${broker.name})}"></textarea>
+                    <button type="submit" class="btn btn-teal w-100"><i class="bi bi-send"></i> <span th:text="#{brokerPage.send}">Send message</span></button>
+                </form>
+
+                <a th:if="${currentUser == null}" th:href="@{/login}" class="btn btn-outline-secondary w-100" th:text="#{brokerPage.loginToMessage}">Log in to message this broker</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

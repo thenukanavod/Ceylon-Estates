@@ -2,6 +2,7 @@ package com.example.ceylonestate.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -86,6 +87,8 @@ public class SecurityConfig {
                                             OAuth2LoginSuccessHandler oauth2LoginSuccessHandler) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
+                // A single broker's page is public (but /brokers/apply and the POST actions still need login)
+                .requestMatchers(HttpMethod.GET, "/brokers/{id:[0-9]+}").permitAll()
                 // Public pages - no login required
                 .requestMatchers(
                         "/", "/register", "/login",

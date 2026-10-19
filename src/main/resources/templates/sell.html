@@ -16,6 +16,11 @@
     </div>
     <div class="alert alert-danger" th:if="${#fields.hasErrors('${form.*}')}" th:text="#{sell.fixErrors}">Please fix the highlighted fields.</div>
 
+    <!-- Market data: shown to a seller deciding how to price a new listing -->
+    <th:block th:if="${existing == null}">
+        <div th:replace="~{fragments/market-data :: marketData}"></div>
+    </th:block>
+
     <form th:action="${existing == null} ? @{/sell} : @{/my-listings/{id}/edit(id=${existing.id})}"
           th:object="${form}" method="post" enctype="multipart/form-data" id="sellForm" novalidate>
 
@@ -173,9 +178,10 @@
                     </span>
                 </label>
             </div>
-            <input class="form-control mt-2" type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple>
+            <input class="form-control mt-2" type="file" id="imagesInput" name="images" accept="image/jpeg,image/png,image/webp" multiple>
             <div class="form-text" th:text="#{sell.photoHint}">Up to 8 photos, 5 MB each (JPG, PNG or WebP).</div>
             <div class="text-danger small" th:if="${#fields.hasErrors('images')}" th:errors="*{images}"></div>
+            <div class="d-flex flex-wrap gap-3 mt-3" id="imagesPreview"></div>
         </section>
 
         <!-- 5. Contact -->
@@ -205,10 +211,35 @@
             <a th:href="@{/my-listings}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
         </div>
     </form>
+
+    <!-- Crop / resize dialog for listing photos - one at a time when several are chosen -->
+    <div class="modal fade" id="listingPhotoCropModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="#{profile.cropTitle}">Adjust your photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="small text-muted mb-2" id="listingPhotoCropCounter">Photo 1 of 1</div>
+                    <canvas id="listingPhotoCropCanvas" width="360" height="270"
+                            style="width: 100%; max-width: 360px; border-radius: 10px; cursor: grab; touch-action: none; background: #ddd;"></canvas>
+                    <div class="small text-muted mt-2" th:text="#{profile.cropHint}">Drag to move, use the slider to zoom.</div>
+                    <input type="range" id="listingPhotoCropZoom" class="form-range mt-2" min="1" max="3" step="0.01" value="1">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="listingPhotoCropSkip" th:text="#{sell.cropSkip}">Skip this photo</button>
+                    <button type="button" class="btn btn-accent" id="listingPhotoCropSave" th:text="#{profile.cropSave}">Save photo</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
 <div th:replace="~{fragments/layout :: scripts}"></div>
 <script th:src="@{/js/sell-form.js}"></script>
+<script th:src="@{/js/listing-photo-crop.js}"></script>
+<script th:src="@{/js/market-data-chart.js}"></script>
 </body>
 </html>

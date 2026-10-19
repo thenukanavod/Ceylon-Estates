@@ -12,6 +12,9 @@
     <div class="alert alert-danger" th:if="${flashError != null}" th:text="${flashError}">Error.</div>
 
     <!-- Search + Filters button + Sort dropdown (one GET form, so everything chosen stays together) -->
+    <!-- Customer comments library (auto-scrolling, no pictures) -->
+    <section th:replace="~{fragments/broker-reviews :: brokerReviews}"></section>
+
     <form th:action="@{/brokers}" method="get" id="brokerForm">
         <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <div class="big-search flex-grow-1" style="max-width: 560px;">
@@ -91,73 +94,26 @@
 
     <p class="text-muted small mb-3" th:text="#{brokers.resultCount(${#lists.size(cards)})}">12 brokers found</p>
 
-    <div class="row g-4" th:if="${!#lists.isEmpty(cards)}">
-        <div class="col-xl-4 col-md-6" th:each="c : ${cards}" th:id="'broker-' + ${c.broker.id}">
-            <div class="broker-dir-card h-100">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="broker-dir-avatar"
-                         th:style="${c.broker.photoUrl != null} ? ('background: url(' + @{${c.broker.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${c.broker.avatarGradient})"
-                         th:text="${c.broker.photoUrl != null} ? '' : ${c.broker.initials}">AB</div>
-                    <div>
-                        <h5 class="fw-bold mb-0" th:text="${c.broker.name}">Name</h5>
-                        <div class="small text-muted" th:text="${c.broker.company}">Company</div>
+    <!-- Small cards: just enough to choose a broker. Clicking one opens that broker's own page. -->
+    <div class="row g-3" th:if="${!#lists.isEmpty(cards)}">
+        <div class="col-xl-3 col-lg-4 col-md-6" th:each="c : ${cards}">
+            <a class="broker-mini-card h-100" th:href="@{/brokers/{id}(id=${c.broker.id})}">
+                <div class="broker-dir-avatar"
+                     th:style="${c.broker.photoUrl != null} ? ('background: url(' + @{${c.broker.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${c.broker.avatarGradient})"
+                     th:text="${c.broker.photoUrl != null} ? '' : ${c.broker.initials}">AB</div>
+                <div class="broker-mini-body">
+                    <h6 class="fw-bold mb-0" th:text="${c.broker.name}">Name</h6>
+                    <div class="small text-muted" th:if="${c.broker.company != null}" th:text="${c.broker.company}">Company</div>
+                    <div class="small text-muted"><i class="bi bi-geo-alt-fill"></i> <span th:text="${c.broker.district.label}">Colombo</span></div>
+                    <div class="broker-stars small" th:if="${c.count > 0}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}"><i th:class="${i <= c.rounded} ? 'bi bi-star-fill' : 'bi bi-star'"></i></span>
+                        <span class="fw-semibold ms-1" th:text="${#numbers.formatDecimal(c.average, 1, 1)}">4.5</span>
+                        <span class="text-muted" th:text="'(' + ${c.count} + ')'">(3)</span>
                     </div>
+                    <div class="small text-muted" th:if="${c.count == 0}" th:text="#{brokers.noReviews}">No reviews yet</div>
                 </div>
-
-                <!-- Average rating -->
-                <div class="broker-stars mb-2" th:if="${c.count > 0}">
-                    <span th:each="i : ${#numbers.sequence(1,5)}"><i th:class="${i <= c.rounded} ? 'bi bi-star-fill' : 'bi bi-star'"></i></span>
-                    <span class="fw-semibold ms-1" th:text="${#numbers.formatDecimal(c.average, 1, 1)}">4.5</span>
-                    <span class="small text-muted" th:text="#{brokers.reviewCount(${c.count})}">(3 reviews)</span>
-                </div>
-                <div class="small text-muted mb-2" th:if="${c.count == 0}" th:text="#{brokers.noReviews}">No reviews yet</div>
-
-                <div class="small text-muted mb-2"><i class="bi bi-geo-alt-fill"></i> <span th:text="${c.broker.district.label}">Colombo</span>, <span th:text="#{${c.broker.province.messageKey}}">Western</span></div>
-                <p class="small" th:if="${c.broker.bio != null}" th:text="${c.broker.bio}">Bio</p>
-                <div class="small text-muted mb-2" th:text="#{brokers.license(${c.broker.licenseNumber})}">Licence</div>
-                <a class="broker-link d-block" th:href="'tel:' + ${c.broker.phone}"><i class="bi bi-telephone-fill"></i> <span th:text="${c.broker.phone}">011</span></a>
-                <a class="broker-link d-block" th:href="'mailto:' + ${c.broker.email}"><i class="bi bi-envelope-fill"></i> <span th:text="${c.broker.email}">mail</span></a>
-
-                <button class="btn btn-sm btn-outline-secondary mt-3" type="button" data-bs-toggle="collapse"
-                        th:attr="data-bs-target='#reviews-' + ${c.broker.id}">
-                    <i class="bi bi-chat-left-text"></i> <span th:text="#{brokers.showReviews}">Reviews and rating</span>
-                </button>
-
-                <div class="collapse mt-3" th:id="'reviews-' + ${c.broker.id}">
-                    <div class="broker-review" th:each="r : ${c.reviews}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold small" th:text="${r.author.username}">user</span>
-                            <span class="broker-stars small">
-                                <span th:each="i : ${#numbers.sequence(1,5)}"><i th:class="${i <= r.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i></span>
-                            </span>
-                        </div>
-                        <p class="small mb-1" th:if="${r.comment != null}" th:text="${r.comment}">Comment</p>
-                        <div class="small text-muted" th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy')}">01 Jan 2026</div>
-                        <form th:if="${c.mine != null and c.mine.id == r.id}" th:action="@{/brokers/reviews/{id}/delete(id=${r.id})}" method="post"
-                              onsubmit="return confirm('Delete your review?');">
-                            <button type="submit" class="btn btn-link btn-sm text-danger p-0" th:text="#{brokers.review.delete}">Delete</button>
-                        </form>
-                    </div>
-                    <p class="small text-muted" th:if="${c.count == 0}" th:text="#{brokers.noReviews}">No reviews yet</p>
-
-                    <!-- Write / edit your review -->
-                    <div sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" class="mt-3">
-                        <form th:action="@{/brokers/{id}/review(id=${c.broker.id})}" method="post">
-                            <div class="fw-semibold small mb-1" th:text="${c.mine != null} ? #{brokers.review.edit} : #{brokers.review.write}">Your rating</div>
-                            <select name="rating" class="form-select form-select-sm mb-2" required>
-                                <option th:each="n : ${ {5,4,3,2,1} }" th:value="${n}" th:selected="${c.mine != null and c.mine.rating == n}"
-                                        th:text="${n} + ' ' + #{brokers.stars}">5 stars</option>
-                            </select>
-                            <textarea name="comment" rows="2" maxlength="500" class="form-control form-control-sm mb-2"
-                                      th:placeholder="#{brokers.review.placeholder}" th:text="${c.mine != null} ? ${c.mine.comment}"></textarea>
-                            <button type="submit" class="btn btn-sm btn-teal" th:text="#{brokers.review.submit}">Post review</button>
-                        </form>
-                    </div>
-                    <div sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" class="small mt-3">
-                        <a th:href="@{/login}" th:text="#{brokers.review.loginToReview}">Log in to rate this broker</a>
-                    </div>
-                </div>
-            </div>
+                <i class="bi bi-chevron-right broker-mini-chevron"></i>
+            </a>
         </div>
     </div>
     <div class="empty-state" th:if="${#lists.isEmpty(cards)}">

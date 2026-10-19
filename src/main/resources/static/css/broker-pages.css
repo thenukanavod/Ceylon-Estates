@@ -1,0 +1,220 @@
+/* ---------- Brokers: small directory cards, broker page, broker inbox ---------- */
+/* Linked from the head fragment in fragments/layout.html. Uses Bootstrap's theme
+   variables so it follows the light / dark toggle like the rest of the site. */
+
+/* Small card in the brokers directory (the whole card is a link) */
+.broker-mini-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    color: var(--bs-body-color);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.broker-mini-card:hover {
+    transform: translateY(-2px);
+    border-color: #19555a;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    color: var(--bs-body-color);
+}
+
+.broker-mini-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.broker-mini-body h6,
+.broker-mini-body .small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.broker-mini-chevron {
+    color: var(--bs-secondary-color);
+}
+
+/* Broker's own page */
+.broker-profile-card {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.broker-profile-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Broker inbox */
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.inbox-card {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    padding: 18px 20px;
+}
+
+.inbox-card.unread {
+    border-left: 4px solid #e63946;
+    background: var(--bs-tertiary-bg);
+}
+
+.inbox-body {
+    white-space: pre-line;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* A shared listing inside a message */
+.inbox-listing {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.inbox-listing:hover {
+    border-color: #19555a;
+    color: var(--bs-body-color);
+}
+
+.inbox-listing-thumb {
+    width: 96px;
+    height: 72px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 575.98px) {
+    .broker-profile-card { padding: 18px; }
+    .inbox-listing-thumb { width: 72px; height: 56px; }
+}
+
+/* ---------- Broker comments library (auto-scrolling review cards, no pictures) ---------- */
+/* Append this block to style.css, next to the Project Library gallery styles. */
+
+.broker-reviews-panel {
+    background: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 28px;
+    padding: 32px;
+}
+
+.reviews-heading {
+    font-size: 2rem;
+    line-height: 1.2;
+    color: var(--bs-body-color);
+}
+
+.reviews-body {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 480px;
+    color: var(--bs-secondary-color);
+}
+
+.reviews-viewport {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    height: 460px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 36px, black calc(100% - 36px), transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, black 36px, black calc(100% - 36px), transparent 100%);
+}
+
+.reviews-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Same rule as .gallery-column: no "gap" (each card carries its own
+       margin-bottom) so the duplicated half is exactly 50% of the column
+       and translateY(-50%) loops without a visible jump. */
+    animation: reviews-scroll 60s linear infinite;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.reviews-column-reverse {
+    animation-direction: reverse;
+    animation-duration: 70s;
+}
+
+/* Pause the whole viewport on hover so both columns stay in step. */
+.reviews-viewport:hover .reviews-column {
+    animation-play-state: paused;
+}
+
+@keyframes reviews-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, -50%, 0); }
+}
+
+.review-card {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    padding: 20px 22px;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.review-stars {
+    color: #e8590c;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.review-text {
+    margin: 0 0 14px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--bs-body-color);
+}
+
+.review-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--bs-body-color);
+}
+
+@media (max-width: 575.98px) {
+    .broker-reviews-panel { padding: 20px; border-radius: 20px; }
+    .reviews-heading { font-size: 1.6rem; }
+    .reviews-viewport { height: 400px; }
+}
+
+/* Respect "reduce motion": no scrolling, the person can scroll the list by hand. */
+@media (prefers-reduced-motion: reduce) {
+    .reviews-column { animation: none; }
+    .reviews-viewport { overflow-y: auto; -webkit-mask-image: none; mask-image: none; }
+}

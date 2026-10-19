@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  "Market data from Sri Lanka" section for the Sell your property page.
+
+  NOT WIRED IN YET - built and parked here on purpose. To use it, add this
+  one line wherever it should sit on sell.html (e.g. just above or below the
+  listing form):
+
+      <div th:replace="~{fragments/market-data :: marketData}"></div>
+
+  and make sure this script tag is on that page once:
+
+      <script th:src="@{/js/market-data-chart.js}"></script>
+
+  Everything else (markup, styling, the two canvases, the sample Sri Lankan
+  figures) is fully self-contained in this one fragment - it doesn't touch
+  pages.css, style.css or any other shared file, so it's safe to drop in
+  later without fighting whatever else has changed in the meantime.
+
+  The two headline figures and the two stat tiles are FAKE placeholder data
+  (clearly labelled as such below) standing in for real market numbers -
+  swap the arrays in the data-points attributes, and the two <strong> stat
+  values, once real figures are available.
+-->
+<section th:fragment="marketData" class="market-data-section">
+    <style>
+        .market-data-section { margin: 48px 0; }
+        .market-data-section .md-heading {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .market-data-section .md-subheading {
+            color: var(--bs-secondary-color, #6c757d);
+            margin-bottom: 24px;
+        }
+        .market-data-section .md-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 860px) {
+            .market-data-section .md-grid { grid-template-columns: 1fr; }
+        }
+        .market-data-section .md-card {
+            background: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 18px;
+            padding: 22px 24px 18px;
+        }
+        .market-data-section .md-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .market-data-section .md-card-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+        .market-data-section .md-legend { text-align: right; font-size: 0.85rem; }
+        .market-data-section .md-legend-row { display: flex; gap: 14px; justify-content: flex-end; margin-bottom: 2px; }
+        .market-data-section .md-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+        .market-data-section .md-values { display: flex; gap: 18px; justify-content: flex-end; font-weight: 700; font-size: 1.05rem; }
+        .market-data-section .md-note { font-size: 0.72rem; color: var(--bs-secondary-color, #6c757d); font-style: italic; text-align: right; margin-top: 2px; }
+        .market-data-section canvas { width: 100%; height: 230px; display: block; }
+        .market-data-section .md-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        @media (max-width: 560px) {
+            .market-data-section .md-stats { grid-template-columns: 1fr; }
+        }
+        .market-data-section .md-stat {
+            background: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 18px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .market-data-section .md-stat i { font-size: 1.8rem; color: #19555a; }
+        .market-data-section .md-stat-label {
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            color: var(--bs-secondary-color, #6c757d);
+            margin-bottom: 2px;
+        }
+        .market-data-section .md-stat-value { font-size: 1.6rem; font-weight: 700; }
+        .market-data-section .md-fake-note {
+            font-size: 0.78rem;
+            color: var(--bs-secondary-color, #6c757d);
+            margin-top: 14px;
+        }
+    </style>
+
+    <h2 class="md-heading">Market data from Sri Lanka</h2>
+    <p class="md-subheading">A quick look at recent trends before you price your property.</p>
+
+    <div class="md-grid">
+        <!-- Average offer price: line chart -->
+        <div class="md-card">
+            <div class="md-card-head">
+                <h3 class="md-card-title">Average offer price</h3>
+                <div class="md-legend">
+                    <div class="md-legend-row">
+                        <span><span class="md-dot" style="background:#19555a;"></span>House</span>
+                        <span><span class="md-dot" style="background:#9a9a9a;"></span>Apartment</span>
+                    </div>
+                    <div class="md-values">
+                        <span style="color:#19555a;">Rs 42.6 Mn</span>
+                        <span style="color:#9a9a9a;">Rs 25.6 Mn</span>
+                    </div>
+                    <div class="md-note">* in the last 3 years</div>
+                </div>
+            </div>
+            <canvas class="md-line-chart"
+                    data-labels='["Q4 23","Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26","Q2 26","Q3 26"]'
+                    data-series-a='[38500000,38300000,38900000,38600000,39800000,40100000,40600000,40900000,42300000,42100000,42400000,42600000]'
+                    data-series-b='[24200000,24100000,24600000,24300000,24800000,25100000,25400000,25300000,25900000,25700000,25800000,25600000]'
+                    data-color-a="#19555a" data-color-b="#9a9a9a"
+                    data-prefix="Rs " data-unit="M" data-divisor="1000000"></canvas>
+        </div>
+
+        <!-- Average price per sqm: bar chart -->
+        <div class="md-card">
+            <div class="md-card-head">
+                <h3 class="md-card-title">Average price per sqm</h3>
+                <div class="md-legend">
+                    <div class="md-legend-row">
+                        <span><span class="md-dot" style="background:#19555a;"></span>House</span>
+                        <span><span class="md-dot" style="background:#9a9a9a;"></span>Apartment</span>
+                    </div>
+                    <div class="md-values">
+                        <span style="color:#19555a;">Rs 192K</span>
+                        <span style="color:#9a9a9a;">Rs 252K</span>
+                    </div>
+                    <div class="md-note">* in the last 3 years</div>
+                </div>
+            </div>
+            <canvas class="md-bar-chart"
+                    data-labels='["Q4 23","Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26","Q2 26","Q3 26"]'
+                    data-series-a='[178000,179000,180000,179500,182000,183500,185000,186500,189000,190000,191500,192000]'
+                    data-series-b='[236000,235000,238000,237000,240000,242000,244000,243500,247000,249000,251000,252000]'
+                    data-color-a="#19555a" data-color-b="#9a9a9a"
+                    data-prefix="Rs " data-unit="K" data-divisor="1000"></canvas>
+        </div>
+    </div>
+
+    <div class="md-stats">
+        <div class="md-stat">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+                <div class="md-stat-label">Average period of sale</div>
+                <div class="md-stat-value">84 Days</div>
+            </div>
+        </div>
+        <div class="md-stat">
+            <i class="bi bi-house-check-fill"></i>
+            <div>
+                <div class="md-stat-label">Successfully brokered properties</div>
+                <div class="md-stat-value">8,200+</div>
+            </div>
+        </div>
+    </div>
+
+    <p class="md-fake-note">
+        <i class="bi bi-info-circle"></i>
+        Sample figures for layout purposes - replace with real Sri Lankan market data before this goes live.
+    </p>
+</section>
+
+</body>
+</html>

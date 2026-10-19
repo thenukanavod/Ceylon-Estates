@@ -17,21 +17,27 @@
     <div class="row g-3 mb-5" th:if="${!#lists.isEmpty(pending)}">
         <div class="col-lg-6" th:each="p : ${pending}">
             <div class="side-card">
-                <div class="d-flex justify-content-between">
-                    <a th:href="@{/properties/{id}(id=${p.id})}" class="fw-bold text-decoration-none" th:text="${p.title}">Title</a>
-                    <span class="badge text-bg-secondary" th:text="#{${p.tagMessageKey}}">HOUSE</span>
-                </div>
-                <div class="small text-muted" th:text="${p.locationLabel}">Colombo</div>
-                <div class="small mb-2"><span th:text="${p.priceFormatted}">0</span> &middot; <span th:text="${p.forRent} ? #{search.forRent} : #{search.forSale}">For sale</span></div>
-                <div class="small text-muted mb-2" th:if="${p.owner != null}" th:text="#{adminListings.by(${p.owner.username})}">By user</div>
-                <div class="d-flex flex-wrap gap-2 align-items-start table-actions">
-                    <form th:action="@{/admin/listings/{id}/approve(id=${p.id})}" method="post">
-                        <button type="submit" class="btn btn-sm btn-teal"><i class="bi bi-check-lg"></i> <span th:text="#{adminListings.approve}">Approve</span></button>
-                    </form>
-                    <form th:action="@{/admin/listings/{id}/reject(id=${p.id})}" method="post" class="d-flex gap-1">
-                        <input type="text" name="reason" class="form-control form-control-sm" th:placeholder="#{adminListings.reason}" maxlength="300">
-                        <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{adminListings.reject}">Reject</button>
-                    </form>
+                <div class="d-flex gap-3">
+                    <div class="admin-thumb flex-shrink-0"
+                         th:style="${p.coverImageUrl != null} ? ('background-image: url(' + @{${p.coverImageUrl}} + '), ' + ${p.thumbGradient}) : ('background: ' + ${p.thumbGradient})"></div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/properties/{id}(id=${p.id})}" class="fw-bold text-decoration-none" th:text="${p.title}">Title</a>
+                            <span class="badge text-bg-secondary" th:text="#{${p.tagMessageKey}}">HOUSE</span>
+                        </div>
+                        <div class="small text-muted" th:text="${p.locationLabel}">Colombo</div>
+                        <div class="small mb-2"><span th:text="${p.priceFormatted}">0</span> &middot; <span th:text="${p.forRent} ? #{search.forRent} : #{search.forSale}">For sale</span></div>
+                        <div class="small text-muted mb-2" th:if="${p.owner != null}" th:text="#{adminListings.by(${p.owner.username})}">By user</div>
+                        <div class="d-flex flex-wrap gap-2 align-items-start table-actions">
+                            <form th:action="@{/admin/listings/{id}/approve(id=${p.id})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-teal"><i class="bi bi-check-lg"></i> <span th:text="#{adminListings.approve}">Approve</span></button>
+                            </form>
+                            <form th:action="@{/admin/listings/{id}/reject(id=${p.id})}" method="post" class="d-flex gap-1">
+                                <input type="text" name="reason" class="form-control form-control-sm" th:placeholder="#{adminListings.reason}" maxlength="300">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{adminListings.reject}">Reject</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,18 +47,29 @@
     <div class="table-responsive">
         <table class="table align-middle">
             <thead><tr>
-                <th>#</th><th th:text="#{mine.colTitle}">Title</th><th th:text="#{mine.colType}">Type</th>
+                <th>#</th><th></th><th th:text="#{mine.colTitle}">Title</th><th th:text="#{mine.colType}">Type</th>
                 <th th:text="#{mine.colPrice}">Price</th><th th:text="#{mine.colStatus}">Status</th><th></th>
             </tr></thead>
             <tbody>
             <tr th:each="p : ${all}">
                 <td th:text="${p.id}">1</td>
+                <td>
+                    <div class="admin-thumb admin-thumb-sm"
+                         th:style="${p.coverImageUrl != null} ? ('background-image: url(' + @{${p.coverImageUrl}} + '), ' + ${p.thumbGradient}) : ('background: ' + ${p.thumbGradient})"></div>
+                </td>
                 <td><a th:href="@{/properties/{id}(id=${p.id})}" class="text-decoration-none" th:text="${p.title}">Title</a>
                     <div class="small text-muted" th:text="${p.locationLabel}">Colombo</div></td>
                 <td th:text="#{${p.tagMessageKey}}">HOUSE</td>
                 <td th:text="${p.priceFormatted}">0</td>
                 <td><span class="badge" th:classappend="${p.status.badgeClass}" th:text="${p.status.label}">Pending</span></td>
                 <td class="text-end table-actions">
+                    <a th:href="@{/my-listings/{id}/edit(id=${p.id})}" class="btn btn-sm btn-outline-secondary" title="Edit / add photos">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form th:action="@{/my-listings/{id}/complete(id=${p.id})}" method="post" th:if="${p.status.live}">
+                        <button type="submit" class="btn btn-sm btn-outline-success"
+                                th:text="${p.forRent} ? #{mine.markRented} : #{mine.markSold}">Mark sold</button>
+                    </form>
                     <form th:action="@{/admin/listings/{id}/delete(id=${p.id})}" method="post"
                           th:attr="onsubmit='return confirm(\'' + #{mine.confirmDelete} + '\');'">
                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>

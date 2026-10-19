@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -70,6 +72,16 @@ public class Broker {
     @Column(length = 255)
     private String photoUrl;
 
+    /**
+     * The website account that signs in as this broker and reads the inbox.
+     * Null until an admin links one (or until an approved application links it).
+     * One account can belong to at most one broker.
+     */
+    @OneToOne
+    @JoinColumn(name = "account_id", unique = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private User account;
+
     public Broker() {
         // needed by JPA and by the admin form
     }
@@ -109,6 +121,13 @@ public class Broker {
         int index = id == null ? 0 : (int) (id % AVATAR_GRADIENTS.size());
         return AVATAR_GRADIENTS.get(index);
     }
+
+    public User getAccount() { return account; }
+
+    // Deliberately not called setAccount: the admin form binds straight onto Broker,
+    // so a posted "account" value must never be able to change who owns the inbox.
+    public void linkAccount(User account) { this.account = account; }
+    public void unlinkAccount() { this.account = null; }
 
     public Long getId() { return id; }
 

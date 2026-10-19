@@ -83,6 +83,7 @@ public class PropertyController {
         model.addAttribute("localInfo", localInfoRepository.findByDistrict(property.getDistrict()).orElse(null));
         model.addAttribute("petRentals", searchService.countPetFriendlyRentals(property.getDistrict()));
         model.addAttribute("brokers", nearbyBrokers(property));
+        model.addAttribute("allBrokers", brokerRepository.findAllByOrderByNameAsc()); // "share with a broker" list
         model.addAttribute("similar", searchService.similarTo(property, 3));
         model.addAttribute("canManage", isOwner || isAdmin);
         return "property-detail";

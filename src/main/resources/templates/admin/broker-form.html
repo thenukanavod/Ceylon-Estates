@@ -49,10 +49,10 @@
                     <label class="form-label" for="photo" th:text="#{brokerForm.photo}">Photo</label>
                     <div class="d-flex align-items-center gap-3" th:if="${editing and broker.photoUrl != null}">
                         <img th:src="@{${broker.photoUrl}}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:50%;">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="removePhoto" name="removePhoto" value="true">
-                            <label class="form-check-label" for="removePhoto" th:text="#{brokerForm.removePhoto}">Remove photo</label>
-                        </div>
+                        <!-- belongs to the separate form below, so it deletes the photo straight away without saving the rest -->
+                        <button type="submit" form="deletePhotoForm" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> <span th:text="#{brokerForm.deletePhoto}">Delete photo</span>
+                        </button>
                     </div>
                     <input class="form-control mt-2" type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
                     <div class="form-text" th:text="#{brokerForm.photoHelp}">JPEG, PNG or WEBP, up to 2 MB.</div>
@@ -70,9 +70,36 @@
             <a th:href="@{/admin/brokers}" class="btn btn-outline-secondary" th:text="#{common.cancel}">Cancel</a>
         </div>
     </form>
+
+    <!-- Used by the "Delete photo" button above (a form can't sit inside another form) -->
+    <form id="deletePhotoForm" th:if="${editing}" th:action="@{/admin/brokers/{id}/photo/delete(id=${broker.id})}" method="post"
+          th:attr="onsubmit='return confirm(\'' + #{brokerForm.confirmDeletePhoto} + '\');'"></form>
+
+    <!-- Crop / resize dialog for the broker photo -->
+    <div class="modal fade" id="photoCropModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="#{profile.cropTitle}">Adjust your photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <canvas id="photoCropCanvas" width="300" height="300"
+                            style="width: 300px; max-width: 100%; border-radius: 50%; cursor: grab; touch-action: none; background: #ddd;"></canvas>
+                    <div class="small text-muted mt-2" th:text="#{profile.cropHint}">Drag to move, use the slider to zoom.</div>
+                    <input type="range" id="photoCropZoom" class="form-range mt-2" min="1" max="3" step="0.01" value="1">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" th:text="#{profile.cropCancel}">Cancel</button>
+                    <button type="button" class="btn btn-accent" id="photoCropSave" th:text="#{profile.cropSave}">Save photo</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
 <div th:replace="~{fragments/layout :: scripts}"></div>
+<script th:src="@{/js/broker-photo-crop.js}"></script>
 </body>
 </html>

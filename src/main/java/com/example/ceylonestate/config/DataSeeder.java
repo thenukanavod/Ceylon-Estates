@@ -21,6 +21,8 @@ import com.example.ceylonestate.repository.ContactMessageRepository;
 import com.example.ceylonestate.repository.LocalInfoRepository;
 import com.example.ceylonestate.repository.PageViewRepository;
 import com.example.ceylonestate.repository.PropertyRepository;
+import com.example.ceylonestate.repository.ViewingRequestRepository;
+import com.example.ceylonestate.repository.SavedPropertyRepository;
 import com.example.ceylonestate.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +86,8 @@ public class DataSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ContactMessageRepository contactMessageRepository;
     private final PageViewRepository pageViewRepository;
+    private final SavedPropertyRepository savedPropertyRepository;
+    private final ViewingRequestRepository viewingRequestRepository;
 
     // The first administrator account comes from application.properties (never from the website).
     @Value("${app.admin.username:admin}")
@@ -102,7 +106,9 @@ public class DataSeeder implements CommandLineRunner {
                       UserRepository userRepository,
                       PasswordEncoder passwordEncoder,
                       ContactMessageRepository contactMessageRepository,
-                      PageViewRepository pageViewRepository) {
+                      PageViewRepository pageViewRepository,
+                      SavedPropertyRepository savedPropertyRepository,
+                      ViewingRequestRepository viewingRequestRepository) {
         this.propertyRepository = propertyRepository;
         this.brokerRepository = brokerRepository;
         this.articleRepository = articleRepository;
@@ -111,6 +117,8 @@ public class DataSeeder implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.contactMessageRepository = contactMessageRepository;
         this.pageViewRepository = pageViewRepository;
+        this.savedPropertyRepository = savedPropertyRepository;
+        this.viewingRequestRepository = viewingRequestRepository;
     }
 
     /**
@@ -135,7 +143,11 @@ public class DataSeeder implements CommandLineRunner {
         if (propertyRepository.count() == 0) {
             seedListings();
         }
+        removeMistakenDuplicates();
+        seedCompletedProjects();
         backfillMissingPhotos();
+        seedGalleryListings();
+        backfillViewCounts();
         seedAdminAccount();
         if (contactMessageRepository.count() == 0) {
             seedContactMessages();
@@ -280,7 +292,7 @@ public class DataSeeder implements CommandLineRunner {
                 articleRepository.save(new Article(header.get("title"), header.get("source"), header.get("summary"),
                         ArticleTopic.valueOf(header.get("topic")), parts[1].strip()));
             }
-        } catch (java.io.IOException | RuntimeException e) {
+        } catch (java.io.IOException e) {
             log.warn("Could not load the article files: {}", e.getMessage());
         }
     }
@@ -460,6 +472,266 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     /**
+     * Titles of the listings made by seedGalleryListings(). They deliberately have no photos, so
+     * backfillMissingPhotos() skips them (it would otherwise attach sample photos on the next start).
+     */
+    private static final java.util.Set<String> GALLERY_LISTING_TITLES = java.util.Set.of(
+            "Land Plot \u2013 Negombo", "Handover Day \u2013 Kurunegala", "Move-in Day \u2013 Ratnapura",
+            // 15 extra made-up listings
+            "Palm Haven Plot \u2013 Hambantota", "Misty Ridge Block \u2013 Badulla", "Lotus Pond Land \u2013 Matale",
+            "Monsoon Meadows \u2013 Ampara", "Sapphire Fields \u2013 Puttalam",
+            "Jasmine Court \u2013 Colombo 05", "Banyan Tree Villa \u2013 Kalutara", "Sandalwood Lane \u2013 Peradeniya",
+            "Orchid Hill House \u2013 Ella", "Tamarind Cottage \u2013 Mannar",
+            "Harbour Lights \u2013 Colombo 02", "Blue Lagoon Residences \u2013 Bentota", "Cloud Nine Towers \u2013 Colombo 06",
+            "Garden City Flats \u2013 Gampaha", "Vista Rise \u2013 Jaffna");
+
+    /**
+     * Listings an earlier version of this seeder added by mistake: their names (Silver Palm, Coral Bay Homes,
+     * Lakeside Villas, Cinnamon Grove, Sunview Block, Rosewood Residence, Golden Acres) already existed in
+     * seedListings() with another town, so they showed up as duplicates. Removed on start-up.
+     */
+    private static final java.util.Set<String> MISTAKEN_DUPLICATE_TITLES = java.util.Set.of(
+            "Silver Palm \u2013 Galle", "Coral Bay Homes \u2013 Matara", "Lakeside Villas \u2013 Kandy",
+            "Cinnamon Grove \u2013 Kalutara", "Sunview Block \u2013 Anuradhapura",
+            "Rosewood Residence \u2013 Colombo 07", "Golden Acres \u2013 Kurunegala");
+
+    /** Deletes the mistaken duplicates above (only sample listings, never one a real user added). */
+    private void removeMistakenDuplicates() {
+        java.util.List<Property> toRemove = new java.util.ArrayList<>();
+        for (Property p : propertyRepository.findAll()) {
+            if (p.getOwner() == null && MISTAKEN_DUPLICATE_TITLES.contains(p.getTitle())
+                    && p.getStatus() != ListingStatus.SOLD && p.getStatus() != ListingStatus.RENTED
+                    && !isReferenced(p)) {
+                toRemove.add(p);
+            }
+        }
+        if (!toRemove.isEmpty()) {
+            propertyRepository.deleteAll(toRemove);
+            log.info("Removed {} duplicate sample listings added by an earlier version.", toRemove.size());
+        }
+    }
+
+    /** True if a buyer saved this listing or asked for a viewing of it - deleting it would break those rows. */
+    private boolean isReferenced(Property p) {
+        return savedPropertyRepository.existsByPropertyId(p.getId())
+                || viewingRequestRepository.existsByPropertyId(p.getId());
+    }
+
+    /** The 15 completed projects shown in the homepage gallery, in the same order as the gallery tiles. */
+    private static final java.util.Set<String> COMPLETED_PROJECT_TITLES = java.util.Set.of(
+            "Land Plot \u2013 Negombo", "Silver Palm \u2013 Galle", "Skyline Towers", "Handover Day",
+            "Emerald Heights", "Coral Bay Homes", "Hillcrest Acres", "Lakeside Villas", "Cinnamon Grove",
+            "Ocean View Apts", "Move-in Day", "Sunview Block", "Rosewood Residence", "Pearl Residencies",
+            "Golden Acres");
+
+    /**
+     * Makes the Completed Projects page (and the Sold / Rented rows in the admin listings) match the 15 names in
+     * the homepage gallery: each one is a sold or rented sample project that uses its gallery photo.
+     * The older sample projects with other names are removed (never one a buyer saved or booked a viewing for),
+     * and a gallery project is only added when it is not there yet, so restarting never duplicates anything.
+     */
+    private void seedCompletedProjects() {
+        java.util.List<Property> toRemove = new java.util.ArrayList<>();
+        java.util.Set<String> have = new java.util.HashSet<>();
+        java.util.List<Property> all = new java.util.ArrayList<>(propertyRepository.findAll());
+        all.sort(java.util.Comparator.comparing(Property::getId));
+        for (Property p : all) {
+            boolean completed = p.getStatus() == ListingStatus.SOLD || p.getStatus() == ListingStatus.RENTED;
+            if (p.getOwner() != null || !completed) {
+                continue;
+            }
+            boolean wanted = COMPLETED_PROJECT_TITLES.contains(p.getTitle());
+            if (wanted && have.add(p.getTitle())) {
+                continue;                       // the first copy of a gallery project stays
+            }
+            if (!isReferenced(p)) {
+                toRemove.add(p);                // an old sample project, or a second copy
+            } else if (wanted) {
+                have.add(p.getTitle());
+            }
+        }
+        if (!toRemove.isEmpty()) {
+            propertyRepository.deleteAll(toRemove);
+            log.info("Removed {} old or duplicate completed projects.", toRemove.size());
+        }
+
+        java.util.List<Property> toAdd = new java.util.ArrayList<>();
+        toAdd.add(completed(galleryLand("Land Plot \u2013 Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 70,
+                "Residential plot near the Negombo beach, sold with a clear deed."), ListingStatus.SOLD, "gallery1.png"));
+        toAdd.add(completed(galleryHouse("Silver Palm \u2013 Galle", GALLE, "Galle", 36_500_000, false, ListingStatus.SOLD, 4, 3, 2800, 12, true, 85,
+                "Four-bedroom house with a landscaped garden near the Galle Fort."), ListingStatus.SOLD, "gallery2.png"));
+        toAdd.add(completed(galleryApartment("Skyline Towers", COLOMBO, "Colombo 03", 52_000_000, false, ListingStatus.SOLD, 3, 3, 1750, 18, true, false, 95,
+                "High-floor apartment with city views, sold to a family relocating from abroad."), ListingStatus.SOLD, "gallery3.png"));
+        toAdd.add(completed(galleryHouse("Handover Day", KURUNEGALA, "Kurunegala", 18_900_000, false, ListingStatus.SOLD, 3, 2, 1800, 10, true, 60,
+                "New three-bedroom house handed over to its owners."), ListingStatus.SOLD, "gallery4.png"));
+        toAdd.add(completed(galleryApartment("Emerald Heights", KANDY, "Kandy", 26_000_000, false, ListingStatus.SOLD, 3, 2, 1400, 9, true, false, 100,
+                "Hill-view apartment on the edge of Kandy town."), ListingStatus.SOLD, "gallery5.png"));
+        toAdd.add(completed(galleryHouse("Coral Bay Homes", MATARA, "Matara", 160_000, true, ListingStatus.RENTED, 3, 3, 2100, 9, false, 40,
+                "Beach-side family home, rented on a two-year lease."), ListingStatus.RENTED, "gallery6.png"));
+        toAdd.add(completed(galleryLand("Hillcrest Acres", NUWARA_ELIYA, "Nuwara Eliya", 150_000, 40, "Residential", 110,
+                "Cool-climate hillside land with a valley view."), ListingStatus.SOLD, "gallery7.png"));
+        toAdd.add(completed(galleryHouse("Lakeside Villas", KANDY, "Kandy", 42_000_000, false, ListingStatus.SOLD, 5, 4, 3400, 18, true, 120,
+                "Lakeside villa with a pool deck and a guest wing."), ListingStatus.SOLD, "gallery8.png"));
+        toAdd.add(completed(galleryLand("Cinnamon Grove", KALUTARA, "Kalutara", 275_000, 25, "Mixed", 130,
+                "Flat plot in a quiet cinnamon-growing area."), ListingStatus.SOLD, "gallery9.png"));
+        toAdd.add(completed(galleryApartment("Ocean View Apts", GALLE, "Galle", 95_000, true, ListingStatus.RENTED, 2, 2, 1100, 5, true, true, 45,
+                "Sea-facing apartment, rented to a long-stay tenant."), ListingStatus.RENTED, "gallery10.jpg"));
+        toAdd.add(completed(galleryHouse("Move-in Day", RATNAPURA, "Ratnapura", 22_000_000, false, ListingStatus.SOLD, 3, 2, 1650, 11, true, 75,
+                "Newly painted three-bedroom house, ready to move in."), ListingStatus.SOLD, "gallery11.jpg"));
+        toAdd.add(completed(galleryLand("Sunview Block", ANURADHAPURA, "Anuradhapura", 95_000, 30, "Residential", 140,
+                "Level block in a growing neighbourhood."), ListingStatus.SOLD, "gallery12.png"));
+        toAdd.add(completed(galleryHouse("Rosewood Residence", COLOMBO, "Colombo 07", 98_000_000, false, ListingStatus.SOLD, 5, 5, 4200, 15, true, 150,
+                "Elegant residence in Cinnamon Gardens with a courtyard."), ListingStatus.SOLD, "gallery13.png"));
+        toAdd.add(completed(galleryApartment("Pearl Residencies", COLOMBO, "Battaramulla", 27_500_000, false, ListingStatus.SOLD, 3, 2, 1380, 7, true, false, 160,
+                "Modern apartment near the parliament road."), ListingStatus.SOLD, "gallery14.png"));
+        toAdd.add(completed(galleryLand("Golden Acres", KURUNEGALA, "Kurunegala", 120_000, 60, "Agricultural", 170,
+                "Large fertile block with a well and coconut trees."), ListingStatus.SOLD, "gallery15.jpg"));
+
+        int added = 0;
+        for (Property p : toAdd) {
+            if (!have.contains(p.getTitle())) {
+                propertyRepository.save(p);
+                added++;
+            }
+        }
+        if (added > 0) {
+            log.info("Added {} completed projects from the homepage gallery.", added);
+        }
+    }
+
+    /** Marks a sample listing as a finished project and gives it its gallery photo. */
+    private Property completed(Property p, ListingStatus status, String galleryFile) {
+        p.setStatus(status);
+        p.addImage(new PropertyImage("/images/gallery/" + galleryFile));
+        return p;
+    }
+
+    /**
+     * Gives every sample listing that has not been opened yet a believable view count, so the eye counter on the
+     * cards does not start at 0 everywhere. Real visits are added on top of this number (PropertyController).
+     */
+    private void backfillViewCounts() {
+        for (Property p : propertyRepository.findAll()) {
+            if (p.getOwner() == null && p.getViewCount() == 0
+                    && p.getStatus() != ListingStatus.SOLD && p.getStatus() != ListingStatus.RENTED) {
+                p.setViewCount(35 + (int) ((p.getId() * 137L) % 640));
+                propertyRepository.save(p);
+            }
+        }
+    }
+
+    /**
+     * Adds the gallery project names that did NOT exist as listings yet, with sample details and NO photos.
+     * Runs on every start but only adds a listing whose title is not there yet, so nothing is duplicated.
+     * The other twelve gallery names (Skyline Towers, Emerald Heights, Ocean View Apartments, Pearl Residencies,
+     * Silver Palm, Coral Bay Homes, Lakeside Villas, Cinnamon Grove, Hillcrest Acres, Sunview Block,
+     * Rosewood Residence and Golden Acres) are already in seedListings().
+     */
+    private void seedGalleryListings() {
+        java.util.Set<String> existing = new java.util.HashSet<>();
+        for (Property p : propertyRepository.findAll()) {
+            // Only live listings count: a completed project may share a name with a live listing.
+            if (p.getStatus() != ListingStatus.SOLD && p.getStatus() != ListingStatus.RENTED) {
+                existing.add(p.getTitle());
+            }
+        }
+        java.util.List<Property> toAdd = new java.util.ArrayList<>();
+
+        toAdd.add(galleryLand("Land Plot \u2013 Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 3,
+                "Cleared residential plot with road frontage, a short drive from the Negombo beach and the airport."));
+        toAdd.add(galleryHouse("Handover Day \u2013 Kurunegala", KURUNEGALA, "Kurunegala", 18_900_000, false, FOR_SALE, 3, 2, 1800, 10, true, 4,
+                "Brand-new three-bedroom house ready for handover, with a covered car porch and a small garden."));
+        toAdd.add(galleryHouse("Move-in Day \u2013 Ratnapura", RATNAPURA, "Ratnapura", 140_000, true, FOR_RENT, 3, 2, 1650, 11, true, 8,
+                "Newly painted three-bedroom house for rent, ready to move into. Pets welcome."));
+
+        // ----- 15 more made-up listings (all invented; no photos) -----
+        // Lands (price is per perch)
+        toAdd.add(galleryLand("Palm Haven Plot \u2013 Hambantota", HAMBANTOTA, "Hambantota", 85_000, 35, "Residential", 1,
+                "Flat coastal plot with coconut palms, ten minutes from the Hambantota harbour."));
+        toAdd.add(galleryLand("Misty Ridge Block \u2013 Badulla", BADULLA, "Badulla", 140_000, 22, "Residential", 2,
+                "Cool-climate hillside block with a mountain view and a gravel access road."));
+        toAdd.add(galleryLand("Lotus Pond Land \u2013 Matale", MATALE, "Matale", 70_000, 48, "Agricultural", 5,
+                "Fertile land beside a small pond, currently planted with spices."));
+        toAdd.add(galleryLand("Monsoon Meadows \u2013 Ampara", AMPARA, "Ampara", 45_000, 120, "Agricultural", 7,
+                "Wide open meadow with year-round water, good for paddy or a small farm."));
+        toAdd.add(galleryLand("Sapphire Fields \u2013 Puttalam", PUTTALAM, "Puttalam", 110_000, 28, "Mixed", 11,
+                "Corner plot near the new highway junction, suitable for a home or a small shop."));
+
+        // Houses
+        toAdd.add(galleryHouse("Jasmine Court \u2013 Colombo 05", COLOMBO, "Colombo 05", 74_000_000, false, FOR_SALE, 4, 4, 3100, 10, true, 1,
+                "Contemporary four-bedroom house on a quiet lane in Narahenpita, with a rooftop terrace."));
+        toAdd.add(galleryHouse("Banyan Tree Villa \u2013 Kalutara", KALUTARA, "Kalutara", 52_500_000, false, FOR_SALE, 4, 3, 2900, 20, true, 3,
+                "Riverside villa shaded by an old banyan tree, with a boat jetty at the bottom of the garden."));
+        toAdd.add(galleryHouse("Sandalwood Lane \u2013 Peradeniya", KANDY, "Peradeniya", 31_000_000, false, FOR_SALE, 3, 3, 2200, 14, true, 6,
+                "Split-level family house close to the botanical gardens and the university."));
+        toAdd.add(galleryHouse("Orchid Hill House \u2013 Ella", BADULLA, "Ella", 185_000, true, FOR_RENT, 2, 2, 1300, 8, true, 9,
+                "Cosy hill house with a wooden deck facing Ella Rock. Furnished, ideal as a long-stay rental."));
+        toAdd.add(galleryHouse("Tamarind Cottage \u2013 Mannar", MANNAR, "Mannar", 9_800_000, false, FOR_SALE, 2, 1, 1100, 16, true, 12,
+                "Small single-storey cottage with a tamarind tree and a short walk to the sea."));
+
+        // Apartments
+        toAdd.add(galleryApartment("Harbour Lights \u2013 Colombo 02", COLOMBO, "Colombo 02", 48_000_000, false, FOR_SALE, 3, 3, 1800, 22, true, false, 2,
+                "Upper-floor apartment overlooking the port and the Beira Lake, with a pool and a gym."));
+        toAdd.add(galleryApartment("Blue Lagoon Residences \u2013 Bentota", GALLE, "Bentota", 21_500_000, false, FOR_SALE, 2, 2, 1250, 4, true, true, 4,
+                "Beach-side holiday apartment with a shared pool, two minutes from the Bentota river."));
+        toAdd.add(galleryApartment("Cloud Nine Towers \u2013 Colombo 06", COLOMBO, "Colombo 06", 38_000_000, false, FOR_SALE, 3, 2, 1500, 15, true, false, 6,
+                "High-floor three-bedroom flat in Wellawatte with a balcony and 24-hour security."));
+        toAdd.add(galleryApartment("Garden City Flats \u2013 Gampaha", GAMPAHA, "Gampaha", 85_000, true, FOR_RENT, 2, 1, 950, 2, false, true, 8,
+                "Neat two-bedroom flat in a gated block near the Gampaha railway station."));
+        toAdd.add(galleryApartment("Vista Rise \u2013 Jaffna", JAFFNA, "Jaffna", 15_600_000, false, FOR_SALE, 2, 2, 1050, 6, true, false, 10,
+                "Modern apartment near the Jaffna fort, with city views and covered parking."));
+
+        int added = 0;
+        for (Property p : toAdd) {
+            if (!existing.contains(p.getTitle())) {
+                propertyRepository.save(p);
+                added++;
+            }
+        }
+        if (added > 0) {
+            log.info("Added {} sample listings from the homepage gallery (no photos).", added);
+        }
+    }
+
+    /** A land listing with no photos (the normal land(...) helper always adds some). */
+    private LandProperty galleryLand(String title, District district, String city, double pricePerPerch, double perches,
+                                     String zoning, int daysAgo, String description) {
+        LandProperty p = new LandProperty();
+        fillCommon(p, title, district, city, pricePerPerch, false, FOR_SALE, false, daysAgo, description);
+        p.setAreaPerches(perches);
+        p.setZoning(zoning);
+        return p;
+    }
+
+    /** An apartment listing with no photos. */
+    private ApartmentProperty galleryApartment(String title, District district, String city, double price, boolean rent,
+                                               ListingStatus status, int beds, int baths, double sqft, int floor,
+                                               boolean lift, boolean pets, int daysAgo, String description) {
+        ApartmentProperty p = new ApartmentProperty();
+        fillCommon(p, title, district, city, price, rent, status, pets, daysAgo, description);
+        p.setBedrooms(beds);
+        p.setBathrooms(baths);
+        p.setFloorAreaSqft(sqft);
+        p.setFloorNumber(floor);
+        p.setHasLift(lift);
+        return p;
+    }
+
+    /** A house listing with no photos. */
+    private HouseProperty galleryHouse(String title, District district, String city, double price, boolean rent,
+                                       ListingStatus status, int beds, int baths, double sqft, double perches,
+                                       boolean garden, int daysAgo, String description) {
+        HouseProperty p = new HouseProperty();
+        fillCommon(p, title, district, city, price, rent, status, rent, daysAgo, description);
+        p.setBedrooms(beds);
+        p.setBathrooms(baths);
+        p.setFloorAreaSqft(sqft);
+        p.setLandSizePerches(perches);
+        p.setHasGarden(garden);
+        return p;
+    }
+
+    /**
      * Runs on every startup, not just when the database is empty - for a
      * dev database seeded before photos were wired up, this is what
      * attaches them without needing a DROP DATABASE. It only ever adds
@@ -471,7 +743,7 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void backfillMissingPhotos() {
         for (Property p : propertyRepository.findAll()) {
-            if (p.getOwner() == null && p.getImages().isEmpty()) {
+            if (p.getOwner() == null && p.getImages().isEmpty() && !GALLERY_LISTING_TITLES.contains(p.getTitle())) {
                 int seed = (int) (p.getId() == null ? 1 : p.getId());
                 addPhotos(p, p.getTypeKey(), seed);
                 propertyRepository.save(p);

@@ -8,12 +8,14 @@ import com.example.ceylonestate.repository.BrokerRepository;
 import com.example.ceylonestate.service.BrokerReviewService;
 import com.example.ceylonestate.service.BrokerReviewService.BrokerCard;
 import com.example.ceylonestate.service.CurrentUserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Comparator;
@@ -23,7 +25,8 @@ import java.util.Locale;
 /**
  * The public mortgage broker directory: browse, search, filter by province and
  * by star rating, read other people's comments, and (signed in) rate a broker.
- *   GET  /brokers                       - Read (directory + reviews)
+ *   GET  /brokers                       - Read (directory: small cards, each opens the broker's page)
+ *   GET  /brokers/{id}                  - Read (one broker's own page: details, reviews, message form)
  *   POST /brokers/{id}/review           - Create or Update your review
  *   POST /brokers/reviews/{id}/delete   - Delete your review
  */
@@ -111,6 +114,18 @@ public class BrokerController {
         return "brokers";
     }
 
+    /** One broker's own page: full details, reviews, and the form to message them. */
+    @GetMapping("/brokers/{id:\\d+}")
+    public String profile(@PathVariable Long id, Model model) {
+        Broker broker = brokerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User viewer = currentUserService.get().orElse(null);
+        BrokerCard card = reviewService.cards(List.of(broker), viewer).get(0);
+        model.addAttribute("broker", broker);
+        model.addAttribute("card", card);
+        return "broker-detail";
+    }
+
     private static District parseDistrict(String name) {
         if (name == null || name.isBlank()) {
             return null;
@@ -134,14 +149,16 @@ public class BrokerController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("flashError", e.getMessage());
         }
-        return "redirect:/brokers#broker-" + id;
+        return "redirect:/brokers/" + id;
     }
 
     @PostMapping("/brokers/reviews/{reviewId}/delete")
-    public String deleteReview(@PathVariable Long reviewId, RedirectAttributes redirectAttributes) {
+    public String deleteReview(@PathVariable Long reviewId,
+                               @RequestParam(required = false) Long brokerId,
+                               RedirectAttributes redirectAttributes) {
         User user = currentUserService.get().orElseThrow();
         reviewService.deleteOwn(user, reviewId);
         redirectAttributes.addFlashAttribute("flash", "brokers.review.deleted");
-        return "redirect:/brokers";
+        return brokerId != null ? "redirect:/brokers/" + brokerId : "redirect:/brokers";
     }
 }

@@ -373,8 +373,7 @@ body {
 }
 
 .broker-row-viewport {
-    overflow-x: auto;
-    scroll-behavior: smooth;
+    overflow: hidden;            /* the row slides by transform (brokers.js), not by hand-scrolling */
     -ms-overflow-style: none;
     scrollbar-width: none;
     /* A scrolling box also clips vertically, so the hover "pop" of a card was cut off
@@ -443,27 +442,6 @@ body {
     letter-spacing: 0.03em;
     background-size: cover;
     background-position: center;
-}
-
-.broker-scroll-btn {
-    position: absolute;
-    top: 50%;
-    right: -18px;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    color: #1a1a1a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-.broker-scroll-btn:hover {
-    background-color: #f2f2f2;
 }
 
 /* ---------- Sell With Us section (CTA + 3-step process) ---------- */
@@ -1336,4 +1314,24 @@ html {
 }
 @media (max-width: 575px) {
     .section-divider { margin: 0 1.5rem; }
+}
+
+/* ---------- Page background behind the top bar ----------
+   The bar sits in a strip at the very top of the page. That strip showed the plain page colour, so pages that
+   paint their own background lower down (login pages, Projects header) had a different shade around the bar.
+   The bar itself is unchanged: only the colour behind it is fixed here. */
+
+/* Login / register / admin sign-in: the dark glow now covers the whole page, including the strip behind the bar */
+body:has(.auth-page) {
+    background:
+        radial-gradient(circle at 50% 0%, rgba(91, 99, 245, 0.25), transparent 60%),
+        #0b0e14;
+}
+body:has(.auth-page) .auth-page {
+    background: none;
+}
+
+/* Projects header: the bar now sits inside the hero, but keeps the site font instead of the hero's Montserrat */
+.projects-hero #page-top {
+    font-family: var(--bs-body-font-family);
 }

@@ -4,7 +4,7 @@
     <title>Property</title>
 </head>
 <body>
-<header th:replace="~{fragments/layout :: pageHero(${property.title}, ${property.locationLabel})}"></header>
+<header th:replace="~{fragments/layout :: pageHero(${property.title}, ${property.locationLabel + ' · ' + #messages.msg('detail.views', property.viewCount)})}"></header>
 <div th:replace="~{fragments/layout :: sidebar}"></div>
 
 <main class="container-xl page-main">
@@ -134,6 +134,22 @@
                     <a th:href="@{/my-listings/{id}/edit(id=${property.id})}" class="btn btn-outline-secondary w-100" th:text="#{detail.edit}">Edit listing</a>
                 </div>
 
+                <!-- Share this listing with a broker (goes to their inbox) -->
+                <div class="side-card" th:if="${property.status.live}">
+                    <h6 class="fw-bold" th:text="#{brokerMsg.shareTitle}">Share this listing with a broker</h6>
+                    <form th:if="${currentUser != null}" th:action="@{/messages/send}" method="post">
+                        <input type="hidden" name="propertyId" th:value="${property.id}">
+                        <input type="hidden" name="from" value="property">
+                        <select name="brokerId" class="form-select mb-2" required>
+                            <option value="" th:text="#{brokerMsg.chooseBroker}">Choose a broker</option>
+                            <option th:each="b : ${allBrokers}" th:value="${b.id}" th:text="${b.name} + ' (' + ${b.district.label} + ')'">Name (Colombo)</option>
+                        </select>
+                        <textarea name="body" rows="2" maxlength="1000" class="form-control mb-2" th:placeholder="#{brokerMsg.sharePlaceholder}"></textarea>
+                        <button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-send"></i> <span th:text="#{brokerMsg.shareSend}">Share listing</span></button>
+                    </form>
+                    <a th:if="${currentUser == null}" th:href="@{/login}" class="btn btn-outline-secondary w-100" th:text="#{brokerMsg.shareLogin}">Log in to share this listing</a>
+                </div>
+
                 <div class="side-card" th:if="${!#lists.isEmpty(brokers)}">
                     <h6 class="fw-bold" th:text="#{detail.brokersNear(${property.district.label})}">Brokers nearby</h6>
                     <div class="mini-broker" th:each="b : ${brokers}">
@@ -141,7 +157,7 @@
                              th:style="${b.photoUrl != null} ? ('background: url(' + @{${b.photoUrl}} + ') center / cover no-repeat') : ('background:' + ${b.avatarGradient})"
                              th:text="${b.photoUrl != null} ? '' : ${b.initials}">AB</div>
                         <div>
-                            <div class="fw-semibold" th:text="${b.name}">Name</div>
+                            <a class="fw-semibold text-decoration-none d-block" th:href="@{/brokers/{id}(id=${b.id})}" th:text="${b.name}">Name</a>
                             <a class="small" th:href="'tel:' + ${b.phone}" th:text="${b.phone}">011</a>
                         </div>
                     </div>

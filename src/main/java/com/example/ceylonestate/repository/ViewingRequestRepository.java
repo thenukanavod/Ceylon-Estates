@@ -22,4 +22,7 @@ public interface ViewingRequestRepository extends JpaRepository<ViewingRequest, 
     boolean existsByUserAndPropertyIdAndVisitAt(User user, Long propertyId, LocalDateTime visitAt);
 
     long countByStatus(BookingStatus status);
+
+    /** True if any row points at this property (so deleting the property would break a foreign key). */
+    boolean existsByPropertyId(Long propertyId);
 }

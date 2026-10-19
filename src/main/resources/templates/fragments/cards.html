@@ -10,7 +10,6 @@
     <div class="listing-thumb"
          th:style="${p.coverImageUrl != null} ? ('background-image: url(' + @{${p.coverImageUrl}} + '), ' + ${p.thumbGradient}) : ('background: ' + ${p.thumbGradient})">
         <span class="listing-thumb-tag" th:text="#{${p.tagMessageKey}}">HOUSE</span>
-        <span class="listing-pet-tag" th:if="${p.petFriendly}" th:title="#{listing.petFriendly}"><i class="bi bi-balloon-heart-fill"></i></span>
         <!-- Save / unsave (signed-out visitors are sent to the login page) -->
         <form th:action="@{/saved/{id}/toggle(id=${p.id})}" method="post" class="heart-form">
             <button type="submit" class="heart-btn" th:classappend="${savedIds != null and savedIds.contains(p.id)} ? 'on'"
@@ -25,9 +24,16 @@
         <div class="fw-bold" th:text="${p.priceFormatted}">8,200,000 LKR</div>
         <div class="text-muted small fst-italic mb-2" th:text="#{${p.priceNoteKey}}">FIXED PRICE</div>
         <hr>
-        <a th:href="@{/properties/{id}(id=${p.id})}" class="small fw-semibold text-decoration-none stretched-link">
-            <span th:text="#{${p.exploreMessageKey}}">Explore House</span> <i class="bi bi-arrow-right"></i>
-        </a>
+        <div class="d-flex justify-content-between align-items-center">
+            <a th:href="@{/properties/{id}(id=${p.id})}" class="small fw-semibold text-decoration-none stretched-link">
+                <span th:text="#{${p.exploreMessageKey}}">Explore House</span> <i class="bi bi-arrow-right"></i>
+            </a>
+            <!-- How many times this listing has been opened; not shown once it is sold or rented -->
+            <span class="small text-muted" th:if="${p.status.name() != 'SOLD' and p.status.name() != 'RENTED'}"
+                  th:title="#{listing.views}">
+                <i class="bi bi-eye"></i> <span th:text="${p.viewCount}">0</span>
+            </span>
+        </div>
     </div>
 </div>
 

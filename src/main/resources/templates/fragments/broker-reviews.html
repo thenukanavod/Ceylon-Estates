@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+    Customer comments library for the Brokers page (no pictures).
+    Same idea as the homepage Project Library: text on the left, auto-scrolling
+    columns on the right, the two columns moving in opposite directions.
+    Use it on brokers.html with:
+        <section th:replace="~{fragments/broker-reviews :: brokerReviews}"></section>
+    Styles: broker-reviews.css (append to style.css).
+    Texts: broker-reviews-messages.properties (add to messages.properties / messages_si.properties).
+    The 16 comments are sample text written here, they are not stored in MySQL.
+-->
+<section th:fragment="brokerReviews" class="broker-reviews-panel mb-4" aria-labelledby="brokerReviewsHeading">
+    <div class="row g-4 align-items-center">
+
+        <!-- Left: pitch + button -->
+        <div class="col-lg-5">
+            <h2 id="brokerReviewsHeading" class="fw-bold mb-3 reviews-heading" th:text="#{brokers.reviews.heading}">What customers say about our brokers</h2>
+            <p class="reviews-body mb-4" th:text="#{brokers.reviews.body}">
+                Buyers, sellers and renters across Sri Lanka share what it was like to work with our brokers.
+            </p>
+            <a href="#brokerForm" class="btn text-white fw-semibold d-inline-flex align-items-center gap-2"
+               style="background-color: #19555a; border-radius: 30px; padding: 10px 28px;">
+                <span th:text="#{brokers.reviews.cta}">Find a broker</span> <i class="bi bi-arrow-down"></i>
+            </a>
+        </div>
+
+        <!-- Right: auto-scrolling comment columns -->
+        <div class="col-lg-7">
+            <div class="reviews-viewport">
+
+                    <div class="reviews-column">
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Found a broker in Colombo within a day. He explained every loan option clearly and never pushed me to decide fast.</p>
+                            <div class="review-name">Nimali, Colombo</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Very easy to compare brokers by area and rating. I booked a call the same evening and had my pre-approval in a week.</p>
+                            <div class="review-name">Kasun, Gampaha</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">The broker we chose handled all the paperwork for our first home. Honest about the costs from the start.</p>
+                            <div class="review-name">Shanika, Kandy</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">I was nervous about selling my late father&rsquo;s land. My broker was patient, professional and got us a fair price.</p>
+                            <div class="review-name">Ruwan, Galle</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="4 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i></div>
+                            <p class="review-text">Great service. Replied to my messages on weekends too, which I did not expect.</p>
+                            <div class="review-name">Dilini, Negombo</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Compared three brokers and picked the one with the best reviews. No regrets, the whole process was smooth.</p>
+                            <div class="review-name">Tharindu, Matara</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">As a landlord I needed someone I could trust. My broker found a tenant in two weeks and sends me an update every month.</p>
+                            <div class="review-name">Priyantha, Kurunegala</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Helpful, polite and well informed about the local market. Showed us plots we would never have found ourselves.</p>
+                            <div class="review-name">Fathima, Batticaloa</div>
+                        </div>
+                        <!-- duplicated set for a seamless loop -->
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Found a broker in Colombo within a day. He explained every loan option clearly and never pushed me to decide fast.</p>
+                            <div class="review-name">Nimali, Colombo</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Very easy to compare brokers by area and rating. I booked a call the same evening and had my pre-approval in a week.</p>
+                            <div class="review-name">Kasun, Gampaha</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">The broker we chose handled all the paperwork for our first home. Honest about the costs from the start.</p>
+                            <div class="review-name">Shanika, Kandy</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">I was nervous about selling my late father&rsquo;s land. My broker was patient, professional and got us a fair price.</p>
+                            <div class="review-name">Ruwan, Galle</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i></div>
+                            <p class="review-text">Great service. Replied to my messages on weekends too, which I did not expect.</p>
+                            <div class="review-name">Dilini, Negombo</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Compared three brokers and picked the one with the best reviews. No regrets, the whole process was smooth.</p>
+                            <div class="review-name">Tharindu, Matara</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">As a landlord I needed someone I could trust. My broker found a tenant in two weeks and sends me an update every month.</p>
+                            <div class="review-name">Priyantha, Kurunegala</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Helpful, polite and well informed about the local market. Showed us plots we would never have found ourselves.</p>
+                            <div class="review-name">Fathima, Batticaloa</div>
+                        </div>
+                    </div>
+
+                    <div class="reviews-column reviews-column-reverse d-none d-md-flex">
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Clear advice on mortgage rates between banks. It saved us a good amount on the interest.</p>
+                            <div class="review-name">Sajith, Colombo</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="4 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i></div>
+                            <p class="review-text">The site made it simple to find a licensed broker near my town. Good experience from start to finish.</p>
+                            <div class="review-name">Anusha, Anuradhapura</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Our broker negotiated well and stayed calm when the buyer kept changing the offer. Sold within a month.</p>
+                            <div class="review-name">Mahesh, Ratnapura</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Quick responses and no hidden fees. I would recommend this to anyone buying their first apartment.</p>
+                            <div class="review-name">Hiruni, Colombo</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">I rented out two flats through a broker I found here. Both tenants were verified and the agreement was done properly.</p>
+                            <div class="review-name">Chaminda, Gampaha</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Friendly team and honest reviews from other customers helped me choose. Everything went exactly as promised.</p>
+                            <div class="review-name">Sewwandi, Jaffna</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">We needed a plot for a small guest house. The broker understood our budget and arranged three viewings in one day.</p>
+                            <div class="review-name">Roshan, Nuwara Eliya</div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-stars" role="img" aria-label="5 out of 5 stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Professional from the first call. Kept me updated at every step until the keys were in my hand.</p>
+                            <div class="review-name">Malsha, Galle</div>
+                        </div>
+                        <!-- duplicated set for a seamless loop -->
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Clear advice on mortgage rates between banks. It saved us a good amount on the interest.</p>
+                            <div class="review-name">Sajith, Colombo</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i></div>
+                            <p class="review-text">The site made it simple to find a licensed broker near my town. Good experience from start to finish.</p>
+                            <div class="review-name">Anusha, Anuradhapura</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Our broker negotiated well and stayed calm when the buyer kept changing the offer. Sold within a month.</p>
+                            <div class="review-name">Mahesh, Ratnapura</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Quick responses and no hidden fees. I would recommend this to anyone buying their first apartment.</p>
+                            <div class="review-name">Hiruni, Colombo</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">I rented out two flats through a broker I found here. Both tenants were verified and the agreement was done properly.</p>
+                            <div class="review-name">Chaminda, Gampaha</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Friendly team and honest reviews from other customers helped me choose. Everything went exactly as promised.</p>
+                            <div class="review-name">Sewwandi, Jaffna</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">We needed a plot for a small guest house. The broker understood our budget and arranged three viewings in one day.</p>
+                            <div class="review-name">Roshan, Nuwara Eliya</div>
+                        </div>
+                        <div class="review-card" aria-hidden="true">
+                            <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                            <p class="review-text">Professional from the first call. Kept me updated at every step until the keys were in my hand.</p>
+                            <div class="review-name">Malsha, Galle</div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

@@ -242,6 +242,36 @@ button.hero-search-btn {
     padding: 24px;
 }
 
+/* Small photo preview used in the admin tables, always cropped/zoomed to
+   fill its box (cover) instead of stretching, same as everywhere else photos
+   appear on the site. table-thumb is for listings (rounded square), table-avatar
+   for brokers (circle, falls back to the coloured initials when there's no photo). */
+.table-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bs-secondary-bg);
+    flex-shrink: 0;
+}
+
+.table-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
 .sticky-side {
     position: sticky;
     top: 24px;
@@ -387,9 +417,9 @@ button.hero-search-btn {
 
 .projects-hero {
     font-family: 'Montserrat', -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: #222;
-    /* Fixed colours on purpose: a two-tone split panel, whatever the site theme */
-    background: linear-gradient(90deg, #f4f1ec 0%, #f4f1ec 50%, #e7e7e7 50%, #e7e7e7 100%);
+    color: #fff;
+    /* Same teal gradient as the other inner pages, so the floating navigation bar stands out against it */
+    background: linear-gradient(135deg, #19555a 0%, #2c7a7f 55%, #5f9ea0 100%);
 }
 
 .projects-hero-inner {
@@ -403,7 +433,7 @@ button.hero-search-btn {
     letter-spacing: -0.01em;
     margin: 0;
     padding-left: 14px;
-    border-left: 2px solid #222;
+    border-left: 2px solid #fff;
 }
 
 .projects-hero p {
@@ -412,7 +442,7 @@ button.hero-search-btn {
     font-weight: 400;
     font-size: 0.98rem;
     line-height: 1.6;
-    color: #444;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .chip-row {
@@ -607,10 +637,6 @@ button.hero-search-btn {
 
     .page-hero-body {
         padding-top: 28px;
-    }
-
-    .projects-hero {
-        background: #f4f1ec;
     }
 }
 
@@ -1674,4 +1700,36 @@ button.hero-search-btn {
 }
 @media (max-width: 991px) {
     .about-why::before { width: 100%; }
+}
+
+/* ---------- Admin tables: small photo previews ---------- */
+
+.admin-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.admin-thumb-sm {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
 }

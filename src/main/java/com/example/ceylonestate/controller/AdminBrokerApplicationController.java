@@ -1,6 +1,7 @@
 package com.example.ceylonestate.controller;
 
 import com.example.ceylonestate.model.ApplicationStatus;
+import com.example.ceylonestate.model.Broker;
 import com.example.ceylonestate.model.BrokerApplication;
 import com.example.ceylonestate.repository.BrokerApplicationRepository;
 import com.example.ceylonestate.repository.BrokerRepository;
@@ -39,7 +40,12 @@ public class AdminBrokerApplicationController {
     public String approve(@PathVariable Long id, RedirectAttributes redirect) {
         BrokerApplication app = find(id);
         if (app.getStatus() != ApplicationStatus.APPROVED) {
-            brokers.save(app.toBroker());
+            Broker broker = app.toBroker();
+            // The applicant can sign in as this broker (inbox) unless that account already has a broker profile.
+            if (brokers.findByAccount(app.getApplicant()).isEmpty()) {
+                broker.linkAccount(app.getApplicant());
+            }
+            brokers.save(broker);
             app.approve();
             applications.save(app);
         }

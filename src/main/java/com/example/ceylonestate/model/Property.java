@@ -283,6 +283,7 @@ public abstract class Property {
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 
     public int getViewCount() { return viewCount; }
+    public void setViewCount(int viewCount) { this.viewCount = viewCount; }
 
     public User getOwner() { return owner; }
     public void setOwner(User owner) { this.owner = owner; }

@@ -10,6 +10,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/css/style.css}">
         <link rel="stylesheet" th:href="@{/css/pages.css}">
+        <link rel="stylesheet" th:href="@{/css/broker-pages.css}">
         <link rel="icon" type="image/png" th:href="@{/images/logo-icon-v3.png}">
         <script>
             (function () {
@@ -200,6 +201,10 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a></li>
+                <li class="nav-item" th:if="${myBroker != null}">
+                    <a class="nav-link" th:href="@{/broker/inbox}"><i class="bi bi-inbox"></i> <span th:text="#{nav.brokerInbox}">Broker inbox</span>
+                        <span class="badge rounded-pill bg-danger" th:if="${unreadBrokerMessages > 0}" th:text="${unreadBrokerMessages}">2</span></a>
+                </li>
             </ul>
             </div>
 
@@ -245,17 +250,23 @@
                     <a class="btn btn-accent w-100 mb-3" th:href="@{/login}" th:text="#{nav.loginRegister}">Login / Register</a>
                 </span>
                 <a class="list-group-item list-group-item-action" th:href="@{/settings}" th:text="#{sidebar.appSettings}">App Settings</a>
-                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                <span sec:authorize="isAuthenticated() and !hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/profile}" th:text="#{sidebar.userManagement}">User Management</a>
                 </span>
                 <span sec:authorize="isAnonymous()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/login}" th:text="#{sidebar.userManagement}">User Management</a>
                 </span>
-                <span sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                <span sec:authorize="isAuthenticated() and !hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <a class="list-group-item list-group-item-action" th:href="@{/my-listings}" th:text="#{sidebar.myListings}">My listings</a>
                     <a class="list-group-item list-group-item-action" th:href="@{/my-bookings}" th:text="#{sidebar.myBookings}">My requests</a>
+                    <a class="list-group-item list-group-item-action" th:if="${myBroker != null}" th:href="@{/broker/inbox}">
+                        <span th:text="#{nav.brokerInbox}">Broker inbox</span>
+                        <span class="badge rounded-pill bg-danger ms-1" th:if="${unreadBrokerMessages > 0}" th:text="${unreadBrokerMessages}">2</span>
+                    </a>
                 </span>
-                <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved items</a>
+                <span sec:authorize="!hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                    <a class="list-group-item list-group-item-action" th:href="@{/saved}" th:text="#{sidebar.saved}">Saved items</a>
+                </span>
                 <a class="list-group-item list-group-item-action" th:href="@{/articles}" th:text="#{sidebar.articles}">Articles</a>
                 <a class="list-group-item list-group-item-action" th:href="@{/contact}" th:text="#{contact.title}">Contact us</a>
                 <span sec:authorize="hasRole('ADMIN')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
@@ -266,6 +277,12 @@
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/users}" th:text="#{adminNav.users}">Admin: Users</a>
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/brokers}" th:text="#{sidebar.adminBrokers}">Admin: Brokers</a>
                     <a class="list-group-item list-group-item-action" th:href="@{/admin/local-info}" th:text="#{sidebar.adminLocalInfo}">Admin: Local Info</a>
+                    <!-- Admin sign-out (the same /admin/logout the admin tabs use), reachable from every page -->
+                    <form th:action="@{/admin/logout}" method="post" class="m-0">
+                        <button type="submit" class="list-group-item list-group-item-action text-danger fw-semibold">
+                            <i class="bi bi-box-arrow-right"></i> <span th:text="#{adminNav.logout}">Sign out</span>
+                        </button>
+                    </form>
                 </span>
             </div>
         </div>

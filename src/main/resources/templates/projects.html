@@ -4,10 +4,11 @@
     <title>Completed Projects</title>
 </head>
 <body>
-<div th:replace="~{fragments/layout :: navbar}"></div>
 <div th:replace="~{fragments/layout :: sidebar}"></div>
 
+<!-- The navbar sits inside the hero so the hero colour also fills the strip behind the bar -->
 <section class="projects-hero">
+    <div th:replace="~{fragments/layout :: navbar}"></div>
     <div class="projects-hero-inner container-xl">
         <h1 th:text="#{projects.heroTitle}">Discover Our Portfolio of Projects</h1>
         <p th:text="#{projects.heroText(${count})}">Properties we've sold and rented.</p>
