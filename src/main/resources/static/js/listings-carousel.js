@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Only loop/auto-rotate when there are more matching listings than
-        // visible slots — otherwise everything already fits, so just show it.
+        // visible slots, otherwise everything already fits, so just show it.
         if (matches.length <= visibleCount) {
             return;
         }
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         matches.slice(0, visibleCount - 1).forEach(function (card) {
             const clone = card.cloneNode(true);
             // These wrap-around clones are duplicates used purely for the
-            // seamless loop — show them immediately rather than waiting for
+            // seamless loop, show them immediately rather than waiting for
             // a scroll trigger that may never fire for an off-screen clone.
             clone.classList.add('is-visible');
             track.appendChild(clone);

@@ -71,7 +71,18 @@ public class SecurityConfig {
                 .logoutUrl("/admin/logout")
                 .logoutSuccessUrl("/admin/login?logout")
                 .permitAll()
-            );
+            )
+            .exceptionHandling(ex -> ex.accessDeniedHandler((request, response, denied) -> {
+                // A stale login form (page left open, server restarted, session replaced) has an old
+                // CSRF token. Send the admin back to the form with a message instead of the 403 page.
+                if (denied instanceof org.springframework.security.web.csrf.CsrfException
+                        && "POST".equalsIgnoreCase(request.getMethod())
+                        && "/admin/login".equals(request.getServletPath())) {
+                    response.sendRedirect(request.getContextPath() + "/admin/login?expired");
+                } else {
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+                }
+            }));
         return http.build();
     }
 

@@ -16,6 +16,7 @@
 
             <div class="alert alert-danger py-2 small" th:if="${param.error}" th:text="#{adminLogin.error}"></div>
             <div class="alert alert-warning py-2 small" th:if="${param.locked}" th:text="#{adminLogin.locked}"></div>
+            <div class="alert alert-warning py-2 small" th:if="${param.expired}" th:text="#{adminLogin.expired}"></div>
             <div class="alert alert-success py-2 small" th:if="${param.logout}" th:text="#{adminLogin.loggedOut}"></div>
 
             <form th:action="@{/admin/login}" method="post">

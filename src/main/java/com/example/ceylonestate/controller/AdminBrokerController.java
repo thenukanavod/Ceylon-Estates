@@ -2,9 +2,7 @@ package com.example.ceylonestate.controller;
 
 import com.example.ceylonestate.model.Broker;
 import com.example.ceylonestate.model.District;
-import com.example.ceylonestate.model.User;
 import com.example.ceylonestate.repository.BrokerRepository;
-import com.example.ceylonestate.repository.UserRepository;
 import com.example.ceylonestate.service.BrokerPhotoStorageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,13 +31,10 @@ public class AdminBrokerController {
 
     private final BrokerRepository brokerRepository;
     private final BrokerPhotoStorageService photoStorage;
-    private final UserRepository userRepository;
 
-    public AdminBrokerController(BrokerRepository brokerRepository, BrokerPhotoStorageService photoStorage,
-                                 UserRepository userRepository) {
+    public AdminBrokerController(BrokerRepository brokerRepository, BrokerPhotoStorageService photoStorage) {
         this.brokerRepository = brokerRepository;
         this.photoStorage = photoStorage;
-        this.userRepository = userRepository;
     }
 
     // ---------- Read ----------
@@ -145,37 +140,6 @@ public class AdminBrokerController {
         broker.setPhotoUrl(null);
         brokerRepository.save(broker);
         return "redirect:/admin/brokers/" + id + "/edit";
-    }
-
-    // ---------- Login account (who reads this broker's inbox) ----------
-
-    @PostMapping("/{id}/link-account")
-    public String linkAccount(@PathVariable Long id,
-                              @RequestParam String username,
-                              RedirectAttributes redirectAttributes) {
-        Broker broker = find(id);
-        User user = userRepository.findByUsername(username.trim()).orElse(null);
-        if (user == null) {
-            redirectAttributes.addFlashAttribute("flashError", "No account with that username.");
-        } else if (!"USER".equals(user.getRole())) {
-            redirectAttributes.addFlashAttribute("flashError", "Only regular user accounts can be linked to a broker.");
-        } else if (brokerRepository.findByAccount(user).filter(b -> !b.getId().equals(id)).isPresent()) {
-            redirectAttributes.addFlashAttribute("flashError", "That account is already linked to another broker.");
-        } else {
-            broker.linkAccount(user);
-            brokerRepository.save(broker);
-            redirectAttributes.addFlashAttribute("flash", "adminBrokers.accountLinked");
-        }
-        return "redirect:/admin/brokers";
-    }
-
-    @PostMapping("/{id}/unlink-account")
-    public String unlinkAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        Broker broker = find(id);
-        broker.unlinkAccount();
-        brokerRepository.save(broker);
-        redirectAttributes.addFlashAttribute("flash", "adminBrokers.accountUnlinked");
-        return "redirect:/admin/brokers";
     }
 
     // ---------- Delete ----------

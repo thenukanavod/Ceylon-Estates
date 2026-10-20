@@ -1,5 +1,5 @@
 // Types the hero's cursive word out letter by letter, pauses, erases it,
-// then retypes it — looping for continuous movement in the hero, similar to
+// then retypes it, looping for continuous movement in the hero, similar to
 // the reference site's animated headline.
 document.addEventListener('DOMContentLoaded', function () {
     const el = document.getElementById('heroTypedWord');

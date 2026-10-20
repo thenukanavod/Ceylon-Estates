@@ -338,81 +338,81 @@ public class DataSeeder implements CommandLineRunner {
 
     private void seedListings() {
         // ----- Apartments -----
-        save(apartment("Emerald Heights – Kandy", KANDY, "Kandy", 8_200_000, false, FOR_SALE, 2, 2, 980, 5, true, false, 2,
+        save(apartment("Emerald Heights - Kandy", KANDY, "Kandy", 8_200_000, false, FOR_SALE, 2, 2, 980, 5, true, false, 2,
                 "Bright two-bedroom apartment a short walk from Kandy Lake, with a lift, secure parking and hill views.", 1));
-        save(apartment("Skyline Towers – Colombo", COLOMBO, "Colombo 03", 22_750_000, false, FOR_SALE, 3, 2, 1450, 18, true, false, 4,
+        save(apartment("Skyline Towers - Colombo", COLOMBO, "Colombo 03", 22_750_000, false, FOR_SALE, 3, 2, 1450, 18, true, false, 4,
                 "High-floor three-bedroom apartment with sea and city views, a gym and 24-hour security.", 2));
         save(apartment("Ocean View Apartments", COLOMBO, "Mount Lavinia", 31_000_000, false, FOR_SALE, 3, 3, 1700, 9, true, false, 6,
                 "Spacious beachside apartment steps from the Mount Lavinia seafront, with a shared pool.", 3));
-        save(apartment("Cozy 2BR Apartment – Rajagiriya", COLOMBO, "Rajagiriya", 95_000, true, FOR_RENT, 2, 1, 950, 4, true, true, 1,
+        save(apartment("Cozy 2BR Apartment - Rajagiriya", COLOMBO, "Rajagiriya", 95_000, true, FOR_RENT, 2, 1, 950, 4, true, true, 1,
                 "Well-kept apartment near Ayurveda Mawatha, ideal for a young family. Pets welcome with a small deposit.", 4));
-        save(apartment("Studio Apartment – Wellawatte", COLOMBO, "Wellawatte", 55_000, true, FOR_RENT, 1, 1, 500, 2, false, false, 3,
+        save(apartment("Studio Apartment - Wellawatte", COLOMBO, "Wellawatte", 55_000, true, FOR_RENT, 1, 1, 500, 2, false, false, 3,
                 "Compact modern studio close to the beach and Galle Road, fully furnished.", 5));
-        save(apartment("Pearl Residencies – Battaramulla", COLOMBO, "Battaramulla", 27_500_000, false, SOLD, 3, 2, 1380, 7, true, false, 30,
+        save(apartment("Pearl Residencies - Battaramulla", COLOMBO, "Battaramulla", 27_500_000, false, SOLD, 3, 2, 1380, 7, true, false, 30,
                 "Gated-community apartment near the Parliament road, handed over to its new owners.", 6));
-        save(apartment("Harbour View Apartment – Galle", GALLE, "Galle", 14_200_000, false, FOR_SALE, 2, 2, 1100, 3, true, true, 5,
+        save(apartment("Harbour View Apartment - Galle", GALLE, "Galle", 14_200_000, false, FOR_SALE, 2, 2, 1100, 3, true, true, 5,
                 "Modern apartment with partial harbour views, five minutes from the Galle Fort.", 7));
-        save(apartment("Hilltop Apartments – Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 9_800_000, false, FOR_SALE, 2, 1, 900, 2, false, true, 8,
+        save(apartment("Hilltop Apartments - Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 9_800_000, false, FOR_SALE, 2, 1, 900, 2, false, true, 8,
                 "Cool-climate apartment overlooking Gregory Lake, suited to a holiday home or full-time living.", 8));
-        save(apartment("Marine Drive Flat – Negombo", GAMPAHA, "Negombo", 65_000, true, RENTED, 2, 2, 1000, 3, true, true, 40,
+        save(apartment("Marine Drive Flat - Negombo", GAMPAHA, "Negombo", 65_000, true, RENTED, 2, 2, 1000, 3, true, true, 40,
                 "Sea-facing rental near Negombo beach, now let to a long-term tenant.", 9));
-        save(apartment("Lakeview Studios – Kandy", KANDY, "Kandy", 45_000, true, FOR_RENT, 1, 1, 520, 3, true, true, 2,
+        save(apartment("Lakeview Studios - Kandy", KANDY, "Kandy", 45_000, true, FOR_RENT, 1, 1, 520, 3, true, true, 2,
                 "Neat studio with a balcony facing the lake; pet-friendly with owner approval.", 10));
-        save(apartment("Emerald Court – Kandy", KANDY, "Peradeniya", 7_400_000, false, SOLD, 2, 2, 940, 4, true, false, 55,
+        save(apartment("Emerald Court - Kandy", KANDY, "Peradeniya", 7_400_000, false, SOLD, 2, 2, 940, 4, true, false, 55,
                 "Two-bedroom apartment close to the university, sold to a local family.", 11));
-        save(apartment("Sunrise Apartments – Jaffna", JAFFNA, "Jaffna", 11_500_000, false, PENDING, 3, 2, 1250, 2, false, false, 1,
+        save(apartment("Sunrise Apartments - Jaffna", JAFFNA, "Jaffna", 11_500_000, false, PENDING, 3, 2, 1250, 2, false, false, 1,
                 "New three-bedroom apartment near the city centre. Awaiting review.", 12));
 
         // ----- Houses -----
-        save(house("Silver Palm Residence – Galle", GALLE, "Galle", 15_500_000, false, FOR_SALE, 4, 3, 2400, 12, true, true, 3,
+        save(house("Silver Palm Residence - Galle", GALLE, "Galle", 15_500_000, false, FOR_SALE, 4, 3, 2400, 12, true, true, 3,
                 "Four-bedroom family home with a mature garden and a covered verandah, ten minutes from the Fort.", 1));
-        save(house("Cinnamon Grove – Matara", MATARA, "Matara", 12_000_000, false, FOR_SALE, 3, 2, 1800, 10, true, false, 4,
+        save(house("Cinnamon Grove - Matara", MATARA, "Matara", 12_000_000, false, FOR_SALE, 3, 2, 1800, 10, true, false, 4,
                 "Single-storey home in a quiet lane, with a cinnamon-tree garden and room to extend.", 2));
-        save(house("Coral Bay Homes – Trincomalee", TRINCOMALEE, "Trincomalee", 9_900_000, false, FOR_SALE, 3, 2, 1500, 15, true, true, 6,
+        save(house("Coral Bay Homes - Trincomalee", TRINCOMALEE, "Trincomalee", 9_900_000, false, FOR_SALE, 3, 2, 1500, 15, true, true, 6,
                 "Three-bedroom house a short walk from the beach, with a walled compound.", 3));
-        save(house("Rosewood Residence – Nugegoda", COLOMBO, "Nugegoda", 38_000_000, false, FOR_SALE, 4, 3, 2800, 10, true, true, 2,
+        save(house("Rosewood Residence - Nugegoda", COLOMBO, "Nugegoda", 38_000_000, false, FOR_SALE, 4, 3, 2800, 10, true, true, 2,
                 "Modern four-bedroom home close to schools, supermarkets and the Nugegoda junction.", 4));
-        save(house("Lakeside Villa – Kandy", KANDY, "Kandy", 28_000_000, false, SOLD, 4, 3, 2500, 14, true, false, 35,
+        save(house("Lakeside Villa - Kandy", KANDY, "Kandy", 28_000_000, false, SOLD, 4, 3, 2500, 14, true, false, 35,
                 "Hillside villa with lake views and a landscaped garden - sold.", 5));
-        save(house("Golden Palm Villa – Hikkaduwa", GALLE, "Hikkaduwa", 180_000, true, FOR_RENT, 3, 3, 2200, 20, true, true, 2,
+        save(house("Golden Palm Villa - Hikkaduwa", GALLE, "Hikkaduwa", 180_000, true, FOR_RENT, 3, 3, 2200, 20, true, true, 2,
                 "Furnished holiday villa with a pool, two minutes from the beach. Pets welcome.", 6));
-        save(house("Hill Country Bungalow – Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 21_000_000, false, FOR_SALE, 3, 2, 2000, 25, true, true, 7,
+        save(house("Hill Country Bungalow - Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 21_000_000, false, FOR_SALE, 3, 2, 2000, 25, true, true, 7,
                 "Colonial-style bungalow with a fireplace and a large rose garden.", 7));
-        save(house("Family Home – Negombo", GAMPAHA, "Negombo", 17_500_000, false, SOLD, 4, 3, 2200, 12, true, false, 45,
+        save(house("Family Home - Negombo", GAMPAHA, "Negombo", 17_500_000, false, SOLD, 4, 3, 2200, 12, true, false, 45,
                 "Well-kept family home near the Negombo lagoon - sold.", 8));
-        save(house("Coastal Cottage – Tangalle", HAMBANTOTA, "Tangalle", 120_000, true, RENTED, 2, 2, 1300, 18, true, true, 50,
+        save(house("Coastal Cottage - Tangalle", HAMBANTOTA, "Tangalle", 120_000, true, RENTED, 2, 2, 1300, 18, true, true, 50,
                 "Beachside cottage with a coconut garden, now rented long-term.", 9));
-        save(house("Garden Residence – Kurunegala", KURUNEGALA, "Kurunegala", 14_500_000, false, FOR_SALE, 3, 2, 1900, 16, true, false, 9,
+        save(house("Garden Residence - Kurunegala", KURUNEGALA, "Kurunegala", 14_500_000, false, FOR_SALE, 3, 2, 1900, 16, true, false, 9,
                 "Spacious home on a corner plot near the town centre.", 10));
-        save(house("Lotus Garden – Matara", MATARA, "Weligama", 19_000_000, false, SOLD, 4, 3, 2300, 12, true, true, 60,
+        save(house("Lotus Garden - Matara", MATARA, "Weligama", 19_000_000, false, SOLD, 4, 3, 2300, 12, true, true, 60,
                 "Contemporary home a short drive from Weligama beach - sold.", 11));
-        save(house("Modern Duplex – Maharagama", COLOMBO, "Maharagama", 42_000_000, false, PENDING, 4, 4, 3000, 8, false, false, 1,
+        save(house("Modern Duplex - Maharagama", COLOMBO, "Maharagama", 42_000_000, false, PENDING, 4, 4, 3000, 8, false, false, 1,
                 "Brand-new duplex with a rooftop terrace. Awaiting review.", 12));
 
         // ----- Land (price is PER PERCH) -----
-        save(land("Sunview Block – Negombo", GAMPAHA, "Negombo", 650_000, FOR_SALE, 20, "Residential", 2,
+        save(land("Sunview Block - Negombo", GAMPAHA, "Negombo", 650_000, FOR_SALE, 20, "Residential", 2,
                 "Level residential plot with road frontage, close to Negombo town and the Colombo-Katunayake Expressway.", 1));
-        save(land("Hillcrest Acres – Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 480_000, FOR_SALE, 40, "Residential", 3,
+        save(land("Hillcrest Acres - Nuwara Eliya", NUWARA_ELIYA, "Nuwara Eliya", 480_000, FOR_SALE, 40, "Residential", 3,
                 "Gently sloping plot with tea-country views, ideal for a holiday bungalow.", 2));
-        save(land("Golden Acres – Anuradhapura", ANURADHAPURA, "Anuradhapura", 120_000, FOR_SALE, 80, "Agricultural", 4,
+        save(land("Golden Acres - Anuradhapura", ANURADHAPURA, "Anuradhapura", 120_000, FOR_SALE, 80, "Agricultural", 4,
                 "Fertile flat land with a nearby irrigation tank, suited to paddy or vegetables.", 3));
-        save(land("Palm Grove Plot – Kalutara", KALUTARA, "Panadura", 380_000, FOR_SALE, 25, "Residential", 5,
+        save(land("Palm Grove Plot - Kalutara", KALUTARA, "Panadura", 380_000, FOR_SALE, 25, "Residential", 5,
                 "Coconut-palm plot in a quiet lane, minutes from the Southern Expressway.", 4));
-        save(land("Lagoon Side Block – Batticaloa", BATTICALOA, "Batticaloa", 150_000, FOR_SALE, 30, "Mixed", 6,
+        save(land("Lagoon Side Block - Batticaloa", BATTICALOA, "Batticaloa", 150_000, FOR_SALE, 30, "Mixed", 6,
                 "Mixed-use plot beside the lagoon road, with water and electricity connected.", 5));
-        save(land("Tea Estate Plot – Badulla", BADULLA, "Bandarawela", 210_000, SOLD, 50, "Agricultural", 38,
+        save(land("Tea Estate Plot - Badulla", BADULLA, "Bandarawela", 210_000, SOLD, 50, "Agricultural", 38,
                 "Productive tea land with a small factory shed - sold.", 6));
-        save(land("Beachfront Plot – Tangalle", HAMBANTOTA, "Tangalle", 900_000, SOLD, 16, "Commercial", 42,
+        save(land("Beachfront Plot - Tangalle", HAMBANTOTA, "Tangalle", 900_000, SOLD, 16, "Commercial", 42,
                 "Prime beachfront plot zoned for a small guesthouse - sold.", 7));
-        save(land("Commercial Corner Lot – Kurunegala", KURUNEGALA, "Kurunegala", 750_000, FOR_SALE, 12, "Commercial", 7,
+        save(land("Commercial Corner Lot - Kurunegala", KURUNEGALA, "Kurunegala", 750_000, FOR_SALE, 12, "Commercial", 7,
                 "Corner lot on a busy main road, well suited to a shop or showroom.", 8));
-        save(land("Rubber Land – Kegalle", KEGALLE, "Mawanella", 95_000, FOR_SALE, 100, "Agricultural", 8,
+        save(land("Rubber Land - Kegalle", KEGALLE, "Mawanella", 95_000, FOR_SALE, 100, "Agricultural", 8,
                 "Established rubber plantation on a gentle slope with road access.", 9));
-        save(land("Riverside Plot – Ratnapura", RATNAPURA, "Ratnapura", 110_000, FOR_SALE, 35, "Residential", 9,
+        save(land("Riverside Plot - Ratnapura", RATNAPURA, "Ratnapura", 110_000, FOR_SALE, 35, "Residential", 9,
                 "Plot beside a quiet stream, a short drive from Ratnapura town.", 10));
-        save(land("Sunrise Block – Gampaha", GAMPAHA, "Gampaha", 420_000, SOLD, 15, "Residential", 52,
+        save(land("Sunrise Block - Gampaha", GAMPAHA, "Gampaha", 420_000, SOLD, 15, "Residential", 52,
                 "Cleared residential block, sold to a local builder.", 11));
-        save(land("Paddy Field – Polonnaruwa", POLONNARUWA, "Polonnaruwa", 60_000, PENDING, 200, "Agricultural", 1,
+        save(land("Paddy Field - Polonnaruwa", POLONNARUWA, "Polonnaruwa", 60_000, PENDING, 200, "Agricultural", 1,
                 "Large paddy field with irrigation access. Awaiting review.", 12));
     }
 
@@ -476,14 +476,14 @@ public class DataSeeder implements CommandLineRunner {
      * backfillMissingPhotos() skips them (it would otherwise attach sample photos on the next start).
      */
     private static final java.util.Set<String> GALLERY_LISTING_TITLES = java.util.Set.of(
-            "Land Plot \u2013 Negombo", "Handover Day \u2013 Kurunegala", "Move-in Day \u2013 Ratnapura",
+            "Land Plot - Negombo", "Handover Day - Kurunegala", "Move-in Day - Ratnapura",
             // 15 extra made-up listings
-            "Palm Haven Plot \u2013 Hambantota", "Misty Ridge Block \u2013 Badulla", "Lotus Pond Land \u2013 Matale",
-            "Monsoon Meadows \u2013 Ampara", "Sapphire Fields \u2013 Puttalam",
-            "Jasmine Court \u2013 Colombo 05", "Banyan Tree Villa \u2013 Kalutara", "Sandalwood Lane \u2013 Peradeniya",
-            "Orchid Hill House \u2013 Ella", "Tamarind Cottage \u2013 Mannar",
-            "Harbour Lights \u2013 Colombo 02", "Blue Lagoon Residences \u2013 Bentota", "Cloud Nine Towers \u2013 Colombo 06",
-            "Garden City Flats \u2013 Gampaha", "Vista Rise \u2013 Jaffna");
+            "Palm Haven Plot - Hambantota", "Misty Ridge Block - Badulla", "Lotus Pond Land - Matale",
+            "Monsoon Meadows - Ampara", "Sapphire Fields - Puttalam",
+            "Jasmine Court - Colombo 05", "Banyan Tree Villa - Kalutara", "Sandalwood Lane - Peradeniya",
+            "Orchid Hill House - Ella", "Tamarind Cottage - Mannar",
+            "Harbour Lights - Colombo 02", "Blue Lagoon Residences - Bentota", "Cloud Nine Towers - Colombo 06",
+            "Garden City Flats - Gampaha", "Vista Rise - Jaffna");
 
     /**
      * Listings an earlier version of this seeder added by mistake: their names (Silver Palm, Coral Bay Homes,
@@ -491,9 +491,9 @@ public class DataSeeder implements CommandLineRunner {
      * seedListings() with another town, so they showed up as duplicates. Removed on start-up.
      */
     private static final java.util.Set<String> MISTAKEN_DUPLICATE_TITLES = java.util.Set.of(
-            "Silver Palm \u2013 Galle", "Coral Bay Homes \u2013 Matara", "Lakeside Villas \u2013 Kandy",
-            "Cinnamon Grove \u2013 Kalutara", "Sunview Block \u2013 Anuradhapura",
-            "Rosewood Residence \u2013 Colombo 07", "Golden Acres \u2013 Kurunegala");
+            "Silver Palm - Galle", "Coral Bay Homes - Matara", "Lakeside Villas - Kandy",
+            "Cinnamon Grove - Kalutara", "Sunview Block - Anuradhapura",
+            "Rosewood Residence - Colombo 07", "Golden Acres - Kurunegala");
 
     /** Deletes the mistaken duplicates above (only sample listings, never one a real user added). */
     private void removeMistakenDuplicates() {
@@ -519,7 +519,7 @@ public class DataSeeder implements CommandLineRunner {
 
     /** The 15 completed projects shown in the homepage gallery, in the same order as the gallery tiles. */
     private static final java.util.Set<String> COMPLETED_PROJECT_TITLES = java.util.Set.of(
-            "Land Plot \u2013 Negombo", "Silver Palm \u2013 Galle", "Skyline Towers", "Handover Day",
+            "Land Plot - Negombo", "Silver Palm - Galle", "Skyline Towers", "Handover Day",
             "Emerald Heights", "Coral Bay Homes", "Hillcrest Acres", "Lakeside Villas", "Cinnamon Grove",
             "Ocean View Apts", "Move-in Day", "Sunview Block", "Rosewood Residence", "Pearl Residencies",
             "Golden Acres");
@@ -556,9 +556,9 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         java.util.List<Property> toAdd = new java.util.ArrayList<>();
-        toAdd.add(completed(galleryLand("Land Plot \u2013 Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 70,
+        toAdd.add(completed(galleryLand("Land Plot - Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 70,
                 "Residential plot near the Negombo beach, sold with a clear deed."), ListingStatus.SOLD, "gallery1.png"));
-        toAdd.add(completed(galleryHouse("Silver Palm \u2013 Galle", GALLE, "Galle", 36_500_000, false, ListingStatus.SOLD, 4, 3, 2800, 12, true, 85,
+        toAdd.add(completed(galleryHouse("Silver Palm - Galle", GALLE, "Galle", 36_500_000, false, ListingStatus.SOLD, 4, 3, 2800, 12, true, 85,
                 "Four-bedroom house with a landscaped garden near the Galle Fort."), ListingStatus.SOLD, "gallery2.png"));
         toAdd.add(completed(galleryApartment("Skyline Towers", COLOMBO, "Colombo 03", 52_000_000, false, ListingStatus.SOLD, 3, 3, 1750, 18, true, false, 95,
                 "High-floor apartment with city views, sold to a family relocating from abroad."), ListingStatus.SOLD, "gallery3.png"));
@@ -637,48 +637,48 @@ public class DataSeeder implements CommandLineRunner {
         }
         java.util.List<Property> toAdd = new java.util.ArrayList<>();
 
-        toAdd.add(galleryLand("Land Plot \u2013 Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 3,
+        toAdd.add(galleryLand("Land Plot - Negombo", GAMPAHA, "Negombo", 380_000, 20, "Residential", 3,
                 "Cleared residential plot with road frontage, a short drive from the Negombo beach and the airport."));
-        toAdd.add(galleryHouse("Handover Day \u2013 Kurunegala", KURUNEGALA, "Kurunegala", 18_900_000, false, FOR_SALE, 3, 2, 1800, 10, true, 4,
+        toAdd.add(galleryHouse("Handover Day - Kurunegala", KURUNEGALA, "Kurunegala", 18_900_000, false, FOR_SALE, 3, 2, 1800, 10, true, 4,
                 "Brand-new three-bedroom house ready for handover, with a covered car porch and a small garden."));
-        toAdd.add(galleryHouse("Move-in Day \u2013 Ratnapura", RATNAPURA, "Ratnapura", 140_000, true, FOR_RENT, 3, 2, 1650, 11, true, 8,
+        toAdd.add(galleryHouse("Move-in Day - Ratnapura", RATNAPURA, "Ratnapura", 140_000, true, FOR_RENT, 3, 2, 1650, 11, true, 8,
                 "Newly painted three-bedroom house for rent, ready to move into. Pets welcome."));
 
         // ----- 15 more made-up listings (all invented; no photos) -----
         // Lands (price is per perch)
-        toAdd.add(galleryLand("Palm Haven Plot \u2013 Hambantota", HAMBANTOTA, "Hambantota", 85_000, 35, "Residential", 1,
+        toAdd.add(galleryLand("Palm Haven Plot - Hambantota", HAMBANTOTA, "Hambantota", 85_000, 35, "Residential", 1,
                 "Flat coastal plot with coconut palms, ten minutes from the Hambantota harbour."));
-        toAdd.add(galleryLand("Misty Ridge Block \u2013 Badulla", BADULLA, "Badulla", 140_000, 22, "Residential", 2,
+        toAdd.add(galleryLand("Misty Ridge Block - Badulla", BADULLA, "Badulla", 140_000, 22, "Residential", 2,
                 "Cool-climate hillside block with a mountain view and a gravel access road."));
-        toAdd.add(galleryLand("Lotus Pond Land \u2013 Matale", MATALE, "Matale", 70_000, 48, "Agricultural", 5,
+        toAdd.add(galleryLand("Lotus Pond Land - Matale", MATALE, "Matale", 70_000, 48, "Agricultural", 5,
                 "Fertile land beside a small pond, currently planted with spices."));
-        toAdd.add(galleryLand("Monsoon Meadows \u2013 Ampara", AMPARA, "Ampara", 45_000, 120, "Agricultural", 7,
+        toAdd.add(galleryLand("Monsoon Meadows - Ampara", AMPARA, "Ampara", 45_000, 120, "Agricultural", 7,
                 "Wide open meadow with year-round water, good for paddy or a small farm."));
-        toAdd.add(galleryLand("Sapphire Fields \u2013 Puttalam", PUTTALAM, "Puttalam", 110_000, 28, "Mixed", 11,
+        toAdd.add(galleryLand("Sapphire Fields - Puttalam", PUTTALAM, "Puttalam", 110_000, 28, "Mixed", 11,
                 "Corner plot near the new highway junction, suitable for a home or a small shop."));
 
         // Houses
-        toAdd.add(galleryHouse("Jasmine Court \u2013 Colombo 05", COLOMBO, "Colombo 05", 74_000_000, false, FOR_SALE, 4, 4, 3100, 10, true, 1,
+        toAdd.add(galleryHouse("Jasmine Court - Colombo 05", COLOMBO, "Colombo 05", 74_000_000, false, FOR_SALE, 4, 4, 3100, 10, true, 1,
                 "Contemporary four-bedroom house on a quiet lane in Narahenpita, with a rooftop terrace."));
-        toAdd.add(galleryHouse("Banyan Tree Villa \u2013 Kalutara", KALUTARA, "Kalutara", 52_500_000, false, FOR_SALE, 4, 3, 2900, 20, true, 3,
+        toAdd.add(galleryHouse("Banyan Tree Villa - Kalutara", KALUTARA, "Kalutara", 52_500_000, false, FOR_SALE, 4, 3, 2900, 20, true, 3,
                 "Riverside villa shaded by an old banyan tree, with a boat jetty at the bottom of the garden."));
-        toAdd.add(galleryHouse("Sandalwood Lane \u2013 Peradeniya", KANDY, "Peradeniya", 31_000_000, false, FOR_SALE, 3, 3, 2200, 14, true, 6,
+        toAdd.add(galleryHouse("Sandalwood Lane - Peradeniya", KANDY, "Peradeniya", 31_000_000, false, FOR_SALE, 3, 3, 2200, 14, true, 6,
                 "Split-level family house close to the botanical gardens and the university."));
-        toAdd.add(galleryHouse("Orchid Hill House \u2013 Ella", BADULLA, "Ella", 185_000, true, FOR_RENT, 2, 2, 1300, 8, true, 9,
+        toAdd.add(galleryHouse("Orchid Hill House - Ella", BADULLA, "Ella", 185_000, true, FOR_RENT, 2, 2, 1300, 8, true, 9,
                 "Cosy hill house with a wooden deck facing Ella Rock. Furnished, ideal as a long-stay rental."));
-        toAdd.add(galleryHouse("Tamarind Cottage \u2013 Mannar", MANNAR, "Mannar", 9_800_000, false, FOR_SALE, 2, 1, 1100, 16, true, 12,
+        toAdd.add(galleryHouse("Tamarind Cottage - Mannar", MANNAR, "Mannar", 9_800_000, false, FOR_SALE, 2, 1, 1100, 16, true, 12,
                 "Small single-storey cottage with a tamarind tree and a short walk to the sea."));
 
         // Apartments
-        toAdd.add(galleryApartment("Harbour Lights \u2013 Colombo 02", COLOMBO, "Colombo 02", 48_000_000, false, FOR_SALE, 3, 3, 1800, 22, true, false, 2,
+        toAdd.add(galleryApartment("Harbour Lights - Colombo 02", COLOMBO, "Colombo 02", 48_000_000, false, FOR_SALE, 3, 3, 1800, 22, true, false, 2,
                 "Upper-floor apartment overlooking the port and the Beira Lake, with a pool and a gym."));
-        toAdd.add(galleryApartment("Blue Lagoon Residences \u2013 Bentota", GALLE, "Bentota", 21_500_000, false, FOR_SALE, 2, 2, 1250, 4, true, true, 4,
+        toAdd.add(galleryApartment("Blue Lagoon Residences - Bentota", GALLE, "Bentota", 21_500_000, false, FOR_SALE, 2, 2, 1250, 4, true, true, 4,
                 "Beach-side holiday apartment with a shared pool, two minutes from the Bentota river."));
-        toAdd.add(galleryApartment("Cloud Nine Towers \u2013 Colombo 06", COLOMBO, "Colombo 06", 38_000_000, false, FOR_SALE, 3, 2, 1500, 15, true, false, 6,
+        toAdd.add(galleryApartment("Cloud Nine Towers - Colombo 06", COLOMBO, "Colombo 06", 38_000_000, false, FOR_SALE, 3, 2, 1500, 15, true, false, 6,
                 "High-floor three-bedroom flat in Wellawatte with a balcony and 24-hour security."));
-        toAdd.add(galleryApartment("Garden City Flats \u2013 Gampaha", GAMPAHA, "Gampaha", 85_000, true, FOR_RENT, 2, 1, 950, 2, false, true, 8,
+        toAdd.add(galleryApartment("Garden City Flats - Gampaha", GAMPAHA, "Gampaha", 85_000, true, FOR_RENT, 2, 1, 950, 2, false, true, 8,
                 "Neat two-bedroom flat in a gated block near the Gampaha railway station."));
-        toAdd.add(galleryApartment("Vista Rise \u2013 Jaffna", JAFFNA, "Jaffna", 15_600_000, false, FOR_SALE, 2, 2, 1050, 6, true, false, 10,
+        toAdd.add(galleryApartment("Vista Rise - Jaffna", JAFFNA, "Jaffna", 15_600_000, false, FOR_SALE, 2, 2, 1050, 6, true, false, 10,
                 "Modern apartment near the Jaffna fort, with city views and covered parking."));
 
         int added = 0;

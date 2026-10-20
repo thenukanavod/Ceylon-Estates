@@ -1,7 +1,7 @@
 // Back-to-top button: appears once the page has scrolled down a bit, and
 // jumps straight to the top with no animation when clicked. This is
 // intentionally instant rather than smooth (unlike the footer's logo/nav
-// anchors), so it's passed behavior: 'auto' explicitly — that overrides
+// anchors), so it's passed behavior: 'auto' explicitly, that overrides
 // the page-wide `scroll-behavior: smooth` set in style.css for this one
 // call only.
 (function () {

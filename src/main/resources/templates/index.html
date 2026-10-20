@@ -158,7 +158,7 @@
                             <div class="broker-card-inner text-center p-3 position-relative">
                                 <div class="broker-avatar mx-auto mb-3"
                                      th:if="${b.photoUrl != null}"
-                                     th:style="'background-image: url(' + @{${b.photoUrl}} + ');'"></div>
+                                     th:attr="data-bg=@{${b.photoUrl}}"></div>
                                 <div class="broker-avatar mx-auto mb-3 fw-bold"
                                      th:unless="${b.photoUrl != null}"
                                      th:style="'background:' + ${b.avatarGradient}"
@@ -208,7 +208,7 @@
 
                 <!-- Right: photo that pops out of the band -->
                 <div class="col-lg-6 order-lg-2">
-                    <div class="local-photo" th:style="'background-image: url(' + @{/images/localinfo.jpg} + ');'"></div>
+                    <div class="local-photo" th:attr="data-bg=@{/images/localinfo.jpg}"></div>
                 </div>
 
             </div>
@@ -222,7 +222,7 @@
 
                 <!-- Left: property photo -->
                 <div class="col-lg-6 order-lg-1">
-                    <div class="sell-photo reveal-on-scroll" th:style="'background-image: url(' + @{/images/selling.jpg} + ');'"></div>
+                    <div class="sell-photo reveal-on-scroll" th:attr="data-bg=@{/images/selling.jpg}"></div>
                 </div>
 
                 <!-- Right: pitch + CTA + trust stats -->
@@ -232,7 +232,7 @@
                     </div>
 
                     <p style="font-size: 1.05rem; line-height: 1.7; max-width: 520px;" class="reveal-on-scroll" th:text="#{home.sell.body}">
-                        List your property with Ceylon Estates and put it in front of thousands of verified buyers, agents and mortgage brokers across the island &ndash; with no listing fees until it sells.
+                        List your property with Ceylon Estates and put it in front of thousands of verified buyers, agents and mortgage brokers across the island, with no listing fees until it sells.
                     </p>
 
                     <div class="d-flex flex-wrap gap-3 mt-3 reveal-on-scroll" style="transition-delay: 0.1s;">
@@ -269,7 +269,7 @@
                     </div>
 
                     <p class="gallery-body reveal-on-scroll" style="font-size: 1.05rem; line-height: 1.7; max-width: 480px;" th:text="#{home.gallery.body}">
-                        A growing gallery of lands, houses and apartments we&rsquo;ve helped bring to life across the island &ndash; from freshly cleared plots to move-in day.
+                        A growing gallery of lands, houses and apartments we&rsquo;ve helped bring to life across the island, from freshly cleared plots to move-in day.
                     </p>
 
                     <a th:href="@{/projects}" class="explore-more-btn mt-2 reveal-on-scroll">
@@ -282,45 +282,45 @@
                     <div class="gallery-viewport reveal-on-scroll">
 
                         <div class="gallery-column">
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery1.png} + ');'"><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery2.png} + ');'"><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery3.png} + ');'"><span class="gallery-tile-tag">Skyline Towers</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery4.png} + ');'"><span class="gallery-tile-tag">Handover Day</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery5.png} + ');'"><span class="gallery-tile-tag">Emerald Heights</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery1.png}"><span class="gallery-tile-tag">Land Plot - Negombo</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery2.png}"><span class="gallery-tile-tag">Silver Palm - Galle</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery3.png}"><span class="gallery-tile-tag">Skyline Towers</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery4.png}"><span class="gallery-tile-tag">Handover Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery5.png}"><span class="gallery-tile-tag">Emerald Heights</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery1.png} + ');'"><span class="gallery-tile-tag">Land Plot &ndash; Negombo</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery2.png} + ');'"><span class="gallery-tile-tag">Silver Palm &ndash; Galle</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery3.png} + ');'"><span class="gallery-tile-tag">Skyline Towers</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery4.png} + ');'"><span class="gallery-tile-tag">Handover Day</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery5.png} + ');'"><span class="gallery-tile-tag">Emerald Heights</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery1.png}"><span class="gallery-tile-tag">Land Plot - Negombo</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery2.png}"><span class="gallery-tile-tag">Silver Palm - Galle</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery3.png}"><span class="gallery-tile-tag">Skyline Towers</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 230px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery4.png}"><span class="gallery-tile-tag">Handover Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery5.png}"><span class="gallery-tile-tag">Emerald Heights</span></div>
                         </div>
 
                         <div class="gallery-column gallery-column-reverse">
-                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery6.png} + ');'"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery7.png} + ');'"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery8.png} + ');'"><span class="gallery-tile-tag">Lakeside Villas</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery9.png} + ');'"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery10.jpg} + ');'"><span class="gallery-tile-tag">Ocean View Apts</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery6.png}"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery7.png}"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery8.png}"><span class="gallery-tile-tag">Lakeside Villas</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery9.png}"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery10.jpg}"><span class="gallery-tile-tag">Ocean View Apts</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery6.png} + ');'"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery7.png} + ');'"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery8.png} + ');'"><span class="gallery-tile-tag">Lakeside Villas</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery9.png} + ');'"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery10.jpg} + ');'"><span class="gallery-tile-tag">Ocean View Apts</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 190px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery6.png}"><span class="gallery-tile-tag">Coral Bay Homes</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery7.png}"><span class="gallery-tile-tag">Hillcrest Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery8.png}"><span class="gallery-tile-tag">Lakeside Villas</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery9.png}"><span class="gallery-tile-tag">Cinnamon Grove</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 200px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery10.jpg}"><span class="gallery-tile-tag">Ocean View Apts</span></div>
                         </div>
 
                         <div class="gallery-column d-none d-lg-flex">
-                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery11.jpg} + ');'"><span class="gallery-tile-tag">Move-in Day</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery12.png} + ');'"><span class="gallery-tile-tag">Sunview Block</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery13.png} + ');'"><span class="gallery-tile-tag">Rosewood Residence</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery14.png} + ');'"><span class="gallery-tile-tag">Pearl Residencies</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery15.jpg} + ');'"><span class="gallery-tile-tag">Golden Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery11.jpg}"><span class="gallery-tile-tag">Move-in Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery12.png}"><span class="gallery-tile-tag">Sunview Block</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery13.png}"><span class="gallery-tile-tag">Rosewood Residence</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery14.png}"><span class="gallery-tile-tag">Pearl Residencies</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery15.jpg}"><span class="gallery-tile-tag">Golden Acres</span></div>
                             <!-- duplicated set for a seamless loop -->
-                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery11.jpg} + ');'"><span class="gallery-tile-tag">Move-in Day</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery12.png} + ');'"><span class="gallery-tile-tag">Sunview Block</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery13.png} + ');'"><span class="gallery-tile-tag">Rosewood Residence</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery14.png} + ');'"><span class="gallery-tile-tag">Pearl Residencies</span></div>
-                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05)), url(' + @{/images/gallery/gallery15.jpg} + ');'"><span class="gallery-tile-tag">Golden Acres</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 170px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery11.jpg}"><span class="gallery-tile-tag">Move-in Day</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 210px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery12.png}"><span class="gallery-tile-tag">Sunview Block</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 160px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery13.png}"><span class="gallery-tile-tag">Rosewood Residence</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 220px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery14.png}"><span class="gallery-tile-tag">Pearl Residencies</span></div>
+                            <div class="gallery-tile" th:style="'min-height: 150px; background-size: cover; background-position: center; background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.05));'" th:attr="data-bg=@{/images/gallery/gallery15.jpg}"><span class="gallery-tile-tag">Golden Acres</span></div>
                         </div>
 
                     </div>
@@ -367,7 +367,7 @@
                                 </button>
                             </h2>
                             <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body"><span th:text="#{home.faq.a2}">Yes &ndash; listing is completely free, and we don't charge a commission until your property actually sells.</span>
+                                <div class="accordion-body"><span th:text="#{home.faq.a2}">Yes, listing is completely free, and we don't charge a commission until your property actually sells.</span>
                                     <div class="mt-2"><a th:href="@{/articles(topic='BUYING')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
                                 </div>
                             </div>
@@ -380,7 +380,7 @@
                                 </button>
                             </h2>
                             <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body"><span th:text="#{home.faq.a3}">Yes &ndash; browse our local mortgage brokers by province and reach out to one near you directly from the homepage.</span>
+                                <div class="accordion-body"><span th:text="#{home.faq.a3}">Yes, browse our local mortgage brokers by province and reach out to one near you directly from the homepage.</span>
                                     <div class="mt-2"><a th:href="@{/articles(topic='FINANCE')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
                                 </div>
                             </div>
@@ -393,7 +393,7 @@
                                 </button>
                             </h2>
                             <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body"><span th:text="#{home.faq.a4}">Yes &ndash; whether you're after a bare plot to build on, a ready house, or a modern apartment, we have verified listings for all three.</span>
+                                <div class="accordion-body"><span th:text="#{home.faq.a4}">Yes, whether you're after a bare plot to build on, a ready house, or a modern apartment, we have verified listings for all three.</span>
                                     <div class="mt-2"><a th:href="@{/articles(topic='BUYING')}" class="faq-learn-more"><span th:text="#{articles.learnMore}">Learn more</span> <i class="bi bi-arrow-right"></i></a></div>
                                 </div>
                             </div>
@@ -449,6 +449,7 @@
     <div th:replace="~{fragments/layout :: scripts}"></div>
     <script th:src="@{/js/scroll-reveal.js}"></script>
     <script th:src="@{/js/listings-carousel.js}"></script>
+    <script th:src="@{/js/lazy-bg.js}"></script>
     <script th:src="@{/js/brokers.js}"></script>
 </body>
 </html>

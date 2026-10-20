@@ -201,10 +201,6 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/projects}" th:text="#{nav.projects}">Projects</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/brokers}" th:text="#{nav.brokers}">Brokers</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/local-info}" th:text="#{nav.localInfo}">Local Info</a></li>
-                <li class="nav-item" th:if="${myBroker != null}">
-                    <a class="nav-link" th:href="@{/broker/inbox}"><i class="bi bi-inbox"></i> <span th:text="#{nav.brokerInbox}">Broker inbox</span>
-                        <span class="badge rounded-pill bg-danger" th:if="${unreadBrokerMessages > 0}" th:text="${unreadBrokerMessages}">2</span></a>
-                </li>
             </ul>
             </div>
 
@@ -303,7 +299,7 @@
                         </a>
 
                         <h3 class="fw-bold text-white" style="max-width: 480px; line-height: 1.3;" th:text="#{footer.tagline}">
-                            We help you find the right land, home or apartment &ndash; anywhere in Sri Lanka.
+                            We help you find the right land, home or apartment, anywhere in Sri Lanka.
                         </h3>
 
                         <div class="d-flex flex-wrap align-items-center gap-4 mt-4">

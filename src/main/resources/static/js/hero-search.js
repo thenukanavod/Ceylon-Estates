@@ -46,7 +46,7 @@
         });
     });
 
-    // --- Chip groups (beds, baths, radius) — single-select per group ---
+    // --- Chip groups (beds, baths, radius), single-select per group ---
     var chipGroups = {};
     card.querySelectorAll('[data-hero-chip-group]').forEach(function (group) {
         var name = group.getAttribute('data-hero-chip-group');

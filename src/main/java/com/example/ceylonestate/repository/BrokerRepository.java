@@ -18,4 +18,7 @@ public interface BrokerRepository extends JpaRepository<Broker, Long> {
 
     /** The broker profile that a website account signs in as, if any. */
     Optional<Broker> findByAccount(User account);
+
+    /** A broker made from an approved application, found by the application's email, that has no login yet. */
+    Optional<Broker> findFirstByEmailIgnoreCaseAndAccountIsNull(String email);
 }

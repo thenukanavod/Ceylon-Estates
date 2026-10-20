@@ -469,7 +469,7 @@ body {
     /* Theme-aware, not fixed: this is a plain content section (not a
        branded color block like .sell-section), so it should flip with
        the site's light/dark toggle like ordinary text/background pairs
-       do — light bg + dark text in light mode, dark bg + white text in
+       do, light bg + dark text in light mode, dark bg + white text in
        dark mode. var(--bs-body-bg)/var(--bs-body-color) already carry
        that switch, so no hardcoded hex or !important is needed here. */
     background-color: var(--bs-body-bg);
@@ -561,7 +561,7 @@ body {
     background-color: var(--bs-body-bg);
     /* Now that this section and the one above it (.gallery-section) both
        resolve to the same theme background, there's nothing to visually
-       separate them — this hairline (also theme-aware) restores that
+       separate them, this hairline (also theme-aware) restores that
        seam without reintroducing a fixed, non-adaptive color. */
     border-top: 1px solid var(--bs-border-color);
 }
@@ -663,7 +663,7 @@ body {
 .reveal-on-scroll.is-visible {
     opacity: 1;
     /* "none" (not translateY(0)) so revealed elements don't permanently sit
-       in their own stacking context — a non-none transform, even a zero one,
+       in their own stacking context, a non-none transform, even a zero one,
        creates a stacking layer that can trap dropdowns/menus underneath
        later content in the page. */
     transform: none;
@@ -725,7 +725,7 @@ body {
 }
 
 /* ---------- Get Local Info section: fixed colors, same reasoning as the
-   listing cards and broker cards above — this block has a hardcoded white
+   listing cards and broker cards above, this block has a hardcoded white
    background regardless of site theme, so its text needs fixed dark colors
    too, including the input's placeholder text. ---------- */
 
@@ -871,7 +871,7 @@ html {
 }
 
 .hero-tab {
-    /* Shared by the "Buy" <button> and the "Sell" <a> — the class handles
+    /* Shared by the "Buy" <button> and the "Sell" <a>, the class handles
        both so they look identical regardless of element type. */
     flex: 1;
     background: transparent;
@@ -991,7 +991,7 @@ html {
 }
 
 .hero-search-filters {
-    /* Hidden by default — this whole row only appears once the sliders
+    /* Hidden by default, this whole row only appears once the sliders
        button is toggled on, rather than always taking up hero space. */
     display: none;
     background: rgba(8, 13, 24, 0.92);

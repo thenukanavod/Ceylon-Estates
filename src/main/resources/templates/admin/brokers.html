@@ -10,7 +10,6 @@
 <main class="container-xl page-main">
     <div th:replace="~{admin/fragments :: tabs('brokers')}"></div>
     <div class="alert alert-success" th:if="${flash != null}" th:text="#{${flash}}">Done.</div>
-    <div class="alert alert-danger" th:if="${flashError != null}" th:text="${flashError}">Error.</div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold mb-0"><span th:text="#{adminBrokers.heading}">Brokers</span> <span class="badge text-bg-secondary" th:text="${#lists.size(brokers)}">0</span></h4>
         <a th:href="@{/admin/brokers/new}" class="btn btn-teal"><i class="bi bi-plus-lg"></i> <span th:text="#{adminBrokers.add}">Add broker</span></a>
@@ -19,7 +18,7 @@
         <table class="table align-middle">
             <thead><tr>
                 <th></th><th th:text="#{brokerForm.name}">Name</th><th th:text="#{brokerForm.company}">Company</th>
-                <th th:text="#{brokerForm.district}">District</th><th th:text="#{brokerForm.phone}">Phone</th><th th:text="#{adminBrokers.account}">Login account</th><th></th>
+                <th th:text="#{brokerForm.district}">District</th><th th:text="#{brokerForm.phone}">Phone</th><th></th>
             </tr></thead>
             <tbody>
             <tr th:each="b : ${brokers}">
@@ -36,19 +35,6 @@
                 <td th:text="${b.company}">Company</td>
                 <td th:text="${b.district.label}">Colombo</td>
                 <td th:text="${b.phone}">011</td>
-                <td>
-                    <div th:if="${b.account != null}" class="d-flex align-items-center gap-2">
-                        <span class="small fw-semibold" th:text="${b.account.username}">username</span>
-                        <form th:action="@{/admin/brokers/{id}/unlink-account(id=${b.id})}" method="post">
-                            <button type="submit" class="btn btn-sm btn-outline-secondary py-0" th:text="#{adminBrokers.unlink}">Unlink</button>
-                        </form>
-                    </div>
-                    <form th:if="${b.account == null}" th:action="@{/admin/brokers/{id}/link-account(id=${b.id})}" method="post" class="d-flex gap-1">
-                        <input type="text" name="username" class="form-control form-control-sm" style="min-width: 120px;" required
-                               th:placeholder="#{adminBrokers.usernamePlaceholder}">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary" th:text="#{adminBrokers.link}">Link</button>
-                    </form>
-                </td>
                 <td class="text-end"><div class="d-inline-flex gap-1 table-actions">
                     <a th:href="@{/admin/brokers/{id}/edit(id=${b.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
                     <form th:action="@{/admin/brokers/{id}/delete(id=${b.id})}" method="post"
